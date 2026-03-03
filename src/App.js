@@ -87,7 +87,7 @@ const ALL_BALLS = [
     id:7, brand:"Motiv", name:"Supra Sport",
     cover:"Solid", coreType:"Symmetric", coreName:"Predator V2",
     finish:"4000 LSS", condition:"Light-Medium Oil", accent:"#ef6c00",
-    ballSlug:"motiv-supra-sport", coreSlug:"motiv-predator-v2-core",
+    ballSlug:"motiv-supra-sport", coreSlug:"motiv-predator-v2",
     weightData:{
       16:{rg:2.550,diff:0.043}, 15:{rg:2.560,diff:0.041},
       14:{rg:2.570,diff:0.038}, 13:{rg:2.650,diff:0.034}, 12:{rg:2.710,diff:0.028}
@@ -329,7 +329,6 @@ function BowwwlImg({ src, alt, size, radius="50%", style={} }) {
       <img
         src={src}
         alt={alt}
-        crossOrigin="anonymous"
         onLoad={()=>setOk(true)}
         onError={()=>setOk(false)}
         style={{
@@ -446,7 +445,7 @@ function WeightTable({ ball, sel, onSel }) {
 function RegModal({ ball, existing, onSave, onClose }) {
   const [form, setForm] = useState({
     nickname:existing?.nickname||"", weight:existing?.weight||15,
-    grip:existing?.grip||"풀핑거", surface:existing?.surface||"박스", memo:existing?.memo||""
+    grip:existing?.grip||"세미팁", surface:existing?.surface||"팩토리", memo:existing?.memo||""
   });
   const set = (k,v) => setForm(f=>({...f,[k]:v}));
   return (
@@ -483,8 +482,8 @@ function RegModal({ ball, existing, onSave, onClose }) {
             </div>
           </div>
           {[
-            {label:"그립",key:"grip",opts:["컨벤셔널","세미핑거","풀핑거"]},
-            {label:"표면 상태",key:"surface",opts:["박스","연마","광택 제거"]},
+            {label:"인서트",key:"grip",opts:["파워리프트","오발","세미팁"]},
+            {label:"표면 상태",key:"surface",opts:["팩토리","폴리싱","샌딩"]},
           ].map(({label,key,opts})=>(
             <div key={key}>
               <label style={{fontSize:8,color:"#bbb",fontWeight:700,letterSpacing:1.5,display:"block",marginBottom:5}}>{label}</label>
@@ -536,7 +535,7 @@ function MyCard({ entry, ball, onRemove, onEdit }) {
             <span style={{fontSize:7,color:"#ddd"}}>탭↺</span>
           </div>
           <div style={{display:"flex",flexWrap:"wrap",gap:3,marginBottom:5}}>
-            {[{v:`${entry.weight}lb`,i:"⚖️"},{v:entry.grip,i:"✊"},{v:entry.surface,i:"🔧"}].map(p=>(
+            {[{v:`${entry.weight}lb`,i:"⚖️"},{v:entry.grip,i:"🤙"},{v:entry.surface,i:"🔧"}].map(p=>(
               <span key={p.v} style={{fontSize:8,fontWeight:700,padding:"2px 5px",borderRadius:4,
                 background:`${ball.accent}12`,color:ball.accent}}>{p.i} {p.v}</span>
             ))}
@@ -863,10 +862,11 @@ export default function RollmateApp() {
   );
 
   return (
-    <div style={{fontFamily:"'Syne',sans-serif",background:"#eef1f8",minHeight:"100vh"}}>
+    <div style={{fontFamily:"'Syne',sans-serif",background:"#eef1f8",minHeight:"100vh",overflowX:"hidden",maxWidth:"100vw",width:"100%"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
+        html,body,#root{overflow-x:hidden;max-width:100vw}
         ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#d8daee;border-radius:2px}
         @keyframes fadeUp{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
         @keyframes toastIn{from{transform:translateX(-50%) translateY(8px);opacity:0}to{transform:translateX(-50%);opacity:1}}
@@ -918,7 +918,6 @@ export default function RollmateApp() {
         {/* HOME */}
         {view==="home"&&!sel&&(
           <div style={{animation:"fadeUp .3s ease both"}}>
-            <GeminiAdvisor balls={ALL_BALLS}/>
             {/* 브랜드 필터 칩 — 바 차트 제거 */}
             <div style={{marginBottom:14}}>
               <div style={{fontSize:8,color:"#aaa",fontWeight:700,letterSpacing:2,marginBottom:9}}>
