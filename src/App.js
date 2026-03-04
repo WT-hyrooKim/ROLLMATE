@@ -49,7 +49,7 @@ const ALL_BALLS = [
     id:4, brand:"Brunswick", name:"Crown Victory Pearl",
     cover:"Pearl", coreType:"Symmetric", coreName:"Crown",
     finish:"Crown Factory Compound", condition:"Medium Oil", accent:"#c62828",
-    ballSlug:"brunswick-crown-victory-pearl", coreSlug:"brunswick-crown-core",
+    ballSlug:"brunswick-crown-victory-pearl", coreSlug:"brunswick-crown-victory-core",
     weightData:{
       16:{rg:2.540,diff:0.045}, 15:{rg:2.545,diff:0.043},
       14:{rg:2.555,diff:0.040}, 13:{rg:2.635,diff:0.036}, 12:{rg:2.695,diff:0.030}
@@ -834,7 +834,7 @@ export default function RollmateApp() {
 
   // SPLASH
   if(splash) return (
-    <div style={{position:"fixed",inset:0,
+    <div style={{position:"fixed",inset:0,overflow:"hidden",
       background:"linear-gradient(135deg,#0a0a1a 0%,#1a237e 55%,#0d47a1 100%)",
       display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
       <style>{`
@@ -846,7 +846,7 @@ export default function RollmateApp() {
       `}</style>
       <div style={{animation:"rollIn .9s cubic-bezier(.34,1.26,.64,1) both",fontSize:80,
         filter:"drop-shadow(0 0 36px rgba(144,202,249,.55))"}}>🎳</div>
-      <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:46,color:"#fff",letterSpacing:5,
+      <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:32,color:"#fff",letterSpacing:3,
         animation:"fadeUp .6s .5s both",marginTop:8}}>
         ROLL<span style={{color:"#90caf9"}}>MATE</span>
       </div>
@@ -895,7 +895,7 @@ export default function RollmateApp() {
 
       {/* TOP BAR */}
       <div style={{background:"rgba(255,255,255,.94)",backdropFilter:"blur(16px)",
-        borderBottom:"1px solid rgba(0,0,0,.07)",padding:"0 16px",position:"sticky",top:0,zIndex:100}}>
+        borderBottom:"1px solid rgba(0,0,0,.07)",padding:"0 16px",position:"sticky",top:0,zIndex:100,overflow:"hidden",maxWidth:"100%"}}>
         <div style={{maxWidth:820,margin:"0 auto",display:"flex",alignItems:"center",height:52,gap:10}}>
           <div style={{display:"flex",alignItems:"center",gap:7,marginRight:"auto"}}>
             <span style={{fontSize:22}}>🎳</span>
