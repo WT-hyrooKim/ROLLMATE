@@ -528,7 +528,7 @@ function MyCard({ entry, ball, onRemove, onEdit }) {
             <BallImg ball={ball} size={42}/>
             <div style={{flex:1,minWidth:0}}>
               <div style={{fontSize:7,color:"#ccc",fontWeight:700,letterSpacing:1.3}}>{ball.brand.toUpperCase()}</div>
-              <div style={{fontWeight:800,fontSize:13,color:"#111",lineHeight:1.2,
+              <div style={{fontWeight:700,fontSize:12,color:"#111",lineHeight:1.3,
                 overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ball.name}</div>
               {entry.nickname&&<div style={{fontSize:9,color:ball.accent,fontWeight:600}}>"{entry.nickname}"</div>}
             </div>
@@ -598,7 +598,7 @@ function Detail({ ball, onBack, inArsenal, onReg }) {
             </div>
             <div style={{flex:1,minWidth:0}}>
               <div style={{fontSize:8,color:"#bbb",fontWeight:700,letterSpacing:2,marginBottom:2}}>{ball.brand.toUpperCase()}</div>
-              <div style={{fontWeight:800,fontSize:24,color:"#111",lineHeight:1.1,marginBottom:4}}>{ball.name}</div>
+              <div style={{fontWeight:700,fontSize:22,color:"#111",lineHeight:1.2,marginBottom:4}}>{ball.name}</div>
               <div style={{fontSize:10,color:"#bbb",marginBottom:7}}>
                 {ball.releaseDate}{ball.fragrance?` · 🍒 ${ball.fragrance}`:""}
               </div>
@@ -730,7 +730,7 @@ function GeminiAdvisor({ balls }) {
       const prompt = `당신은 볼링 전문가입니다. 아래 볼링공 목록을 참고해서 사용자 질문에 한국어로 답해주세요. 간결하게 150자 이내로.\n\n볼 목록:\n${ballList}\n\n질문: ${question}`;
 
       const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -899,16 +899,16 @@ export default function RollmateApp() {
         <div style={{width:"100%",display:"flex",alignItems:"center",height:52,gap:8}}>
           <div style={{display:"flex",alignItems:"center",gap:7,marginRight:"auto"}}>
             <span style={{fontSize:22}}>🎳</span>
-            <span style={{fontWeight:800,fontSize:18,letterSpacing:2,color:"#1a237e"}}>
+            <span style={{fontWeight:800,fontSize:17,letterSpacing:0,color:"#1a237e",fontStretch:"condensed"}}>
               ROLL<span style={{color:"#1976d2"}}>MATE</span>
             </span>
-            <span style={{fontSize:7,color:"#ccc",fontWeight:600,letterSpacing:.8,marginLeft:2}}>bowwwl.com</span>
+            
           </div>
           <div style={{position:"relative"}}>
             <span style={{position:"absolute",left:9,top:"50%",transform:"translateY(-50%)",fontSize:11,color:"#bbb"}}>🔍</span>
             <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="볼 검색..."
               style={{background:"#f2f2fa",border:"1.5px solid #e4e4f0",borderRadius:20,color:"#333",
-                padding:"6px 12px 6px 26px",fontSize:11,fontWeight:600,outline:"none",width:"min(128px,30vw)",fontFamily:"inherit"}}/>
+                padding:"6px 12px 6px 26px",fontSize:11,fontWeight:600,outline:"none",width:"min(160px,38vw)",fontFamily:"inherit"}}/>
           </div>
         </div>
       </div>
