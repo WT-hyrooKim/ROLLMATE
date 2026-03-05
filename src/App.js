@@ -971,7 +971,7 @@ export default function RollmateApp() {
             )}
 
             {/* 볼 그리드 */}
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr",gap:10}}>
               {filtered.map((ball,i)=>{
                 const inA=inArsenal(ball.id); const inC=!!cmpList.find(b=>b.id===ball.id);
                 return (
@@ -990,13 +990,13 @@ export default function RollmateApp() {
 
                     <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:8,marginTop:3}}>
                       {/* 실제 볼 이미지 */}
-                      <div style={{width:50,height:50,borderRadius:"50%",overflow:"hidden",flexShrink:0,
+                      <div style={{width:70,height:70,borderRadius:"50%",overflow:"hidden",flexShrink:0,
                         boxShadow:`0 4px 16px ${ball.accent}44`,border:`2px solid ${ball.accent}33`}}>
-                        <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={50} radius="50%"/>
+                        <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={70} radius="50%"/>
                       </div>
                       <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontSize:7,color:"#ccc",fontWeight:700,letterSpacing:1.2}}>{ball.brand.toUpperCase()}</div>
-                        <div style={{fontWeight:800,fontSize:13,color:"#111",lineHeight:1.25,
+                        <div style={{fontSize:9,color:"#aaa",fontWeight:700,letterSpacing:1.5}}>{ball.brand.toUpperCase()}</div>
+                        <div style={{fontWeight:800,fontSize:17,color:"#111",lineHeight:1.2,
                           overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ball.name}</div>
                         <div style={{display:"flex",gap:3,marginTop:3,flexWrap:"wrap"}}>
                           {[ball.cover,ball.coreType].map(t=>(
@@ -1012,8 +1012,8 @@ export default function RollmateApp() {
                           {l:"DIFF",v:ball.weightData[16].diff,mx:.06,mn:0}].map(s=>(
                           <div key={s.l}>
                             <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}>
-                              <span style={{fontSize:7,color:"#ccc",fontWeight:700}}>{s.l}</span>
-                              <span style={{fontSize:9,color:"#555",fontWeight:700}}>{s.v}</span>
+                              <span style={{fontSize:9,color:"#aaa",fontWeight:700}}>{s.l}</span>
+                              <span style={{fontSize:12,color:"#333",fontWeight:800}}>{s.v}</span>
                             </div>
                             <div className="sbar">
                               <div style={{height:"100%",borderRadius:3,
@@ -1131,7 +1131,7 @@ export default function RollmateApp() {
                             <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={60} radius="50%"/>
                           </div>
                         </div>
-                        <div style={{fontSize:7,color:"#ccc",fontWeight:700,letterSpacing:1.2}}>{ball.brand.toUpperCase()}</div>
+                        <div style={{fontSize:9,color:"#aaa",fontWeight:700,letterSpacing:1.5}}>{ball.brand.toUpperCase()}</div>
                         <div style={{fontWeight:800,fontSize:12,color:"#111",lineHeight:1.2}}>{ball.name}</div>
                         <button onClick={()=>toggleCmp(ball)} style={{marginTop:5,padding:"2px 8px",
                           background:"#f0f0f8",border:"none",color:"#bbb",borderRadius:5,cursor:"pointer",
