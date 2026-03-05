@@ -918,6 +918,7 @@ export default function RollmateApp() {
         {/* HOME */}
         {view==="home"&&!sel&&(
           <div style={{animation:"fadeUp .3s ease both"}}>
+            <GeminiAdvisor balls={ALL_BALLS}/>
             {/* 브랜드 필터 칩 — 바 차트 제거 */}
             <div style={{marginBottom:14}}>
               <div style={{fontSize:8,color:"#aaa",fontWeight:700,letterSpacing:2,marginBottom:9}}>
