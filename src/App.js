@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const BOWWWL_BALL = (slug) =>
   `https://www.bowwwl.com/sites/default/files/styles/ball_grid/public/balls/${slug}.png`;
@@ -709,6 +709,161 @@ function Detail({ ball, onBack, inArsenal, onReg }) {
 }
 
 
+
+// ══ AI 볼 스캔 컴포넌트 (Gemini Vision) ══
+function BallScanner({ balls }) {
+  const [img, setImg] = useState(null);
+  const [imgB64, setImgB64] = useState(null);
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const fileRef = useRef();
+  const cameraRef = useRef();
+
+  const handleFile = (file) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setImg(e.target.result);
+      setImgB64(e.target.result.split(",")[1]);
+      setResult(null);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const analyze = async () => {
+    if (!imgB64) return;
+    setLoading(true);
+    setResult(null);
+    const apiKey = process.env.REACT_APP_GEMINI_KEY;
+    if (!apiKey) { setResult({error:"⚠️ REACT_APP_GEMINI_KEY 환경변수를 설정해주세요."}); setLoading(false); return; }
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        { method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({ contents:[{ parts:[
+            { text: `이 이미지에 있는 볼링공 제품을 분석해주세요. 다음 JSON 형식으로만 답하세요 (다른 텍스트 없이):
+{"brand":"브랜드명","name":"제품명","confidence":"high/medium/low","features":"주요 특징 한 문장","color":"색상 설명"}
+볼링공이 없으면: {"brand":"none","name":"none","confidence":"low","features":"볼링공을 찾을 수 없습니다","color":""}` },
+            { inline_data:{ mime_type:"image/jpeg", data: imgB64 }}
+          ]}]})
+        }
+      );
+      const data = await res.json();
+      const text = data.content?.[0]?.parts?.[0]?.text || data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      const clean = text.replace(/```json|```/g,"").trim();
+      const parsed = JSON.parse(clean);
+      
+      // DB에서 매칭 볼 찾기
+      const matched = parsed.brand !== "none" ? balls.find(b =>
+        b.name.toLowerCase().includes(parsed.name.toLowerCase().split(" ")[0]) ||
+        b.brand.toLowerCase().includes(parsed.brand.toLowerCase())
+      ) : null;
+      
+      setResult({...parsed, matched});
+    } catch(e) {
+      setResult({error:"분석 중 오류가 발생했어요. 다시 시도해주세요."});
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div>
+      {/* 업로드/카메라 버튼 */}
+      <div style={{display:"flex",gap:10,marginBottom:16}}>
+        <button onClick={()=>fileRef.current.click()} style={{
+          flex:1,padding:"14px",borderRadius:16,border:"2px dashed #c5c8e8",
+          background:"#f8f8ff",cursor:"pointer",fontSize:13,fontWeight:700,color:"#555"}}>
+          🖼️ 갤러리에서 선택
+        </button>
+        <button onClick={()=>cameraRef.current.click()} style={{
+          flex:1,padding:"14px",borderRadius:16,border:"2px dashed #c5c8e8",
+          background:"#f8f8ff",cursor:"pointer",fontSize:13,fontWeight:700,color:"#555"}}>
+          📸 카메라로 촬영
+        </button>
+      </div>
+      <input ref={fileRef} type="file" accept="image/*" style={{display:"none"}}
+        onChange={e=>handleFile(e.target.files[0])}/>
+      <input ref={cameraRef} type="file" accept="image/*" capture="environment" style={{display:"none"}}
+        onChange={e=>handleFile(e.target.files[0])}/>
+
+      {/* 이미지 미리보기 */}
+      {img&&(
+        <div style={{marginBottom:14,borderRadius:16,overflow:"hidden",
+          boxShadow:"0 4px 20px rgba(0,0,0,.1)",position:"relative"}}>
+          <img src={img} alt="scan" style={{width:"100%",maxHeight:280,objectFit:"cover",display:"block"}}/>
+          <button onClick={analyze} disabled={loading} style={{
+            position:"absolute",bottom:12,right:12,
+            background:"#1a237e",color:"#fff",border:"none",borderRadius:20,
+            padding:"10px 20px",fontWeight:800,fontSize:13,cursor:"pointer",
+            boxShadow:"0 4px 14px rgba(26,35,126,.4)"}}>
+            {loading?"🔍 분석 중...":"✨ AI 분석"}
+          </button>
+        </div>
+      )}
+
+      {/* 결과 */}
+      {result&&(
+        <div style={{background:"#fff",borderRadius:18,padding:18,
+          boxShadow:"0 4px 20px rgba(0,0,0,.08)"}}>
+          {result.error?(
+            <p style={{color:"#e57373",fontSize:12}}>{result.error}</p>
+          ):(
+            <>
+              <div style={{marginBottom:12}}>
+                <div style={{fontSize:9,color:"#aaa",fontWeight:700,letterSpacing:1.5,marginBottom:4}}>AI 인식 결과</div>
+                {result.brand==="none"?(
+                  <div style={{fontSize:14,color:"#bbb"}}>볼링공을 찾을 수 없어요</div>
+                ):(
+                  <>
+                    <div style={{fontFamily:"'Oswald',sans-serif",fontSize:22,fontWeight:700,color:"#1a237e"}}>
+                      {result.brand}
+                    </div>
+                    <div style={{fontFamily:"'Oswald',sans-serif",fontSize:18,fontWeight:600,color:"#111",marginBottom:6}}>
+                      {result.name}
+                    </div>
+                    <div style={{fontSize:11,color:"#666",marginBottom:8}}>{result.features}</div>
+                    <div style={{display:"inline-block",padding:"3px 10px",borderRadius:20,fontSize:9,fontWeight:700,
+                      background:result.confidence==="high"?"#e8f5e9":result.confidence==="medium"?"#fff3e0":"#fce4ec",
+                      color:result.confidence==="high"?"#388e3c":result.confidence==="medium"?"#f57c00":"#c62828"}}>
+                      신뢰도: {result.confidence==="high"?"높음":result.confidence==="medium"?"보통":"낮음"}
+                    </div>
+                  </>
+                )}
+              </div>
+              {result.matched&&(
+                <div style={{borderTop:"1px solid #f0f0f8",paddingTop:12,marginTop:4}}>
+                  <div style={{fontSize:9,color:"#aaa",fontWeight:700,letterSpacing:1.5,marginBottom:8}}>DB 매칭 결과</div>
+                  <div style={{display:"flex",alignItems:"center",gap:12,
+                    background:`${result.matched.accent}0d`,borderRadius:14,padding:"12px 14px"}}>
+                    <div style={{width:56,height:56,borderRadius:"50%",overflow:"hidden",flexShrink:0,
+                      border:`2px solid ${result.matched.accent}44`}}>
+                      <BowwwlImg src={BOWWWL_BALL(result.matched.ballSlug)} alt={result.matched.name} size={56} radius="50%"/>
+                    </div>
+                    <div>
+                      <div style={{fontSize:8,color:"#aaa",fontWeight:700,letterSpacing:1}}>{result.matched.brand}</div>
+                      <div style={{fontFamily:"'Oswald',sans-serif",fontSize:16,fontWeight:700,color:"#111"}}>{result.matched.name}</div>
+                      <div style={{fontSize:10,color:"#888"}}>RG {result.matched.weightData[16]?.rg} · Diff {result.matched.weightData[16]?.diff}</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      {!img&&(
+        <div style={{textAlign:"center",padding:"40px 20px",background:"#f8f8ff",
+          borderRadius:18,border:"1px dashed #dde"}}>
+          <div style={{fontSize:48,marginBottom:10}}>🎳</div>
+          <div style={{fontSize:13,color:"#bbb",fontWeight:600}}>볼링공 사진을 업로드하면{"
+"}AI가 제품을 인식해요</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ══ GEMINI AI 볼 추천 컴포넌트 ══
 function GeminiAdvisor({ balls }) {
   const [question, setQuestion] = useState("");
@@ -827,9 +982,10 @@ export default function RollmateApp() {
   };
 
   const NAV=[
-    {k:"home",l:"볼 탐색",i:"🔍"},
+    {k:"home",l:"홈",i:"🏠"},
     {k:"arsenal",l:"내 장비",i:"🎳",badge:arsenal.length||null},
     {k:"compare",l:"비교",i:"⚖️",badge:cmpList.length||null},
+    {k:"scan",l:"볼 스캔",i:"📷"},
   ];
 
   // SPLASH
@@ -864,7 +1020,7 @@ export default function RollmateApp() {
   return (
     <div style={{fontFamily:"'Syne',sans-serif",background:"#eef1f8",minHeight:"100vh",overflowX:"hidden",maxWidth:"100vw",width:"100%"}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Oswald:wght@600;700&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
         html,body,#root{overflow-x:hidden;max-width:100vw}
         ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#d8daee;border-radius:2px}
@@ -899,7 +1055,7 @@ export default function RollmateApp() {
         <div style={{width:"100%",display:"flex",alignItems:"center",height:52,gap:8}}>
           <div style={{display:"flex",alignItems:"center",gap:7,marginRight:"auto"}}>
             <span style={{fontSize:22}}>🎳</span>
-            <span style={{fontWeight:800,fontSize:17,letterSpacing:0,color:"#1a237e",fontStretch:"condensed"}}>
+            <span style={{fontWeight:800,fontSize:20,letterSpacing:1,color:"#1a237e",fontFamily:"'Oswald',sans-serif"}}>
               ROLL<span style={{color:"#1976d2"}}>MATE</span>
             </span>
             
@@ -918,7 +1074,6 @@ export default function RollmateApp() {
         {/* HOME */}
         {view==="home"&&!sel&&(
           <div style={{animation:"fadeUp .3s ease both"}}>
-            <GeminiAdvisor balls={ALL_BALLS}/>
             {/* 브랜드 필터 칩 — 바 차트 제거 */}
             <div style={{marginBottom:14}}>
               <div style={{fontSize:8,color:"#aaa",fontWeight:700,letterSpacing:2,marginBottom:9}}>
@@ -996,7 +1151,7 @@ export default function RollmateApp() {
                       </div>
                       <div style={{flex:1,minWidth:0}}>
                         <div style={{fontSize:9,color:"#aaa",fontWeight:700,letterSpacing:1.5}}>{ball.brand.toUpperCase()}</div>
-                        <div style={{fontWeight:800,fontSize:17,color:"#111",lineHeight:1.2,
+                        <div style={{fontWeight:700,fontSize:16,color:"#111",lineHeight:1.2,fontFamily:"'Oswald',sans-serif",letterSpacing:.5,
                           overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ball.name}</div>
                         <div style={{display:"flex",gap:3,marginTop:3,flexWrap:"wrap"}}>
                           {[ball.cover,ball.coreType].map(t=>(
@@ -1072,7 +1227,7 @@ export default function RollmateApp() {
                 <div style={{fontWeight:800,fontSize:17,color:"#ddd"}}>장비함이 비어있어요</div>
                 <button onClick={()=>setView("home")} style={{marginTop:16,padding:"9px 22px",borderRadius:18,
                   background:"#1a237e",border:"none",color:"#fff",cursor:"pointer",fontWeight:800,fontSize:12,fontFamily:"inherit",
-                  boxShadow:"0 4px 14px rgba(26,35,126,.28)"}}>볼 탐색하기</button>
+                  boxShadow:"0 4px 14px rgba(26,35,126,.28)"}}>홈으로</button>
               </div>
             ):(
               <>
@@ -1102,12 +1257,22 @@ export default function RollmateApp() {
           </div>
         )}
 
+
+        {/* SCAN - AI 볼 인식 */}
+        {view==="scan"&&(
+          <div style={{animation:"fadeUp .3s ease both"}}>
+            <div style={{fontWeight:800,fontSize:22,color:"#111",marginBottom:2}}>📷 AI 볼 스캔</div>
+            <p style={{fontSize:11,color:"#bbb",marginBottom:16}}>볼링공 사진을 찍거나 업로드하면 AI가 제품을 인식해요</p>
+            <BallScanner balls={ALL_BALLS}/>
+          </div>
+        )}
+
         {/* COMPARE */}
         {view==="compare"&&(
           <div style={{animation:"fadeUp .3s ease both"}}>
             <div style={{fontWeight:800,fontSize:22,color:"#111",marginBottom:2}}>볼 비교</div>
             <p style={{fontSize:10,color:"#bbb",marginBottom:14}}>
-              {cmpList.length===0?"볼 탐색에서 + 버튼으로 최대 3개 선택":`${cmpList.length}개 비교 중`}
+              {cmpList.length===0?"홈에서 + 버튼으로 최대 3개 선택":`${cmpList.length}개 비교 중`}
             </p>
             {cmpList.length===0?(
               <div style={{textAlign:"center",padding:"50px 20px",background:"#fff",border:"2px dashed #e4e4f0",borderRadius:18}}>
@@ -1115,7 +1280,7 @@ export default function RollmateApp() {
                 <div style={{fontWeight:800,fontSize:17,color:"#ddd"}}>선택된 볼 없음</div>
                 <button onClick={()=>setView("home")} style={{marginTop:13,padding:"8px 20px",background:"#1a237e",
                   border:"none",color:"#fff",borderRadius:18,cursor:"pointer",fontWeight:700,fontSize:11,fontFamily:"inherit",
-                  boxShadow:"0 3px 10px rgba(26,35,126,.28)"}}>볼 탐색으로</button>
+                  boxShadow:"0 3px 10px rgba(26,35,126,.28)"}}>홈으로</button>
               </div>
             ):(
               <>
