@@ -369,11 +369,11 @@ function WeightTable({ ball, sel, onSel }) {
   const d = ball.weightData[sel];
   return (
     <div>
-      <div style={{display:"flex",gap:5,marginBottom:12,flexWrap:"wrap"}}>
+      <div style={{display:"flex",gap:6,marginBottom:14,flexWrap:"wrap"}}>
         {wts.map(w=>(
           <button key={w} onClick={()=>onSel(w)} style={{
-            padding:"5px 12px",borderRadius:8,cursor:"pointer",fontWeight:800,fontSize:12,
-            border:"none",fontFamily:"inherit",
+            padding:"7px 16px",borderRadius:10,cursor:"pointer",fontWeight:700,fontSize:14,
+            border:"none",fontFamily:"'Oswald',sans-serif",letterSpacing:.5,
             background:sel===w?ball.accent:"#f0f0f8",color:sel===w?"#fff":"#888",
             boxShadow:sel===w?`0 3px 10px ${ball.accent}44`:"none"}}>
             {w}lb
@@ -390,9 +390,9 @@ function WeightTable({ ball, sel, onSel }) {
               ...(d.moi?[{l:"MOI",v:d.moi,desc:"Mass Bias Diff"}]:[]),
             ].map(item=>(
               <div key={item.l} style={{textAlign:"center"}}>
-                <div style={{fontSize:8,color:"#bbb",fontWeight:700,letterSpacing:1.5,marginBottom:4}}>{item.l}</div>
-                <div style={{fontSize:28,fontWeight:800,color:ball.accent,lineHeight:1}}>{item.v}</div>
-                <div style={{fontSize:8,color:"#ccc",marginTop:3}}>{item.desc}</div>
+                <div style={{fontSize:10,color:"#aaa",fontWeight:700,letterSpacing:2,marginBottom:4,fontFamily:"'Oswald',sans-serif"}}>{item.l}</div>
+                <div style={{fontSize:36,fontWeight:700,color:ball.accent,lineHeight:1,fontFamily:"'Oswald',sans-serif"}}>{item.v}</div>
+                <div style={{fontSize:9,color:"#bbb",marginTop:3,fontFamily:"'Oswald',sans-serif",letterSpacing:.5}}>{item.desc}</div>
               </div>
             ))}
           </div>
@@ -417,7 +417,7 @@ function WeightTable({ ball, sel, onSel }) {
           <thead>
             <tr>{["LB","RG","DIFF",...(hasMoi?["MOI"]:[])].map(h=>(
               <th key={h} style={{padding:"5px 8px",textAlign:"center",fontSize:8,color:"#bbb",
-                fontWeight:700,letterSpacing:1.2,borderBottom:"1px solid #f0f0f8"}}>{h}</th>
+                fontWeight:700,letterSpacing:1.5,borderBottom:"1px solid #f0f0f8",fontFamily:"'Oswald',sans-serif",fontSize:10}}>{h}</th>
             ))}</tr>
           </thead>
           <tbody>
@@ -428,8 +428,8 @@ function WeightTable({ ball, sel, onSel }) {
                   background:act?`${ball.accent}10`:"transparent"}}>
                   {[w,row.rg,row.diff,...(hasMoi?[row.moi||"-"]:[])].map((v,i)=>(
                     <td key={i} style={{padding:"6px 8px",textAlign:"center",
-                      fontWeight:act?800:600,color:act?ball.accent:"#666",
-                      borderBottom:"1px solid #fafafa",fontSize:12}}>{v}</td>
+                      fontWeight:act?700:500,color:act?ball.accent:"#555",
+                      borderBottom:"1px solid #fafafa",fontSize:14,fontFamily:"'Oswald',sans-serif"}}>{v}</td>
                   ))}
                 </tr>
               );
