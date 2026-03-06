@@ -934,17 +934,17 @@ export default function RollmateApp() {
         filter:"drop-shadow(0 0 36px rgba(144,202,249,.55))"}}>🎳</div>
       <div style={{fontFamily:"'Inter',sans-serif",fontWeight:800,fontSize:38,color:"#fff",letterSpacing:3,
         animation:"fadeUp .6s .5s both",marginTop:8}}>
-        ROLL<span style={{color:"#90caf9"}}>MATE</span>
+        ROLL<span style={{color:"#c4b5fd"}}>MATE</span>
       </div>
-      <div style={{fontSize:15,color:"rgba(255,255,255,.9)",letterSpacing:1.5,
+      <div style={{fontSize:15,color:"#e9d5ff",letterSpacing:1.5,
         fontWeight:700,
         animation:"fadeUp .6s .7s both",marginTop:10}}>Ready to Roll?</div>
-      <div style={{fontSize:12,color:"rgba(144,202,249,.7)",letterSpacing:2,
+      <div style={{fontSize:12,color:"rgba(196,181,253,.75)",letterSpacing:2,
         fontStyle:"italic",fontWeight:400,
         animation:"fadeUp .6s .9s both",marginTop:6}}>Know before you throw.</div>
       <div style={{marginTop:26,width:130,height:2,background:"rgba(255,255,255,.1)",borderRadius:2,
         overflow:"hidden",animation:"fadeUp .6s 1s both"}}>
-        <div style={{height:"100%",background:"#90caf9",animation:"trackLine 1.1s 1s ease both"}}/>
+        <div style={{height:"100%",background:"#c4b5fd",animation:"trackLine 1.1s 1s ease both"}}/>
       </div>
     </div>
   );
@@ -987,7 +987,7 @@ export default function RollmateApp() {
         <div style={{width:"100%",display:"flex",alignItems:"center",height:52,gap:8}}>
           <div style={{display:"flex",alignItems:"center",gap:7,marginRight:"auto"}}>
             <span style={{fontSize:22}}>🎳</span>
-            <span style={{fontWeight:800,fontSize:20,letterSpacing:1,color:"#7c3aed",fontFamily:"'Inter',sans-serif"}}>
+            <span style={{fontWeight:800,fontSize:23,letterSpacing:1,color:"#7c3aed",fontFamily:"'Inter',sans-serif"}}>
               ROLL<span style={{color:"#a78bfa"}}>MATE</span>
             </span>
             
@@ -1014,8 +1014,8 @@ export default function RollmateApp() {
               <div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:8,
                 msOverflowStyle:"none",scrollbarWidth:"none"}}>
                 <button className="chip" onClick={()=>setBrand("전체")} style={{
-                  background:brand==="전체"?"#7c3aed":"#fff",color:brand==="전체"?"#fff":"#2d2d3d",
-                  boxShadow:brand==="전체"?"0 4px 14px rgba(26,35,126,.28)":"0 1px 4px rgba(0,0,0,.07)"}}>
+                  background:brand==="전체"?"#1e293b":"#fff",color:brand==="전체"?"#fff":"#2d2d3d",
+                  boxShadow:brand==="전체"?"0 4px 14px rgba(30,41,59,.35)":"0 1px 4px rgba(0,0,0,.07)"}}>
                   All <span style={{background:"rgba(255,255,255,.2)",padding:"1px 5px",borderRadius:4,fontSize:12}}>{ALL_BALLS.length}</span>
                 </button>
                 {brandCounts.map(({brand:b,count,icon})=>{
