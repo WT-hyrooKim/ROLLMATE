@@ -1042,7 +1042,7 @@ export default function RollmateApp() {
                   padding:"8px 14px",cursor:"pointer",fontSize:13,fontWeight:act?700:500,
                   border:"none",fontFamily:"'Inter',sans-serif",whiteSpace:"nowrap",
                   background:"transparent",
-                  color:act?col:"#94a3b8",
+                  color:act?col:"#5b21b6",
                   borderBottom:act?`2.5px solid ${col}`:"2.5px solid transparent",
                   marginBottom:"-2px",
                   transition:"all .15s"}}>
