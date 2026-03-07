@@ -369,13 +369,13 @@ function WeightTable({ ball, sel, onSel }) {
   const d = ball.weightData[sel];
   return (
     <div>
-      <div style={{display:"flex",gap:6,marginBottom:14,flexWrap:"wrap"}}>
+      <div style={{display:"flex",gap:5,marginBottom:14,flexWrap:"nowrap"}}>
         {wts.map(w=>(
           <button key={w} onClick={()=>onSel(w)} style={{
-            padding:"7px 16px",borderRadius:10,cursor:"pointer",fontWeight:700,fontSize:14,
-            border:"none",fontFamily:"'Inter',sans-serif",letterSpacing:.5,
+            flex:1,padding:"6px 4px",borderRadius:9,cursor:"pointer",fontWeight:700,fontSize:13,
+            border:"none",fontFamily:"'Inter',sans-serif",letterSpacing:0,
             background:sel===w?ball.accent:"#f0f0f8",color:sel===w?"#fff":"#2d2d3d",
-            boxShadow:sel===w?`0 3px 10px ${ball.accent}44`:"none"}}>
+            boxShadow:sel===w?`0 3px 10px ${ball.accent}44`:"none",whiteSpace:"nowrap"}}>
             {w}lb
           </button>
         ))}
@@ -383,23 +383,23 @@ function WeightTable({ ball, sel, onSel }) {
       {d&&(
         <div style={{background:`linear-gradient(135deg,${ball.accent}09,${ball.accent}04)`,
           borderRadius:14,padding:"16px 18px",border:`1.5px solid ${ball.accent}22`,marginBottom:14}}>
-          <div style={{display:"grid",gridTemplateColumns:`repeat(${hasMoi&&d.moi?"3":"2"},1fr)`,gap:12,marginBottom:14}}>
+          <div style={{display:"grid",gridTemplateColumns:`repeat(${hasMoi&&d.moi?"3":"2"},1fr)`,gap:8,marginBottom:14}}>
             {[
               {l:"RG",v:d.rg,desc:"Radius of Gyration"},
               {l:"DIFF",v:d.diff,desc:"Total Differential"},
               ...(d.moi?[{l:"MOI",v:d.moi,desc:"Mass Bias Diff"}]:[]),
             ].map(item=>(
               <div key={item.l} style={{textAlign:"center"}}>
-                <div style={{fontSize:13,color:"#4a4a5a",fontWeight:700,letterSpacing:2,marginBottom:4,fontFamily:"'Inter',sans-serif"}}>{item.l}</div>
-                <div style={{fontSize:36,fontWeight:700,color:ball.accent,lineHeight:1,fontFamily:"'Inter',sans-serif"}}>{item.v}</div>
-                <div style={{fontSize:12,color:"#7c3aed",marginTop:3,fontFamily:"'Inter',sans-serif",letterSpacing:.5}}>{item.desc}</div>
+                <div style={{fontSize:12,color:"#374151",fontWeight:700,letterSpacing:2,marginBottom:4,fontFamily:"'Inter',sans-serif"}}>{item.l}</div>
+                <div style={{fontSize:hasMoi&&d.moi?28:34,fontWeight:700,color:ball.accent,lineHeight:1,fontFamily:"'Inter',sans-serif"}}>{item.v}</div>
+                <div style={{fontSize:11,color:"#6b7280",marginTop:3,fontFamily:"'Inter',sans-serif",letterSpacing:.3}}>{item.desc}</div>
               </div>
             ))}
           </div>
           {[{l:"RG",v:d.rg,mx:2.80,mn:2.40},{l:"DIFF",v:d.diff,mx:0.060,mn:0.000}].map(s=>(
             <div key={s.l} style={{marginBottom:8}}>
               <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-                <span style={{fontSize:13,color:"#7c3aed",fontWeight:700}}>{s.l}</span>
+                <span style={{fontSize:13,color:"#374151",fontWeight:700}}>{s.l}</span>
                 <span style={{fontSize:12,color:ball.accent,fontWeight:700}}>{s.v}</span>
               </div>
               <div style={{height:5,background:"rgba(0,0,0,0.06)",borderRadius:3,overflow:"hidden"}}>
@@ -416,8 +416,8 @@ function WeightTable({ ball, sel, onSel }) {
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,fontFamily:"inherit"}}>
           <thead>
             <tr>{["LB","RG","DIFF",...(hasMoi?["MOI"]:[])].map(h=>(
-              <th key={h} style={{padding:"5px 8px",textAlign:"center",fontSize:13,color:"#7c3aed",
-                fontWeight:700,letterSpacing:1.5,borderBottom:"1px solid #f0f0f8",fontFamily:"'Inter',sans-serif",fontSize:13}}>{h}</th>
+              <th key={h} style={{padding:"5px 8px",textAlign:"center",fontSize:13,color:"#374151",
+                fontWeight:700,letterSpacing:1.5,borderBottom:"1px solid #f0f0f8",fontFamily:"'Inter',sans-serif"}}>{h}</th>
             ))}</tr>
           </thead>
           <tbody>
@@ -466,13 +466,13 @@ function RegModal({ ball, existing, onSave, onClose }) {
         </div>
         <div style={{display:"flex",flexDirection:"column",gap:11}}>
           <div>
-            <label style={{fontSize:13,color:"#7c3aed",fontWeight:700,letterSpacing:1.5,display:"block",marginBottom:5}}>별명 (선택)</label>
+            <label style={{fontSize:13,color:"#374151",fontWeight:700,letterSpacing:1.5,display:"block",marginBottom:5}}>별명 (선택)</label>
             <input value={form.nickname} onChange={e=>set("nickname",e.target.value)} placeholder="나만의 이름" maxLength={20}
               style={{width:"100%",background:"#f7f7fc",border:"1.5px solid #ebebf5",borderRadius:10,
                 color:"#333",padding:"8px 12px",fontSize:13,outline:"none",fontFamily:"inherit"}}/>
           </div>
           <div>
-            <label style={{fontSize:13,color:"#7c3aed",fontWeight:700,letterSpacing:1.5,display:"block",marginBottom:5}}>무게</label>
+            <label style={{fontSize:13,color:"#374151",fontWeight:700,letterSpacing:1.5,display:"block",marginBottom:5}}>무게</label>
             <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
               {[10,11,12,13,14,15,16].map(w=>(
                 <button key={w} onClick={()=>set("weight",w)} style={{padding:"4px 10px",borderRadius:7,cursor:"pointer",
@@ -486,7 +486,7 @@ function RegModal({ ball, existing, onSave, onClose }) {
             {label:"표면 상태",key:"surface",opts:["팩토리","폴리싱","샌딩"]},
           ].map(({label,key,opts})=>(
             <div key={key}>
-              <label style={{fontSize:13,color:"#7c3aed",fontWeight:700,letterSpacing:1.5,display:"block",marginBottom:5}}>{label}</label>
+              <label style={{fontSize:13,color:"#374151",fontWeight:700,letterSpacing:1.5,display:"block",marginBottom:5}}>{label}</label>
               <div style={{display:"flex",gap:4}}>
                 {opts.map(o=>(
                   <button key={o} onClick={()=>set(key,o)} style={{flex:1,padding:"7px",borderRadius:7,cursor:"pointer",
@@ -497,7 +497,7 @@ function RegModal({ ball, existing, onSave, onClose }) {
             </div>
           ))}
           <div>
-            <label style={{fontSize:13,color:"#7c3aed",fontWeight:700,letterSpacing:1.5,display:"block",marginBottom:5}}>메모</label>
+            <label style={{fontSize:13,color:"#374151",fontWeight:700,letterSpacing:1.5,display:"block",marginBottom:5}}>메모</label>
             <textarea value={form.memo} onChange={e=>set("memo",e.target.value)} placeholder="레인 조건, 세팅 팁, 사용 기록..." rows={3}
               style={{width:"100%",background:"#f7f7fc",border:"1.5px solid #ebebf5",borderRadius:10,
                 color:"#333",padding:"8px 12px",fontSize:12,outline:"none",resize:"vertical",fontFamily:"inherit"}}/>
@@ -597,9 +597,9 @@ function Detail({ ball, onBack, inArsenal, onReg }) {
               <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={108} radius="50%"/>
             </div>
             <div style={{flex:1,minWidth:0}}>
-              <div style={{fontSize:13,color:"#7c3aed",fontWeight:700,letterSpacing:2,marginBottom:2}}>{ball.brand.toUpperCase()}</div>
+              <div style={{fontSize:13,color:"#374151",fontWeight:700,letterSpacing:2,marginBottom:2}}>{ball.brand.toUpperCase()}</div>
               <div style={{fontWeight:700,fontSize:22,color:"#111",lineHeight:1.2,marginBottom:4}}>{ball.name}</div>
-              <div style={{fontSize:13,color:"#7c3aed",marginBottom:7}}>
+              <div style={{fontSize:13,color:"#374151",marginBottom:7}}>
                 {ball.releaseDate}{ball.fragrance?` · 🍒 ${ball.fragrance}`:""}
               </div>
               <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
@@ -629,8 +629,8 @@ function Detail({ ball, onBack, inArsenal, onReg }) {
           <button key={t.k} onClick={()=>setTab(t.k)} style={{
             flex:1,padding:"9px",borderRadius:11,cursor:"pointer",fontWeight:800,fontSize:13,
             border:"none",fontFamily:"inherit",
-            background:tab===t.k?"#7c3aed":"#fff",color:tab===t.k?"#fff":"#2d2d3d",
-            boxShadow:tab===t.k?"0 4px 14px rgba(26,35,126,0.28)":"0 1px 4px rgba(0,0,0,0.06)"}}>
+            background:tab===t.k?"#1e293b":"#fff",color:tab===t.k?"#fff":"#2d2d3d",
+            boxShadow:tab===t.k?"0 4px 14px rgba(30,41,59,0.30)":"0 1px 4px rgba(0,0,0,0.06)"}}>
             {t.l}
           </button>
         ))}
@@ -987,7 +987,7 @@ export default function RollmateApp() {
         <div style={{width:"100%",display:"flex",alignItems:"center",height:52,gap:8}}>
           <div style={{display:"flex",alignItems:"center",gap:7,marginRight:"auto"}}>
             <span style={{fontSize:22}}>🎳</span>
-            <span style={{fontWeight:800,fontSize:23,letterSpacing:1,color:"#7c3aed",fontFamily:"'Inter',sans-serif"}}>
+            <span style={{fontWeight:800,fontSize:28,letterSpacing:1,color:"#7c3aed",fontFamily:"'Inter',sans-serif"}}>
               ROLL<span style={{color:"#a78bfa"}}>MATE</span>
             </span>
             
@@ -1011,11 +1011,11 @@ export default function RollmateApp() {
               <div style={{fontSize:13,color:"#4a4a5a",fontWeight:700,letterSpacing:2,marginBottom:9}}>
                 BRANDS · {ALL_BALLS.length} BALLS
               </div>
-              <div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:8,
+              <div style={{display:"flex",gap:4,overflowX:"auto",paddingBottom:8,
                 msOverflowStyle:"none",scrollbarWidth:"none"}}>
                 <button className="chip" onClick={()=>setBrand("전체")} style={{
-                  background:brand==="전체"?"#1e293b":"#fff",color:brand==="전체"?"#fff":"#2d2d3d",
-                  boxShadow:brand==="전체"?"0 4px 14px rgba(30,41,59,.35)":"0 1px 4px rgba(0,0,0,.07)"}}>
+                  background:brand==="전체"?"#7c3aed":"#fff",color:brand==="전체"?"#fff":"#2d2d3d",
+                  boxShadow:brand==="전체"?"0 4px 14px rgba(124,58,237,.35)":"0 1px 4px rgba(0,0,0,.07)"}}>
                   All <span style={{background:"rgba(255,255,255,.2)",padding:"1px 5px",borderRadius:4,fontSize:12}}>{ALL_BALLS.length}</span>
                 </button>
                 {brandCounts.map(({brand:b,count,icon})=>{
@@ -1119,7 +1119,7 @@ export default function RollmateApp() {
 
                     <div style={{display:"flex",alignItems:"center",gap:5}}>
                       <span style={{width:5,height:5,borderRadius:"50%",background:COND_COLOR[ball.condition]}}/>
-                      <span style={{fontSize:13,color:"#7c3aed",fontWeight:600}}>{ball.condition}</span>
+                      <span style={{fontSize:13,color:"#374151",fontWeight:600}}>{ball.condition}</span>
                       <button onClick={e=>{e.stopPropagation();setModal(ball);setEditEnt(null);}} style={{
                         marginLeft:"auto",padding:"3px 8px",borderRadius:5,cursor:"pointer",
                         fontSize:13,fontWeight:700,border:"none",fontFamily:"inherit",
