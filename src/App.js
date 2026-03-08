@@ -1199,9 +1199,9 @@ export default function RollmateApp() {
                       background:ball.accent,borderRadius:"18px 18px 0 0"}}/>
                     {inA&&<div style={{position:"absolute",top:8,left:8,fontSize:13,zIndex:2}}>⭐</div>}
                     <div onClick={e=>{e.stopPropagation();toggleCmp(ball);}} style={{
-                      position:"absolute",top:8,right:8,width:20,height:20,borderRadius:"50%",
+                      position:"absolute",top:8,right:8,width:28,height:28,borderRadius:"50%",
                       cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",
-                      fontSize:13,fontWeight:800,zIndex:2,
+                      fontSize:16,fontWeight:800,zIndex:2,
                       background:inC?ball.accent:"#ebebf5",color:inC?"#fff":"#6b6b7e",
                       boxShadow:inC?`0 2px 8px ${ball.accent}55`:"none"}}>{inC?"✓":"+"}</div>
 
