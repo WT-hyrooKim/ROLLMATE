@@ -710,6 +710,131 @@ function Detail({ ball, onBack, inArsenal, onReg }) {
 
 
 
+// ══ 볼링공 비교 컴포넌트 ══
+function CompareView({ cmpList, toggleCmp, setView }) {
+  const [selW, setSelW] = useState(16);
+  const allWeights = [16,15,14,13,12];
+
+  return (
+    <div style={{animation:"fadeUp .3s ease both"}}>
+      <div style={{fontWeight:800,fontSize:22,color:"#111",marginBottom:2}}>볼링공 비교</div>
+      <p style={{fontSize:13,color:"#374151",marginBottom:14}}>
+        {cmpList.length===0?"홈에서 + 버튼으로 최대 3개 선택":`${cmpList.length}개 비교 중`}
+      </p>
+
+      {cmpList.length===0?(
+        <div style={{textAlign:"center",padding:"50px 20px",background:"#ffffff",border:"2px dashed #e4e4f0",borderRadius:18}}>
+          <div style={{fontSize:40,marginBottom:10,opacity:.22}}>⚖️</div>
+          <div style={{fontWeight:800,fontSize:17,color:"#ddd"}}>선택된 볼 없음</div>
+          <button onClick={()=>setView("home")} style={{marginTop:13,padding:"8px 20px",background:"#7c3aed",
+            border:"none",color:"#fff",borderRadius:18,cursor:"pointer",fontWeight:700,fontSize:13,fontFamily:"inherit",
+            boxShadow:"0 3px 10px rgba(124,58,237,.28)"}}>홈으로</button>
+        </div>
+      ):(
+        <>
+          {/* 파운드 선택 */}
+          <div style={{background:"#fff",borderRadius:14,padding:"12px 14px",
+            boxShadow:"0 1px 8px rgba(0,0,0,.06)",marginBottom:11}}>
+            <div style={{fontSize:12,color:"#374151",fontWeight:700,letterSpacing:1.5,marginBottom:8}}>파운드 선택</div>
+            <div style={{display:"flex",gap:6}}>
+              {allWeights.map(w=>(
+                <button key={w} onClick={()=>setSelW(w)} style={{
+                  flex:1,padding:"7px 4px",borderRadius:9,cursor:"pointer",fontWeight:700,fontSize:13,
+                  border:"none",fontFamily:"'Inter',sans-serif",
+                  background:selW===w?"#374151":"#f0f0f8",
+                  color:selW===w?"#fff":"#374151",
+                  boxShadow:selW===w?"0 3px 10px rgba(55,65,81,.3)":"none"}}>
+                  {w}lb
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 볼 카드 그리드 */}
+          <div style={{display:"grid",gridTemplateColumns:`repeat(${cmpList.length},1fr)`,gap:8}}>
+            {cmpList.map(ball=>{
+              const d = ball.weightData[selW] || ball.weightData[16];
+              return (
+                <div key={ball.id} style={{background:"#ffffff",borderRadius:16,overflow:"hidden",
+                  boxShadow:"0 2px 12px rgba(0,0,0,.07)"}}>
+                  <div style={{height:4,background:ball.accent}}/>
+                  <div style={{padding:"10px 8px",textAlign:"center",borderBottom:"1px solid #f5f5f8"}}>
+                    <div style={{display:"flex",justifyContent:"center",marginBottom:6}}>
+                      <div style={{width:56,height:56,borderRadius:"50%",overflow:"hidden",
+                        boxShadow:`0 4px 14px ${ball.accent}44`,border:`2px solid ${ball.accent}33`}}>
+                        <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={56} radius="50%"/>
+                      </div>
+                    </div>
+                    <div style={{fontSize:10,color:"#4a4a5a",fontWeight:700,letterSpacing:1.2}}>{ball.brand.toUpperCase()}</div>
+                    <div style={{fontWeight:800,fontSize:11,color:"#111",lineHeight:1.2,marginBottom:4,
+                      overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:"100%"}}>{ball.name}</div>
+                    <button onClick={()=>toggleCmp(ball)} style={{padding:"2px 8px",
+                      background:"#f3f4f6",border:"none",color:"#374151",borderRadius:5,cursor:"pointer",
+                      fontWeight:700,fontSize:11,fontFamily:"inherit"}}>제거</button>
+                  </div>
+                  {/* 코어 이미지 */}
+                  <div style={{padding:"8px",borderBottom:"1px solid #f8f8fc",display:"flex",justifyContent:"center"}}>
+                    <div style={{width:48,height:48,borderRadius:9,overflow:"hidden",
+                      background:"#f5f5f8",border:"1px solid #ebebf5"}}>
+                      <BowwwlImg src={BOWWWL_CORE(ball.coreSlug)} alt="Core" size={48} radius="9px"/>
+                    </div>
+                  </div>
+                  <div style={{padding:"8px"}}>
+                    {[
+                      {k:"RG",v:d?.rg||"-"},
+                      {k:"Diff",v:d?.diff||"-"},
+                      {k:"Cover",v:ball.cover},
+                      {k:"Core",v:ball.coreType}
+                    ].map(r=>(
+                      <div key={r.k} style={{display:"flex",justifyContent:"space-between",padding:"3px 0",
+                        borderBottom:"1px solid #f8f8fc",fontSize:11}}>
+                        <span style={{color:"#6b6b7e",fontWeight:700}}>{r.k}</span>
+                        <span style={{color:"#111",fontWeight:700,textAlign:"right",
+                          maxWidth:"60%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.v}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 수치 비교 바 */}
+          {cmpList.length>1&&(
+            <div style={{marginTop:11,background:"#ffffff",borderRadius:14,padding:"14px 16px",
+              boxShadow:"0 1px 8px rgba(0,0,0,.06)"}}>
+              <div style={{fontSize:13,color:"#374151",fontWeight:700,letterSpacing:2,marginBottom:10}}>
+                수치 비교 ({selW}lb)
+              </div>
+              {[{l:"RG",k:"rg",mx:2.8,mn:2.4},{l:"DIFF",k:"diff",mx:.06,mn:0}].map(m=>(
+                <div key={m.k} style={{marginBottom:12}}>
+                  <div style={{fontSize:13,color:"#374151",fontWeight:700,letterSpacing:1.3,marginBottom:7}}>{m.l}</div>
+                  {cmpList.map(ball=>{
+                    const d = ball.weightData[selW] || ball.weightData[16];
+                    return (
+                      <div key={ball.id} style={{marginBottom:5}}>
+                        <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}>
+                          <span style={{fontSize:12,color:"#3d3d50"}}>{ball.name}</span>
+                          <span style={{fontSize:12,color:ball.accent,fontWeight:800}}>{d?.[m.k]||"-"}</span>
+                        </div>
+                        <div className="sbar">
+                          <div style={{height:"100%",borderRadius:3,
+                            width:`${(((d?.[m.k]||m.mn)-m.mn)/(m.mx-m.mn))*100}%`,
+                            background:`linear-gradient(90deg,${ball.accent}77,${ball.accent})`}}/>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 // ══ AI 볼 스캔 컴포넌트 (Gemini Vision) ══
 function BallScanner({ balls }) {
   const [img, setImg] = useState(null);
@@ -967,8 +1092,8 @@ export default function RollmateApp() {
         .sbar{height:5px;background:#ebebf5;border-radius:3px;overflow:hidden}
         .nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;
           border:none;background:transparent;cursor:pointer;position:relative}
-        .nav-lbl{font-size:9px;font-weight:700;letter-spacing:.8px;color:#bbb;transition:.18s}
-        .nav-btn.act .nav-lbl{color:#7c3aed;font-weight:700}
+        .nav-lbl{font-size:9px;font-weight:700;letter-spacing:.8px;color:#9ca3af;transition:.18s}
+        .nav-btn.act .nav-lbl{color:#374151;font-weight:800}
         .chip{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:11px;cursor:pointer;
           transition:all .17s;border:none;font-weight:700;font-size:11px;white-space:nowrap;flex-shrink:0}
       `}</style>
@@ -1021,8 +1146,8 @@ export default function RollmateApp() {
                 {brandCounts.map(({brand:b,count,icon})=>{
                   const act=brand===b;
                   return <button key={b} className="chip" onClick={()=>setBrand(b)} style={{
-                    background:act?"#7c3aed":"#fff",color:act?"#fff":"#1a1a2e",
-                    boxShadow:act?"0 4px 14px rgba(26,35,126,.28)":"0 1px 4px rgba(0,0,0,.07)"}}>
+                    background:act?"#374151":"#fff",color:act?"#fff":"#1a1a2e",
+                    boxShadow:act?"0 4px 14px rgba(55,65,81,.28)":"0 1px 4px rgba(0,0,0,.07)"}}>
                     {icon} {b}
                     <span style={{background:act?"rgba(255,255,255,.2)":"#f0f0f8",color:act?"#fff":"#4a4a5a",
                       padding:"1px 5px",borderRadius:4,fontSize:12,fontWeight:800}}>{count}</span>
@@ -1123,7 +1248,7 @@ export default function RollmateApp() {
                       <button onClick={e=>{e.stopPropagation();setModal(ball);setEditEnt(null);}} style={{
                         marginLeft:"auto",padding:"3px 8px",borderRadius:5,cursor:"pointer",
                         fontSize:13,fontWeight:700,border:"none",fontFamily:"inherit",
-                        background:inA?`${ball.accent}14`:"#f0f0f8",color:inA?ball.accent:"#7c3aed"}}>{inA?"✓ 등록됨":"+ 등록"}</button>
+                        background:inA?`${ball.accent}14`:"#f0f0f8",color:inA?ball.accent:"#374151"}}>{inA?"✓ 등록됨":"+ 등록"}</button>
                     </div>
                   </div>
                 );
@@ -1150,8 +1275,8 @@ export default function RollmateApp() {
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:16}}>
               <div>
                 <div style={{fontWeight:800,fontSize:22,color:"#111"}}>내 장비함</div>
-                <div style={{fontSize:13,color:"#7c3aed",marginTop:2}}>
-                  {arsenal.length>0?`${arsenal.length}개 등록됨 · 탭하면 뒤집혀요`:"아직 등록된 볼이 없어요"}
+                <div style={{fontSize:13,color:"#374151",marginTop:2}}>
+                  {arsenal.length>0?`${arsenal.length}개 등록됨 · 탭하면 뒤집혀요`:"아직 등록된 볼링공이 없어요"}
                 </div>
               </div>
               <button onClick={()=>setView("home")} style={{padding:"7px 13px",borderRadius:18,border:"none",
@@ -1169,14 +1294,14 @@ export default function RollmateApp() {
             ):(
               <>
                 <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:7,marginBottom:14}}>
-                  {[{l:"등록 볼",v:arsenal.length,c:"#7c3aed",i:"🎳"},
-                    {l:"평균 무게",v:`${(arsenal.reduce((a,e)=>a+e.weight,0)/arsenal.length).toFixed(1)}lb`,c:"#a78bfa",i:"⚖️"},
-                    {l:"주요 커버",v:(()=>{const cv=arsenal.map(e=>ALL_BALLS.find(b=>b.id===e.ballId)?.cover).filter(Boolean);const f=cv.reduce((a,v)=>({...a,[v]:(a[v]||0)+1}),{});return Object.entries(f).sort((a,b)=>b[1]-a[1])[0]?.[0]||"-"})(),c:"#0288d1",i:"🔷"}
+                  {[{l:"등록 볼",v:arsenal.length,c:"#374151",i:"🎳"},
+                    {l:"평균 무게",v:`${(arsenal.reduce((a,e)=>a+e.weight,0)/arsenal.length).toFixed(1)}lb`,c:"#374151",i:"⚖️"},
+                    {l:"주요 커버",v:(()=>{const cv=arsenal.map(e=>ALL_BALLS.find(b=>b.id===e.ballId)?.cover).filter(Boolean);const f=cv.reduce((a,v)=>({...a,[v]:(a[v]||0)+1}),{});return Object.entries(f).sort((a,b)=>b[1]-a[1])[0]?.[0]||"-"})(),c:"#374151",i:"🔷"}
                   ].map(s=>(
-                    <div key={s.l} style={{background:"#ffffff",borderRadius:13,padding:"11px",boxShadow:"0 1px 8px rgba(0,0,0,.06)"}}>
-                      <div style={{fontSize:15,marginBottom:2}}>{s.i}</div>
-                      <div style={{fontWeight:800,fontSize:19,color:s.c,lineHeight:1}}>{s.v}</div>
-                      <div style={{fontSize:13,color:"#6b6b7e",fontWeight:700,letterSpacing:.8,marginTop:2}}>{s.l.toUpperCase()}</div>
+                    <div key={s.l} style={{background:"#ffffff",borderRadius:13,padding:"10px 8px",boxShadow:"0 1px 8px rgba(0,0,0,.06)"}}>
+                      <div style={{fontSize:14,marginBottom:2}}>{s.i}</div>
+                      <div style={{fontWeight:800,fontSize:16,color:s.c,lineHeight:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.v}</div>
+                      <div style={{fontSize:10,color:"#6b6b7e",fontWeight:700,letterSpacing:.5,marginTop:2}}>{s.l.toUpperCase()}</div>
                     </div>
                   ))}
                 </div>
@@ -1198,95 +1323,15 @@ export default function RollmateApp() {
         {/* SCAN - AI 볼 인식 */}
         {view==="scan"&&(
           <div style={{animation:"fadeUp .3s ease both"}}>
-            <div style={{fontWeight:700,fontSize:26,color:"#7c3aed",marginBottom:6,fontFamily:"'Inter',sans-serif",letterSpacing:1}}>📷 AI 볼 스캔</div>
-            <p style={{fontSize:13,color:"#1a1a2e",marginBottom:16,fontWeight:600,lineHeight:1.5}}>볼링공 사진을 찍거나 업로드하면<br/>AI가 제품명과 스펙을 인식해요</p>
+            <div style={{fontWeight:700,fontSize:26,color:"#111",marginBottom:6,fontFamily:"'Inter',sans-serif",letterSpacing:1}}>📷 AI 볼링공 스캔</div>
+            <p style={{fontSize:13,color:"#374151",marginBottom:16,fontWeight:600,lineHeight:1.5}}>볼링공 사진을 찍거나 업로드하면<br/>AI가 제품명과 스펙을 인식해요</p>
             <BallScanner balls={ALL_BALLS}/>
           </div>
         )}
 
         {/* COMPARE */}
         {view==="compare"&&(
-          <div style={{animation:"fadeUp .3s ease both"}}>
-            <div style={{fontWeight:800,fontSize:22,color:"#111",marginBottom:2}}>볼 비교</div>
-            <p style={{fontSize:13,color:"#7c3aed",marginBottom:14}}>
-              {cmpList.length===0?"홈에서 + 버튼으로 최대 3개 선택":`${cmpList.length}개 비교 중`}
-            </p>
-            {cmpList.length===0?(
-              <div style={{textAlign:"center",padding:"50px 20px",background:"#ffffff",border:"2px dashed #e4e4f0",borderRadius:18}}>
-                <div style={{fontSize:40,marginBottom:10,opacity:.22}}>⚖️</div>
-                <div style={{fontWeight:800,fontSize:17,color:"#ddd"}}>선택된 볼 없음</div>
-                <button onClick={()=>setView("home")} style={{marginTop:13,padding:"8px 20px",background:"#7c3aed",
-                  border:"none",color:"#fff",borderRadius:18,cursor:"pointer",fontWeight:700,fontSize:13,fontFamily:"inherit",
-                  boxShadow:"0 3px 10px rgba(26,35,126,.28)"}}>홈으로</button>
-              </div>
-            ):(
-              <>
-                <div style={{display:"grid",gridTemplateColumns:`repeat(${cmpList.length},1fr)`,gap:8}}>
-                  {cmpList.map(ball=>(
-                    <div key={ball.id} style={{background:"#ffffff",borderRadius:16,overflow:"hidden",
-                      boxShadow:"0 2px 12px rgba(0,0,0,.07)"}}>
-                      <div style={{height:4,background:ball.accent}}/>
-                      <div style={{padding:"12px 10px",textAlign:"center",borderBottom:"1px solid #f5f5f8"}}>
-                        <div style={{display:"flex",justifyContent:"center",marginBottom:7}}>
-                          <div style={{width:60,height:60,borderRadius:"50%",overflow:"hidden",
-                            boxShadow:`0 4px 16px ${ball.accent}44`,border:`2px solid ${ball.accent}33`}}>
-                            <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={60} radius="50%"/>
-                          </div>
-                        </div>
-                        <div style={{fontSize:12,color:"#4a4a5a",fontWeight:700,letterSpacing:1.5}}>{ball.brand.toUpperCase()}</div>
-                        <div style={{fontWeight:800,fontSize:12,color:"#111",lineHeight:1.2}}>{ball.name}</div>
-                        <button onClick={()=>toggleCmp(ball)} style={{marginTop:5,padding:"2px 8px",
-                          background:"#f3e8ff",border:"none",color:"#7c3aed",borderRadius:5,cursor:"pointer",
-                          fontWeight:700,fontSize:12,fontFamily:"inherit"}}>제거</button>
-                      </div>
-                      {/* 코어 이미지 미니 */}
-                      <div style={{padding:"9px 10px",borderBottom:"1px solid #f8f8fc",display:"flex",justifyContent:"center"}}>
-                        <div style={{width:54,height:54,borderRadius:10,overflow:"hidden",
-                          background:"#f5f5f8",border:"1px solid #ebebf5"}}>
-                          <BowwwlImg src={BOWWWL_CORE(ball.coreSlug)} alt="Core" size={54} radius="10px"/>
-                        </div>
-                      </div>
-                      <div style={{padding:"9px 10px"}}>
-                        {[{k:"RG",v:ball.weightData[16]?.rg||"-"},{k:"Diff",v:ball.weightData[16]?.diff||"-"},
-                          {k:"Cover",v:ball.cover},{k:"Core",v:ball.coreType}].map(r=>(
-                          <div key={r.k} style={{display:"flex",justifyContent:"space-between",padding:"4px 0",
-                            borderBottom:"1px solid #f8f8fc",fontSize:12}}>
-                            <span style={{color:"#6b6b7e",fontWeight:700}}>{r.k}</span>
-                            <span style={{color:"#333",fontWeight:700,textAlign:"right",
-                              maxWidth:80,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",fontSize:13}}>{r.v}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                {cmpList.length>1&&(
-                  <div style={{marginTop:11,background:"#ffffff",borderRadius:14,padding:"14px 16px",
-                    boxShadow:"0 1px 8px rgba(0,0,0,.06)"}}>
-                    <div style={{fontSize:13,color:"#6b6b7e",fontWeight:700,letterSpacing:2,marginBottom:10}}>수치 비교 (16lb)</div>
-                    {[{l:"RG",k:"rg",mx:2.8,mn:2.4},{l:"DIFF",k:"diff",mx:.06,mn:0}].map(m=>(
-                      <div key={m.k} style={{marginBottom:12}}>
-                        <div style={{fontSize:13,color:"#7c3aed",fontWeight:700,letterSpacing:1.3,marginBottom:7}}>{m.l}</div>
-                        {cmpList.map(ball=>(
-                          <div key={ball.id} style={{marginBottom:5}}>
-                            <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}>
-                              <span style={{fontSize:12,color:"#3d3d50"}}>{ball.name}</span>
-                              <span style={{fontSize:12,color:ball.accent,fontWeight:800}}>{ball.weightData[16]?.[m.k]}</span>
-                            </div>
-                            <div className="sbar">
-                              <div style={{height:"100%",borderRadius:3,
-                                width:`${((ball.weightData[16]?.[m.k]||m.mn)-m.mn)/(m.mx-m.mn)*100}%`,
-                                background:`linear-gradient(90deg,${ball.accent}77,${ball.accent})`}}/>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+          <CompareView cmpList={cmpList} toggleCmp={toggleCmp} setView={setView}/>
         )}
       </div>
 
