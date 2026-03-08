@@ -874,16 +874,35 @@ function BallScanner({ balls }) {
         }
       );
       const data = await res.json();
-      const text = data.content?.[0]?.parts?.[0]?.text || data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      // Gemini API 응답 구조: candidates[0].content.parts[0].text
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      if (!text) throw new Error("empty response");
       const clean = text.replace(/```json|```/g,"").trim();
       const parsed = JSON.parse(clean);
-      
-      // DB에서 매칭 볼 찾기
-      const matched = parsed.brand !== "none" ? balls.find(b =>
-        b.name.toLowerCase().includes(parsed.name.toLowerCase().split(" ")[0]) ||
-        b.brand.toLowerCase().includes(parsed.brand.toLowerCase())
-      ) : null;
-      
+
+      // DB 매칭: 정확도 3단계
+      let matched = null;
+      if (parsed.brand !== "none" && parsed.name !== "none") {
+        const bn = parsed.brand.toLowerCase();
+        const nn = parsed.name.toLowerCase();
+        // 1순위: 브랜드 + 제품명 핵심 단어 모두 일치
+        matched = balls.find(b =>
+          b.brand.toLowerCase().includes(bn) &&
+          nn.split(" ").filter(w=>w.length>2).every(w => b.name.toLowerCase().includes(w))
+        );
+        // 2순위: 제품명 단어 2개 이상 일치
+        if (!matched) matched = balls.find(b => {
+          const words = nn.split(" ").filter(w=>w.length>2);
+          const hits = words.filter(w => b.name.toLowerCase().includes(w));
+          return hits.length >= 2;
+        });
+        // 3순위: 브랜드 일치 + 제품명 첫 단어 일치
+        if (!matched) matched = balls.find(b =>
+          b.brand.toLowerCase().includes(bn) &&
+          b.name.toLowerCase().includes(nn.split(" ")[0])
+        );
+      }
+
       setResult({...parsed, matched});
     } catch(e) {
       setResult({error:"분석 중 오류가 발생했어요. 다시 시도해주세요."});
