@@ -517,40 +517,43 @@ function MyCard({ entry, ball, onRemove, onEdit }) {
   const [flip, setFlip] = useState(false);
   const d = ball.weightData[entry.weight];
   return (
-    <div style={{perspective:1000,height:188,cursor:"pointer"}} onClick={()=>setFlip(f=>!f)}>
-      <div style={{position:"relative",width:"100%",height:"100%",transformStyle:"preserve-3d",
-        transition:"transform .5s cubic-bezier(.4,0,.2,1)",transform:flip?"rotateY(180deg)":"none"}}>
+    <div style={{perspective:1000,cursor:"pointer"}} onClick={()=>setFlip(f=>!f)}>
+      <div style={{position:"relative",width:"100%",transformStyle:"preserve-3d",
+        transition:"transform .5s cubic-bezier(.4,0,.2,1)",transform:flip?"rotateY(180deg)":"none",
+        minHeight:190}}>
         <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",background:"#ffffff",
-          borderRadius:18,border:`1.5px solid ${ball.accent}22`,padding:13,overflow:"hidden",
+          borderRadius:18,border:`1.5px solid ${ball.accent}22`,padding:13,
+          display:"flex",flexDirection:"column",justifyContent:"space-between",
           boxShadow:"0 2px 12px rgba(0,0,0,0.06)"}}>
-          <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:ball.accent,borderRadius:"18px 18px 0 0"}}/>
-          <div style={{display:"flex",gap:9,alignItems:"flex-start",marginBottom:7,marginTop:2}}>
-            <BallImg ball={ball} size={42}/>
-            <div style={{flex:1,minWidth:0}}>
-              <div style={{fontSize:13,color:"#6b6b7e",fontWeight:700,letterSpacing:1.3}}>{ball.brand.toUpperCase()}</div>
-              <div style={{fontWeight:700,fontSize:12,color:"#111",lineHeight:1.3,
-                overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ball.name}</div>
-              {entry.nickname&&<div style={{fontSize:12,color:ball.accent,fontWeight:600}}>"{entry.nickname}"</div>}
+          <div>
+            <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:ball.accent,borderRadius:"18px 18px 0 0"}}/>
+            <div style={{display:"flex",gap:9,alignItems:"flex-start",marginBottom:7,marginTop:2}}>
+              <BallImg ball={ball} size={42}/>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:13,color:"#6b6b7e",fontWeight:700,letterSpacing:1.3}}>{ball.brand.toUpperCase()}</div>
+                <div style={{fontWeight:700,fontSize:12,color:"#111",lineHeight:1.3,
+                  overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ball.name}</div>
+                {entry.nickname&&<div style={{fontSize:12,color:ball.accent,fontWeight:600}}>"{entry.nickname}"</div>}
+              </div>
+              <span style={{fontSize:13,color:"#ddd"}}>탭↺</span>
             </div>
-            <span style={{fontSize:13,color:"#ddd"}}>탭↺</span>
-          </div>
-          <div style={{display:"flex",flexWrap:"wrap",gap:3,marginBottom:5}}>
-            {[{v:`${entry.weight}lb`,i:"⚖️"},{v:entry.grip,i:"🤙"},{v:entry.surface,i:"🔧"}].map(p=>(
-              <span key={p.v} style={{fontSize:13,fontWeight:700,padding:"2px 5px",borderRadius:4,
-                background:`${ball.accent}12`,color:ball.accent}}>{p.i} {p.v}</span>
-            ))}
+            <div style={{display:"flex",flexWrap:"wrap",gap:3,marginBottom:6}}>
+              {[{v:`${entry.weight}lb`,i:"⚖️"},{v:entry.grip,i:"🤙"},{v:entry.surface,i:"🔧"}].map(p=>(
+                <span key={p.v} style={{fontSize:11,fontWeight:700,padding:"2px 5px",borderRadius:4,
+                  background:`${ball.accent}12`,color:ball.accent}}>{p.i} {p.v}</span>
+              ))}
+            </div>
           </div>
           {d&&(
-            <div style={{display:"flex",gap:8,borderTop:"1px solid #f5f5f8",paddingTop:6}}>
+            <div style={{display:"flex",gap:6,flexWrap:"wrap",borderTop:"1px solid #f5f5f8",paddingTop:6,marginTop:"auto"}}>
               {[{l:"RG",v:d.rg},{l:"DIFF",v:d.diff},...(d.moi?[{l:"MOI",v:d.moi}]:[])].map(x=>(
                 <div key={x.l} style={{display:"flex",alignItems:"center",gap:2}}>
-                  <span style={{fontSize:13,color:"#6b6b7e",fontWeight:700}}>{x.l}</span>
-                  <span style={{fontSize:13,fontWeight:800,color:ball.accent}}>{x.v}</span>
+                  <span style={{fontSize:11,color:"#6b6b7e",fontWeight:700,letterSpacing:.5}}>{x.l}</span>
+                  <span style={{fontSize:12,fontWeight:800,color:ball.accent}}>{x.v}</span>
                 </div>
               ))}
             </div>
           )}
-        </div>
         <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",
           transform:"rotateY(180deg)",background:`linear-gradient(135deg,#fff,${ball.accent}07)`,
           border:`1.5px solid ${ball.accent}22`,borderRadius:18,padding:13,
@@ -1120,7 +1123,7 @@ export default function RollmateApp() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
-        html,body,#root{overflow-x:hidden;max-width:100vw}
+        html,body,#root{overflow-x:hidden;max-width:100vw;width:100%}
         ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#b0b0ae;border-radius:2px}
         @keyframes fadeUp{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
         @keyframes toastIn{from{transform:translateX(-50%) translateY(8px);opacity:0}to{transform:translateX(-50%);opacity:1}}
@@ -1137,7 +1140,25 @@ export default function RollmateApp() {
         .nav-btn.act .nav-lbl{color:#1c1c1e;font-weight:800}
         .chip{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:11px;cursor:pointer;
           transition:all .17s;border:none;font-weight:700;font-size:11px;white-space:nowrap;flex-shrink:0}
-      `}</style>
+        @media(max-width:360px){
+          .bcard{padding:10px;border-radius:14px}
+          .chip{padding:5px 8px;font-size:10px}
+          .nav-btn{padding:4px 8px}
+          .rm-topbar-logo{font-size:22px!important}
+        }
+        @media(min-width:600px){
+          .bcard{padding:16px;border-radius:20px}
+          .chip{padding:8px 14px;font-size:12px}
+          .rm-ball-grid{grid-template-columns:repeat(3,1fr)!important}
+          .rm-arsenal-grid{grid-template-columns:repeat(3,1fr)!important}
+          .rm-stat-grid{grid-template-columns:repeat(3,1fr)!important}
+        }
+        @media(min-width:900px){
+          .rm-ball-grid{grid-template-columns:repeat(4,1fr)!important}
+          .rm-arsenal-grid{grid-template-columns:repeat(4,1fr)!important}
+          .bcard{padding:18px}
+        }
+      \`}</style>
 
       {toast&&<div style={{position:"fixed",bottom:84,left:"50%",background:"#ffffff",
         border:`1.5px solid ${toast.color}44`,color:toast.color,padding:"10px 18px",borderRadius:12,
@@ -1228,7 +1249,7 @@ export default function RollmateApp() {
             )}
 
             {/* 볼 그리드 */}
-            <div style={{display:"grid",gridTemplateColumns:"1fr",gap:10}}>
+            <div className="rm-ball-grid" style={{display:"grid",gridTemplateColumns:"1fr",gap:10}}>
               {filtered.map((ball,i)=>{
                 const inA=inArsenal(ball.id); const inC=!!cmpList.find(b=>b.id===ball.id);
                 return (
@@ -1345,7 +1366,7 @@ export default function RollmateApp() {
                     </div>
                   ))}
                 </div>
-                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9}}>
+                <div className="rm-arsenal-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9}}>
                   {arsenal.map(entry=>{
                     const ball=ALL_BALLS.find(b=>b.id===entry.ballId);
                     if(!ball) return null;
