@@ -860,25 +860,40 @@ function BallScanner({ balls }) {
     setLoading(true);
     setResult(null);
     const apiKey = process.env.REACT_APP_GEMINI_KEY;
-    if (!apiKey) { setResult({error:"⚠️ REACT_APP_GEMINI_KEY 환경변수를 설정해주세요."}); setLoading(false); return; }
+    if (!apiKey) {
+      setResult({error:"⚠️ API 키가 설정되지 않았어요.\nVercel 대시보드 → Settings → Environment Variables 에서\nREACT_APP_GEMINI_KEY 를 추가해주세요."});
+      setLoading(false); return;
+    }
     try {
+      // 이미지 타입 자동 감지 (jpeg/png/webp/gif)
+      const mimeMatch = img.match(/^data:(image\/[a-zA-Z]+);base64,/);
+      const mimeType = mimeMatch ? mimeMatch[1] : "image/jpeg";
+
       const res = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
         { method:"POST", headers:{"Content-Type":"application/json"},
           body: JSON.stringify({ contents:[{ parts:[
-            { text: `이 이미지에 있는 볼링공 제품을 분석해주세요. 다음 JSON 형식으로만 답하세요 (다른 텍스트 없이):
+            { text: `이 이미지에 있는 볼링공 제품을 분석해주세요. 반드시 아래 JSON 형식만 출력하세요. 마크다운, 설명, 코드블록 없이 JSON만:
 {"brand":"브랜드명","name":"제품명","confidence":"high/medium/low","features":"주요 특징 한 문장","color":"색상 설명"}
 볼링공이 없으면: {"brand":"none","name":"none","confidence":"low","features":"볼링공을 찾을 수 없습니다","color":""}` },
-            { inline_data:{ mime_type:"image/jpeg", data: imgB64 }}
+            { inline_data:{ mime_type: mimeType, data: imgB64 }}
           ]}]})
         }
       );
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err?.error?.message || "API 오류");
+      }
+
       const data = await res.json();
-      // Gemini API 응답 구조: candidates[0].content.parts[0].text
       const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
       if (!text) throw new Error("empty response");
-      const clean = text.replace(/```json|```/g,"").trim();
-      const parsed = JSON.parse(clean);
+
+      // JSON만 추출 (앞뒤 잡텍스트 제거)
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error("no json");
+      const parsed = JSON.parse(jsonMatch[0]);
 
       // DB 매칭: 정확도 3단계
       let matched = null;
@@ -905,7 +920,14 @@ function BallScanner({ balls }) {
 
       setResult({...parsed, matched});
     } catch(e) {
-      setResult({error:"분석 중 오류가 발생했어요. 다시 시도해주세요."});
+      const msg = e.message || "unknown";
+      let guide = "";
+      if (msg.includes("API_KEY_INVALID") || msg.includes("invalid")) guide = "\n→ API 키가 올바르지 않아요. 키를 다시 확인해주세요.";
+      else if (msg.includes("PERMISSION_DENIED")) guide = "\n→ API 키 권한 문제예요. Google AI Studio에서 키를 재발급해주세요.";
+      else if (msg.includes("fetch") || msg.includes("network") || msg.includes("Failed")) guide = "\n→ 네트워크 오류예요. 인터넷 연결을 확인해주세요.";
+      else if (msg.includes("empty")) guide = "\n→ AI 응답이 비어있어요. 다시 시도해주세요.";
+      else if (msg.includes("no json")) guide = "\n→ AI가 예상치 못한 형식으로 응답했어요. 다시 시도해주세요.";
+      setResult({error:`❌ 오류: ${msg}${guide}`});
     }
     setLoading(false);
   };
@@ -950,7 +972,7 @@ function BallScanner({ balls }) {
         <div style={{background:"#ffffff",borderRadius:18,padding:18,
           boxShadow:"0 4px 20px rgba(0,0,0,.08)"}}>
           {result.error?(
-            <p style={{color:"#e57373",fontSize:12}}>{result.error}</p>
+            <p style={{color:"#e57373",fontSize:12,whiteSpace:"pre-line",lineHeight:1.7}}>{result.error}</p>
           ):(
             <>
               <div style={{marginBottom:12}}>
@@ -1342,7 +1364,14 @@ export default function RollmateApp() {
         {view==="scan"&&(
           <div style={{animation:"fadeUp .3s ease both"}}>
             <div style={{fontWeight:700,fontSize:26,color:"#111",marginBottom:6,fontFamily:"'Inter',sans-serif",letterSpacing:1}}>📷 AI 볼링공 스캔</div>
-            <p style={{fontSize:13,color:"#1c1c1e",marginBottom:16,fontWeight:600,lineHeight:1.5}}>볼링공 사진을 찍거나 업로드하면<br/>AI가 제품명과 스펙을 인식해요</p>
+            <p style={{fontSize:13,color:"#1c1c1e",marginBottom:12,fontWeight:600,lineHeight:1.5}}>볼링공 사진을 찍거나 업로드하면<br/>AI가 제품명과 스펙을 인식해요</p>
+            {!process.env.REACT_APP_GEMINI_KEY&&(
+              <div style={{background:"#fff3e0",border:"1.5px solid #ffcc80",borderRadius:14,padding:"12px 14px",marginBottom:14,fontSize:12,color:"#e65100",lineHeight:1.7,fontWeight:600}}>
+                ⚠️ <b>Gemini API 키 미설정</b><br/>
+                Vercel 대시보드 → 프로젝트 선택 → <b>Settings → Environment Variables</b><br/>
+                → <code style={{background:"#ffe0b2",padding:"1px 5px",borderRadius:4}}>REACT_APP_GEMINI_KEY</code> 추가 후 재배포 필요
+              </div>
+            )}
             <BallScanner balls={ALL_BALLS}/>
           </div>
         )}
