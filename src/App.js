@@ -1573,8 +1573,17 @@ export default function RollmateApp() {
   const [editEnt,setEditEnt] = useState(null);
   const [toast,setToast]     = useState(null);
   const [splash,setSplash]   = useState(true);
+  const scrollPos            = useRef(0);
 
   useEffect(()=>{setTimeout(()=>setSplash(false),2000);},[]);
+
+  // 홈 복귀 시 이전 스크롤 위치 복원
+  useEffect(()=>{
+    if(view==="home"){
+      const saved=scrollPos.current;
+      requestAnimationFrame(()=>window.scrollTo({top:saved,behavior:"instant"}));
+    }
+  },[view]);
 
   const showToast = (msg,color="#43a047")=>{
     setToast({msg,color}); setTimeout(()=>setToast(null),2300);
@@ -1782,7 +1791,7 @@ export default function RollmateApp() {
                 return (
                   <div key={ball.id} className="bcard"
                     style={{animationDelay:`${i*20}ms`,animation:"fadeUp .36s ease both"}}
-                    onClick={()=>{setSel(ball);setView("detail");}}>
+                    onClick={()=>{scrollPos.current=window.scrollY;setSel(ball);setView("detail");}}>
                     <div style={{position:"absolute",top:0,left:0,right:0,height:3,
                       background:ball.accent,borderRadius:"18px 18px 0 0"}}/>
                     {inA&&<div style={{position:"absolute",top:8,left:8,fontSize:13,zIndex:2}}>⭐</div>}
