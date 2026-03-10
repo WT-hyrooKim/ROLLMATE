@@ -1317,6 +1317,316 @@ const ALL_BALLS = [
     releaseDate:"Feb 2026",
     description:"QR-12 Solid HK22C on the II-Core Gen4 — the latest evolution of Track's proven symmetric platform."
   },
+
+  // ══════════════════════════════════════════════════════════════
+  // v6.8 누락분 추가 — bowwwl 전수 검증
+  // ══════════════════════════════════════════════════════════════
+
+  // ── Storm 누락분 ─────────────────────────────────────────────
+  {
+    id:105, brand:"Storm", name:"Ion Max",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Element Max A.I.",
+    finish:"4000 Abralon", condition:"Heavy Oil", accent:"#00897b",
+    ballSlug:"storm-ion-max", coreSlug:"storm-element-max-ai-core",
+    weightData:{
+      16:{rg:2.470,diff:0.056,moi:0.018}, 15:{rg:2.470,diff:0.055,moi:0.018},
+      14:{rg:2.510,diff:0.052,moi:0.016}, 13:{rg:2.580,diff:0.047,moi:0.013}, 12:{rg:2.640,diff:0.040,moi:0.011}
+    },
+    releaseDate:"Sep 2024",
+    description:"TX-16 Solid on Element Max A.I. — the benchmark heavy-oil asymmetric for the modern game, top-tier midlane."
+  },
+  {
+    id:106, brand:"Storm", name:"Ion Pro Solid",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Element Tour A.I.",
+    finish:"Power Edge", condition:"Heavy Oil", accent:"#00897b",
+    ballSlug:"storm-ion-pro-solid", coreSlug:"storm-element-tour-ai-core",
+    weightData:{
+      16:{rg:2.480,diff:0.052,moi:0.018}, 15:{rg:2.480,diff:0.051,moi:0.018},
+      14:{rg:2.520,diff:0.048,moi:0.016}, 13:{rg:2.590,diff:0.042,moi:0.013}, 12:{rg:2.650,diff:0.035,moi:0.011}
+    },
+    releaseDate:"Jun 2025",
+    description:"TX-16 Solid on Element Tour A.I. — the Ion Pro's solid sibling, stronger midlane with the same benchmark shape."
+  },
+  {
+    id:107, brand:"Storm", name:"Marvel Pearl A.I.",
+    cover:"Pearl", coreType:"Symmetric", coreName:"Centripetal HD A.I.",
+    finish:"Power Edge", condition:"Medium Oil", accent:"#00897b",
+    ballSlug:"storm-marvel-pearl-ai", coreSlug:"storm-centripetal-hd-ai-core",
+    weightData:{
+      16:{rg:2.460,diff:0.056}, 15:{rg:2.460,diff:0.056},
+      14:{rg:2.460,diff:0.056}, 13:{rg:2.590,diff:0.045}, 12:{rg:2.650,diff:0.035}
+    },
+    releaseDate:"Nov 2024",
+    description:"NRG Pearl on Centripetal HD A.I. — the Marvel series upgraded with A.I. tech for a straighter, smoother arc."
+  },
+  {
+    id:108, brand:"Storm", name:"PhysiX Solid",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Atomic A.I.",
+    finish:"2000 Abralon", condition:"Heavy Oil", accent:"#00897b",
+    ballSlug:"storm-physix-solid", coreSlug:"storm-atomic-ai-core",
+    weightData:{
+      16:{rg:2.470,diff:0.056,moi:0.018}, 15:{rg:2.470,diff:0.055,moi:0.018},
+      14:{rg:2.520,diff:0.054,moi:0.016}, 13:{rg:2.580,diff:0.047,moi:0.013}, 12:{rg:2.640,diff:0.040,moi:0.011}
+    },
+    releaseDate:"Oct 2024",
+    description:"EXO Solid on Atomic A.I. — overseas release bringing PhysiX solid power to heavy oil."
+  },
+  {
+    id:109, brand:"Storm", name:"EquinoX",
+    cover:"Pearl", coreType:"Symmetric", coreName:"Solarion A.I.",
+    finish:"Power Edge", condition:"Medium Oil", accent:"#00897b",
+    ballSlug:"storm-equinox", coreSlug:"storm-solarion-ai-core",
+    weightData:{
+      16:{rg:2.470,diff:0.050}, 15:{rg:2.470,diff:0.050},
+      14:{rg:2.510,diff:0.048}, 13:{rg:2.580,diff:0.042}, 12:{rg:2.640,diff:0.035}
+    },
+    releaseDate:"Feb 2025",
+    description:"A1S Pearl on Solarion A.I. — purpose-built for 39-44ft league patterns with signature Storm backend motion."
+  },
+  {
+    id:110, brand:"Storm", name:"!Q Tour A.I.",
+    cover:"Solid", coreType:"Symmetric", coreName:"Inverted Fe2 A.I.",
+    finish:"4000 Abralon", condition:"Medium-Heavy Oil", accent:"#00897b",
+    ballSlug:"storm-iq-tour-ai", coreSlug:"storm-inverted-fe2-ai-core",
+    weightData:{
+      16:{rg:2.550,diff:0.045}, 15:{rg:2.550,diff:0.045},
+      14:{rg:2.550,diff:0.045}, 13:{rg:2.620,diff:0.038}, 12:{rg:2.680,diff:0.031}
+    },
+    releaseDate:"Mar 2025",
+    description:"R2S Solid on Inverted Fe2 A.I. — the legendary !Q Tour elevated with A.I. Core Technology for wider strike window."
+  },
+  {
+    id:111, brand:"Storm", name:"Hyper Motor",
+    cover:"Pearl", coreType:"Symmetric", coreName:"Torque A.I.",
+    finish:"Power Edge", condition:"Medium Oil", accent:"#00897b",
+    ballSlug:"storm-hyper-motor", coreSlug:"storm-torque-ai-core",
+    weightData:{
+      16:{rg:2.490,diff:0.048}, 15:{rg:2.490,diff:0.048},
+      14:{rg:2.520,diff:0.046}, 13:{rg:2.590,diff:0.040}, 12:{rg:2.650,diff:0.033}
+    },
+    releaseDate:"Jan 2025",
+    description:"RX Pro Pearl on Torque A.I. — the next evolution of the Motor line with explosive backend rev-up."
+  },
+  {
+    id:112, brand:"Storm", name:"The Road X",
+    cover:"Solid", coreType:"Symmetric", coreName:"Inverted Fe2 A.I.",
+    finish:"4000 Abralon", condition:"Medium-Heavy Oil", accent:"#00897b",
+    ballSlug:"storm-the-road-x", coreSlug:"storm-inverted-fe2-ai-core",
+    weightData:{
+      16:{rg:2.550,diff:0.045}, 15:{rg:2.550,diff:0.045},
+      14:{rg:2.550,diff:0.045}, 13:{rg:2.620,diff:0.038}, 12:{rg:2.680,diff:0.031}
+    },
+    releaseDate:"Feb 2025",
+    description:"ReX Solid on Inverted Fe2 A.I. — overseas The Road companion, stronger midlane read on tougher conditions."
+  },
+  {
+    id:113, brand:"Storm", name:"Typhoon",
+    cover:"Pearl", coreType:"Symmetric", coreName:"Centripetal HD A.I.",
+    finish:"Power Edge", condition:"Light-Medium Oil", accent:"#00897b",
+    ballSlug:"storm-typhoon", coreSlug:"storm-centripetal-hd-ai-core",
+    weightData:{
+      16:{rg:2.460,diff:0.056}, 15:{rg:2.460,diff:0.056},
+      14:{rg:2.460,diff:0.056}, 13:{rg:2.590,diff:0.045}, 12:{rg:2.650,diff:0.035}
+    },
+    releaseDate:"Apr 2025",
+    description:"NRG Pearl on Centripetal HD A.I. — powerful precision for light-medium oil, builds momentum every rotation."
+  },
+  {
+    id:114, brand:"Storm", name:"PhysiX Era",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Atomic A.I.",
+    finish:"4000 Abralon", condition:"Heavy Oil", accent:"#00897b",
+    ballSlug:"storm-physix-era", coreSlug:"storm-atomic-ai-core",
+    weightData:{
+      16:{rg:2.470,diff:0.056,moi:0.018}, 15:{rg:2.470,diff:0.055,moi:0.018},
+      14:{rg:2.520,diff:0.054,moi:0.016}, 13:{rg:2.580,diff:0.047,moi:0.013}, 12:{rg:2.640,diff:0.040,moi:0.011}
+    },
+    releaseDate:"Jun 2025",
+    description:"R2S Solid on Atomic A.I. — overseas PhysiX continuation, combining running and sharpness on heavy oil."
+  },
+  {
+    id:115, brand:"Storm", name:"Motor Rev",
+    cover:"Pearl", coreType:"Asymmetric", coreName:"Torque A.I.",
+    finish:"1500 Polished", condition:"Medium Oil", accent:"#00897b",
+    ballSlug:"storm-motor-rev", coreSlug:"storm-torque-ai-core",
+    weightData:{
+      16:{rg:2.490,diff:0.048}, 15:{rg:2.490,diff:0.048},
+      14:{rg:2.520,diff:0.046}, 13:{rg:2.590,diff:0.040}, 12:{rg:2.650,diff:0.033}
+    },
+    releaseDate:"Dec 2025",
+    description:"RX Pro Pearl on Torque A.I. — overseas Motor Rev, high-polish skid-flip motion for medium oil."
+  },
+
+  // ── Brunswick 누락분 ──────────────────────────────────────────
+  {
+    id:116, brand:"Brunswick", name:"Combat",
+    cover:"Pearl", coreType:"Asymmetric", coreName:"Rampart",
+    finish:"500/1000/1500 Siaair, Crown Factory Compound", condition:"Medium-Heavy Oil", accent:"#e65100",
+    ballSlug:"brunswick-combat", coreSlug:"brunswick-rampart-core",
+    weightData:{
+      16:{rg:2.490,diff:0.052,moi:0.016}, 15:{rg:2.490,diff:0.058,moi:0.018},
+      14:{rg:2.510,diff:0.058,moi:0.018}, 13:{rg:2.590,diff:0.042,moi:0.014}, 12:{rg:2.610,diff:0.042,moi:0.014}
+    },
+    releaseDate:"Aug 2025",
+    description:"HK22C Alpha Premier Pearl on Rampart — angular backend response with asymmetric midlane control."
+  },
+  {
+    id:117, brand:"Brunswick", name:"Alert",
+    cover:"Solid", coreType:"Symmetric", coreName:"Alert",
+    finish:"500/1000/1500 Siaair Micro Pad", condition:"Medium-Heavy Oil", accent:"#e65100",
+    ballSlug:"brunswick-alert", coreSlug:"brunswick-alert-core",
+    weightData:{
+      16:{rg:2.480,diff:0.042}, 15:{rg:2.480,diff:0.044},
+      14:{rg:2.510,diff:0.042}, 13:{rg:2.580,diff:0.036}, 12:{rg:2.640,diff:0.030}
+    },
+    releaseDate:"Oct 2025",
+    description:"Low RG/low diff new series — Alert is your early warning system, first-release in the all-new Alert line."
+  },
+  {
+    id:118, brand:"Brunswick", name:"Energize",
+    cover:"Pearl", coreType:"Symmetric", coreName:"Energize",
+    finish:"500/1000/1500 Siaair / Factory Compound", condition:"Medium Oil", accent:"#e65100",
+    ballSlug:"brunswick-energize", coreSlug:"brunswick-energize-core",
+    weightData:{
+      16:{rg:2.510,diff:0.040}, 15:{rg:2.500,diff:0.042},
+      14:{rg:2.530,diff:0.040}, 13:{rg:2.600,diff:0.034}, 12:{rg:2.660,diff:0.028}
+    },
+    releaseDate:"Oct 2025",
+    description:"Pearl cover on the Energize symmetric core — the -ize series newest entry for clean, angular medium oil motion."
+  },
+
+  // ── Motiv 누락분 ──────────────────────────────────────────────
+  {
+    id:119, brand:"Motiv", name:"Nebula",
+    cover:"Pearl", coreType:"Symmetric", coreName:"Hadron",
+    finish:"5500 Grit LSP", condition:"Medium Oil", accent:"#6a1b9a",
+    ballSlug:"motiv-nebula", coreSlug:"motiv-hadron-core",
+    weightData:{
+      16:{rg:2.500,diff:0.038}, 15:{rg:2.500,diff:0.045},
+      14:{rg:2.510,diff:0.049}, 13:{rg:2.570,diff:0.042}, 12:{rg:2.630,diff:0.035}
+    },
+    releaseDate:"Oct 2025",
+    description:"Dark Matter Propulsion Pearl on Hadron dual-density core — Motiv's most angular coverstock ever, cosmic backend."
+  },
+  {
+    id:120, brand:"Motiv", name:"Raptor Reign",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Impulse V2",
+    finish:"2000 LSS", condition:"Heavy Oil", accent:"#6a1b9a",
+    ballSlug:"motiv-raptor-reign", coreSlug:"motiv-impulse-v2-core",
+    weightData:{
+      16:{rg:2.570,diff:0.050,moi:0.018}, 15:{rg:2.570,diff:0.050,moi:0.018},
+      14:{rg:2.600,diff:0.047,moi:0.016}, 13:{rg:2.660,diff:0.042,moi:0.013}, 12:{rg:2.720,diff:0.035,moi:0.011}
+    },
+    releaseDate:"Feb 2025",
+    description:"Propulsion HVP Solid on Impulse V2 — dominant heavy oil raptor with high flare and strong continuous motion."
+  },
+
+  // ── Hammer 누락분 ────────────────────────────────────────────
+  {
+    id:121, brand:"Hammer", name:"Black Widow 2.0 Hybrid",
+    cover:"Hybrid", coreType:"Asymmetric", coreName:"Gas Mask",
+    finish:"500/1000/2000 Siaair Micro Pad", condition:"Heavy Oil", accent:"#b71c1c",
+    ballSlug:"hammer-black-widow-20-hybrid", coreSlug:"hammer-gas-mask-core",
+    weightData:{
+      16:{rg:2.490,diff:0.054,moi:0.017}, 15:{rg:2.490,diff:0.057,moi:0.017},
+      14:{rg:2.530,diff:0.055,moi:0.016}, 13:{rg:2.600,diff:0.047,moi:0.013}, 12:{rg:2.660,diff:0.040,moi:0.011}
+    },
+    releaseDate:"Jan 2023",
+    description:"HK22 Hybrid cover on the Gas Mask core — more midlane read than the pearl BW2.0, built for heavy oil."
+  },
+  {
+    id:122, brand:"Hammer", name:"NU Blue Hammer",
+    cover:"Solid", coreType:"Symmetric", coreName:"Spheroid",
+    finish:"500/1000/1500 Siaair Micro Pad", condition:"Medium-Heavy Oil", accent:"#b71c1c",
+    ballSlug:"hammer-nu-blue-hammer", coreSlug:"hammer-spheroid-core",
+    weightData:{
+      16:{rg:2.500,diff:0.038}, 15:{rg:2.500,diff:0.040},
+      14:{rg:2.530,diff:0.038}, 13:{rg:2.600,diff:0.032}, 12:{rg:2.660,diff:0.026}
+    },
+    releaseDate:"Nov 2023",
+    description:"Aggression Solid HK22 on Spheroid — a modern reimagining of the iconic Blue Hammer for today's game."
+  },
+
+  // ── Roto Grip 누락분 ─────────────────────────────────────────
+  {
+    id:123, brand:"Roto Grip", name:"Attention Sign",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Momentous AV + A.I.",
+    finish:"4000 Abralon", condition:"Heavy Oil", accent:"#c62828",
+    ballSlug:"roto-grip-attention-sign", coreSlug:"roto-grip-momentous-av-ai-core",
+    weightData:{
+      16:{rg:2.480,diff:0.052,moi:0.017}, 15:{rg:2.480,diff:0.049,moi:0.017},
+      14:{rg:2.530,diff:0.046,moi:0.014}, 13:{rg:2.560,diff:0.034,moi:0.011}, 12:{rg:2.580,diff:0.031,moi:0.009}
+    },
+    releaseDate:"Jan 2026",
+    description:"eTrax PLUS Solid on Momentous AV + A.I. — the Attention Star's solid big brother for heavier conditions."
+  },
+  {
+    id:124, brand:"Roto Grip", name:"RST Hyperdrive Pearl",
+    cover:"Pearl", coreType:"Symmetric", coreName:"HP1 A.I.",
+    finish:"Power Edge", condition:"Medium Oil", accent:"#c62828",
+    ballSlug:"roto-grip-rst-hyperdrive-pearl", coreSlug:"roto-grip-hp1-ai-core",
+    weightData:{
+      16:{rg:2.560,diff:0.035}, 15:{rg:2.560,diff:0.035},
+      14:{rg:2.580,diff:0.033}, 13:{rg:2.640,diff:0.028}, 12:{rg:2.700,diff:0.023}
+    },
+    releaseDate:"Sep 2025",
+    description:"VTC Pearl on HP1 A.I. — the RST Hyperdrive's cleaner sibling for arc motion on medium oil."
+  },
+
+  // ── 900 Global 누락분 ────────────────────────────────────────
+  {
+    id:125, brand:"900 Global", name:"Wolverine Night",
+    cover:"Pearl", coreType:"Asymmetric", coreName:"Wolverine",
+    finish:"Reacta Gloss", condition:"Medium-Heavy Oil", accent:"#1565c0",
+    ballSlug:"900-global-wolverine-night", coreSlug:"900-global-wolverine-core",
+    weightData:{
+      16:{rg:2.490,diff:0.052,moi:0.017}, 15:{rg:2.485,diff:0.051,moi:0.017},
+      14:{rg:2.520,diff:0.049,moi:0.015}, 13:{rg:2.580,diff:0.043,moi:0.012}, 12:{rg:2.640,diff:0.036,moi:0.010}
+    },
+    releaseDate:"Nov 2024",
+    description:"Quantum Pearl on the Wolverine asymmetric core — nighttime aggression with clean arc through the front."
+  },
+
+  // ── DV8 누락분 ───────────────────────────────────────────────
+  {
+    id:126, brand:"DV8", name:"Intimidator",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Intimidator",
+    finish:"500/1000/2000 Siaair Micro Pad", condition:"Heavy Oil", accent:"#bf360c",
+    ballSlug:"dv8-intimidator", coreSlug:"dv8-intimidator-core",
+    weightData:{
+      16:{rg:2.485,diff:0.055,moi:0.018}, 15:{rg:2.480,diff:0.057,moi:0.018},
+      14:{rg:2.515,diff:0.055,moi:0.017}, 13:{rg:2.585,diff:0.048,moi:0.014}, 12:{rg:2.645,diff:0.041,moi:0.012}
+    },
+    releaseDate:"Jun 2025",
+    description:"Strong solid cover on the Intimidator asymmetric core — DV8's new flagship for maximum heavy-oil dominance."
+  },
+
+  // ── Radical 누락분 ───────────────────────────────────────────
+  {
+    id:127, brand:"Radical", name:"Xtra Bonus",
+    cover:"Solid", coreType:"Symmetric", coreName:"Xtra Bonus",
+    finish:"500/1000/1500 Siaair Micro Pad", condition:"Medium-Heavy Oil", accent:"#e65100",
+    ballSlug:"radical-xtra-bonus", coreSlug:"radical-xtra-bonus-core",
+    weightData:{
+      16:{rg:2.490,diff:0.040}, 15:{rg:2.490,diff:0.042},
+      14:{rg:2.520,diff:0.040}, 13:{rg:2.590,diff:0.034}, 12:{rg:2.650,diff:0.028}
+    },
+    releaseDate:"Feb 2025",
+    description:"Strong solid cover on the Xtra Bonus symmetric core — versatile medium-heavy oil control ball."
+  },
+
+  // ── Track 누락분 ─────────────────────────────────────────────
+  {
+    id:128, brand:"Track", name:"Rhyno",
+    cover:"Solid", coreType:"Symmetric", coreName:"II-Core Gen4",
+    finish:"500/1000/1500 Siaair Micro Pad", condition:"Medium-Heavy Oil", accent:"#37474f",
+    ballSlug:"track-rhyno", coreSlug:"track-ii-core-gen4-core",
+    weightData:{
+      16:{rg:2.493,diff:0.048}, 15:{rg:2.480,diff:0.050},
+      14:{rg:2.510,diff:0.048}, 13:{rg:2.580,diff:0.042}
+    },
+    releaseDate:"Aug 2024",
+    description:"QR-12 Solid HK22C on II-Core Gen4 — Track's dependable workhorse for medium-heavy oil consistency."
+  },
 ];
 
 const COND_COLOR = {
@@ -2197,7 +2507,7 @@ export default function RollmateApp() {
             <span style={{fontWeight:800,fontSize:28,letterSpacing:1,color:"#ffffff",fontFamily:"'Inter',sans-serif"}}>
               ROLL<span style={{color:"#ff8c00"}}>MATE</span>
             </span>
-            <span style={{fontSize:9,color:"rgba(255,140,0,.6)",fontWeight:700,letterSpacing:1,alignSelf:"flex-end",marginBottom:6}}>v6.8</span>
+            <span style={{fontSize:9,color:"rgba(255,140,0,.6)",fontWeight:700,letterSpacing:1,alignSelf:"flex-end",marginBottom:6}}>v6.9</span>
           </div>
           <div style={{position:"relative"}}>
             <span style={{position:"absolute",left:9,top:"50%",transform:"translateY(-50%)",fontSize:13,color:"#ff8c00"}}>🔍</span>
