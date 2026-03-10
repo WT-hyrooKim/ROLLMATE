@@ -609,6 +609,230 @@ const ALL_BALLS = [
     releaseDate:"Feb 2024",
     description:"Prime Response Hybrid HK22 with the Theorem asymmetric core — big sweeping motion and strong continuation."
   },
+
+  // ── Storm 추가 (bowwwl 검증) ─────────────────────────────────────
+  {
+    id:49, brand:"Storm", name:"The Road",
+    cover:"Hybrid", coreType:"Symmetric", coreName:"Inverted Fe2 A.I.",
+    finish:"Reacta Gloss", condition:"Medium Oil", accent:"#00897b",
+    ballSlug:"storm-the-road", coreSlug:"storm-inverted-fe2-ai-core",
+    weightData:{
+      16:{rg:2.550,diff:0.045}, 15:{rg:2.550,diff:0.045},
+      14:{rg:2.550,diff:0.045}, 13:{rg:2.620,diff:0.038}, 12:{rg:2.680,diff:0.031}
+    },
+    releaseDate:"Apr 2024",
+    description:"The legendary Hy-Road reinvented — ReX Hybrid cover with Inverted Fe2 A.I. core for the modern game."
+  },
+  {
+    id:50, brand:"Storm", name:"Absolute Power",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Sentinel",
+    finish:"4000 Abralon", condition:"Heavy Oil", accent:"#00897b",
+    ballSlug:"storm-absolute-power", coreSlug:"storm-sentinel-core",
+    weightData:{
+      16:{rg:2.480,diff:0.044,moi:0.016}, 15:{rg:2.480,diff:0.044,moi:0.016},
+      14:{rg:2.520,diff:0.042,moi:0.014}, 13:{rg:2.590,diff:0.038,moi:0.011}, 12:{rg:2.650,diff:0.031,moi:0.009}
+    },
+    releaseDate:"Jan 2024",
+    description:"R2S Deep Solid on Storm's first single-density Sentinel core — powerful solid motion for heavy conditions."
+  },
+  {
+    id:51, brand:"Storm", name:"Summit Peak",
+    cover:"Pearl", coreType:"Symmetric", coreName:"Centripetal HD A.I.",
+    finish:"Reacta Gloss", condition:"Medium Oil", accent:"#00897b",
+    ballSlug:"storm-summit-peak", coreSlug:"storm-centripetal-hd-ai-core",
+    weightData:{
+      16:{rg:2.460,diff:0.056}, 15:{rg:2.460,diff:0.056},
+      14:{rg:2.460,diff:0.056}, 13:{rg:2.590,diff:0.045}, 12:{rg:2.650,diff:0.035}
+    },
+    releaseDate:"Jan 2024",
+    description:"TX-23 Pearl with the Centripetal HD A.I. core — unlike anything else in your bag, a clean yet powerful shape."
+  },
+  {
+    id:52, brand:"Storm", name:"Summit Ascent",
+    cover:"Solid", coreType:"Symmetric", coreName:"Centripetal HD A.I.",
+    finish:"4000 Abralon", condition:"Medium-Heavy Oil", accent:"#00897b",
+    ballSlug:"storm-summit-ascent", coreSlug:"storm-centripetal-hd-ai-core",
+    weightData:{
+      16:{rg:2.460,diff:0.056}, 15:{rg:2.460,diff:0.056},
+      14:{rg:2.460,diff:0.056}, 13:{rg:2.590,diff:0.045}, 12:{rg:2.650,diff:0.035}
+    },
+    releaseDate:"Aug 2024",
+    description:"R2S Solid at 4000-grit — uniquely cleaner than typical solids while still commanding medium-heavy oil."
+  },
+  {
+    id:53, brand:"Storm", name:"Marvel Scale",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Atomic A.I.",
+    finish:"4000 Abralon", condition:"Heavy Oil", accent:"#00897b",
+    ballSlug:"storm-marvel-scale", coreSlug:"storm-atomic-ai-core",
+    weightData:{
+      16:{rg:2.470,diff:0.056,moi:0.018}, 15:{rg:2.470,diff:0.056,moi:0.018},
+      14:{rg:2.510,diff:0.053,moi:0.016}, 13:{rg:2.580,diff:0.047,moi:0.013}, 12:{rg:2.640,diff:0.040,moi:0.011}
+    },
+    releaseDate:"Oct 2023",
+    description:"R2S Solid with the powerful Atomic A.I. core — heavy oil dominance with the signature Storm backend snap."
+  },
+  {
+    id:54, brand:"Storm", name:"Phaze A.I. Solid",
+    cover:"Solid", coreType:"Symmetric", coreName:"Velocity A.I.",
+    finish:"4000 Abralon", condition:"Heavy Oil", accent:"#00897b",
+    ballSlug:"storm-phaze-ai-solid", coreSlug:"storm-velocity-ai-core",
+    weightData:{
+      16:{rg:2.470,diff:0.053}, 15:{rg:2.470,diff:0.053},
+      14:{rg:2.520,diff:0.052}, 13:{rg:2.580,diff:0.047}, 12:{rg:2.640,diff:0.037}
+    },
+    releaseDate:"Mar 2025",
+    description:"TX-16 Solid wrapped around the Velocity A.I. core — the benchmark solid companion to the Phaze A.I. Pearl."
+  },
+
+  // ── Brunswick 추가 (bowwwl 검증) ────────────────────────────────
+  {
+    id:55, brand:"Brunswick", name:"Hypnotize",
+    cover:"Hybrid", coreType:"Asymmetric", coreName:"Tri-Elliptic",
+    finish:"500/1500 Siaair Micro Pad", condition:"Heavy Oil", accent:"#e65100",
+    ballSlug:"brunswick-hypnotize", coreSlug:"brunswick-tri-elliptic-core",
+    weightData:{
+      16:{rg:2.521,diff:0.048,moi:0.014}, 15:{rg:2.510,diff:0.056,moi:0.017},
+      14:{rg:2.533,diff:0.056,moi:0.016}, 13:{rg:2.597,diff:0.041,moi:0.014}, 12:{rg:2.593,diff:0.041,moi:0.014}
+    },
+    releaseDate:"Feb 2025",
+    description:"HK22C-Evo Hybrid with the Tri-Elliptic core — the perfect Mesmerize follow-up with controlled backend aggression."
+  },
+  {
+    id:56, brand:"Brunswick", name:"Ethos Hybrid",
+    cover:"Hybrid", coreType:"Symmetric", coreName:"Ethos",
+    finish:"500/1500 Siaair Micro Pad", condition:"Medium-Heavy Oil", accent:"#e65100",
+    ballSlug:"brunswick-ethos-hybrid", coreSlug:"brunswick-ethos-core",
+    weightData:{
+      16:{rg:2.495,diff:0.046}, 15:{rg:2.481,diff:0.053},
+      14:{rg:2.505,diff:0.053}, 13:{rg:2.510,diff:0.047}, 12:{rg:2.577,diff:0.045}
+    },
+    releaseDate:"Mar 2024",
+    description:"HK22 Ethos Hybrid cover — larger, polished symmetric motion that surpasses previous Ethos models."
+  },
+  {
+    id:57, brand:"Brunswick", name:"Vaporize",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Tri-Elliptic",
+    finish:"500/1000/1500 Siaair Micro Pad", condition:"Heavy Oil", accent:"#e65100",
+    ballSlug:"brunswick-vaporize", coreSlug:"brunswick-tri-elliptic-core",
+    weightData:{
+      16:{rg:2.521,diff:0.048,moi:0.014}, 15:{rg:2.510,diff:0.056,moi:0.017},
+      14:{rg:2.533,diff:0.056,moi:0.016}, 13:{rg:2.597,diff:0.041,moi:0.014}, 12:{rg:2.593,diff:0.041,moi:0.014}
+    },
+    releaseDate:"Nov 2024",
+    description:"HK22C-Evo Solid with the Tri-Elliptic core — the strongest option in the Mesmerize family for heavy oil."
+  },
+  {
+    id:58, brand:"Brunswick", name:"Crown Victory Pearl",
+    cover:"Pearl", coreType:"Asymmetric", coreName:"Crown",
+    finish:"500/1000/1500 Siaair, Crown Factory Compound", condition:"Medium Oil", accent:"#e65100",
+    ballSlug:"brunswick-crown-victory-pearl", coreSlug:"brunswick-crown-core",
+    weightData:{
+      16:{rg:2.516,diff:0.053,moi:0.019}, 15:{rg:2.506,diff:0.060,moi:0.021},
+      14:{rg:2.531,diff:0.060,moi:0.020}, 13:{rg:2.601,diff:0.044,moi:0.015}, 12:{rg:2.626,diff:0.044,moi:0.015}
+    },
+    releaseDate:"Nov 2025",
+    description:"HK22C Alpha Premier Pearl with the new Crown asymmetric core — sharp, angular response on medium oil."
+  },
+
+  // ── Roto Grip 추가 (bowwwl 검증) ────────────────────────────────
+  {
+    id:59, brand:"Roto Grip", name:"Attention Star S2",
+    cover:"Hybrid", coreType:"Asymmetric", coreName:"Momentous AV + A.I.",
+    finish:"2000 Abralon", condition:"Medium-Heavy Oil", accent:"#c62828",
+    ballSlug:"roto-grip-attention-star-s2", coreSlug:"roto-grip-momentous-av-ai-core",
+    weightData:{
+      16:{rg:2.480,diff:0.052,moi:0.017}, 15:{rg:2.480,diff:0.049,moi:0.017},
+      14:{rg:2.530,diff:0.046,moi:0.014}, 13:{rg:2.560,diff:0.034,moi:0.011}, 12:{rg:2.580,diff:0.031,moi:0.009}
+    },
+    releaseDate:"Nov 2024",
+    description:"eTrax PLUS Hybrid with the Momentous AV + A.I. core — S2 brings midlane grip with the same monster backend."
+  },
+  {
+    id:60, brand:"Roto Grip", name:"Rockstar",
+    cover:"Solid", coreType:"Symmetric", coreName:"Rocker A.I.",
+    finish:"2000 Abralon", condition:"Medium-Heavy Oil", accent:"#c62828",
+    ballSlug:"roto-grip-rockstar", coreSlug:"roto-grip-rocker-ai-core",
+    weightData:{
+      16:{rg:2.480,diff:0.054}, 15:{rg:2.480,diff:0.050},
+      14:{rg:2.500,diff:0.046}, 13:{rg:2.580,diff:0.047}, 12:{rg:2.640,diff:0.037}
+    },
+    releaseDate:"Feb 2025",
+    description:"NanoStar Solid on the brand-new Rocker A.I. core — fills the gap between MicroTrax and eTrax for total versatility."
+  },
+  {
+    id:61, brand:"Roto Grip", name:"Magic Gem",
+    cover:"Hybrid", coreType:"Symmetric", coreName:"Defiant LRG",
+    finish:"2000 Abralon", condition:"Medium-Heavy Oil", accent:"#c62828",
+    ballSlug:"roto-grip-magic-gem", coreSlug:"roto-grip-defiant-lrg-core",
+    weightData:{
+      16:{rg:2.470,diff:0.054}, 15:{rg:2.470,diff:0.054},
+      14:{rg:2.510,diff:0.054}, 13:{rg:2.580,diff:0.047}, 12:{rg:2.640,diff:0.037}
+    },
+    releaseDate:"Oct 2023",
+    description:"MicroTrax Hybrid with the Defiant LRG core — enchanting arc motion for medium-heavy conditions."
+  },
+  {
+    id:62, brand:"Roto Grip", name:"Hustle BRY",
+    cover:"Hybrid", coreType:"Symmetric", coreName:"HP1 A.I.",
+    finish:"Reacta Gloss", condition:"Light-Medium Oil", accent:"#c62828",
+    ballSlug:"roto-grip-hustle-bry-burgundyredyale-blue", coreSlug:"roto-grip-hp1-ai-core",
+    weightData:{
+      16:{rg:2.560,diff:0.035}, 15:{rg:2.560,diff:0.035},
+      14:{rg:2.580,diff:0.033}, 13:{rg:2.640,diff:0.028}, 12:{rg:2.700,diff:0.023}
+    },
+    releaseDate:"Apr 2024",
+    description:"VTC Hybrid cover on the HP1 A.I. core — built for everyone, from casual leagues to competitive play on lighter oil."
+  },
+
+  // ── Motiv 추가 (bowwwl 검증) ─────────────────────────────────────
+  {
+    id:63, brand:"Motiv", name:"Lethal Venom",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Gear APG",
+    finish:"3000 LSS", condition:"Medium Oil", accent:"#6a1b9a",
+    ballSlug:"motiv-lethal-venom", coreSlug:"motiv-gear-apg-core",
+    weightData:{
+      16:{rg:2.470,diff:0.036,moi:0.013}, 15:{rg:2.470,diff:0.036,moi:0.013},
+      14:{rg:2.500,diff:0.034,moi:0.011}, 13:{rg:2.560,diff:0.030,moi:0.009}, 12:{rg:2.620,diff:0.025,moi:0.007}
+    },
+    releaseDate:"Oct 2024",
+    description:"Leverage MXC Solid with Duramax tech on the Gear APG core — the benchmark Venom, predictable and deadly."
+  },
+  {
+    id:64, brand:"Motiv", name:"Pride Empire",
+    cover:"Pearl", coreType:"Asymmetric", coreName:"Overload",
+    finish:"2000 LSS", condition:"Medium-Heavy Oil", accent:"#6a1b9a",
+    ballSlug:"motiv-pride-empire", coreSlug:"motiv-overload-core",
+    weightData:{
+      16:{rg:2.480,diff:0.053,moi:0.018}, 15:{rg:2.480,diff:0.053,moi:0.018},
+      14:{rg:2.510,diff:0.050,moi:0.016}, 13:{rg:2.565,diff:0.045,moi:0.013}, 12:{rg:2.625,diff:0.038,moi:0.011}
+    },
+    releaseDate:"Jun 2023",
+    description:"Propulsion Pearl on the Overload core — new level of backend speed and angular response in the Pride line."
+  },
+  {
+    id:65, brand:"Motiv", name:"Blue Tank",
+    cover:"Solid", coreType:"Symmetric", coreName:"Halogen V2",
+    finish:"500 LSS", condition:"Heavy Oil", accent:"#6a1b9a",
+    ballSlug:"motiv-blue-tank", coreSlug:"motiv-halogen-v2-core",
+    weightData:{
+      16:{rg:2.560,diff:0.029}, 15:{rg:2.560,diff:0.029},
+      14:{rg:2.590,diff:0.027}, 13:{rg:2.650,diff:0.022}, 12:{rg:2.710,diff:0.018}
+    },
+    releaseDate:"Jan 2024",
+    description:"Microcell Polymer cover with the Halogen V2 core — urethane-like control with reactive power for heavy oil."
+  },
+  {
+    id:66, brand:"Motiv", name:"Hyper Venom",
+    cover:"Pearl", coreType:"Symmetric", coreName:"Gear",
+    finish:"2000 LSS", condition:"Light-Medium Oil", accent:"#6a1b9a",
+    ballSlug:"motiv-hyper-venom", coreSlug:"motiv-gear-core",
+    weightData:{
+      16:{rg:2.470,diff:0.028}, 15:{rg:2.470,diff:0.030},
+      14:{rg:2.500,diff:0.027}, 13:{rg:2.560,diff:0.023}, 12:{rg:2.620,diff:0.019}
+    },
+    releaseDate:"Mar 2024",
+    description:"Propulsion MXR Pearl on the proven Gear core — the most angular Venom ever, deadly on light-moderate volumes."
+  },
 ];
 
 const COND_COLOR = {
