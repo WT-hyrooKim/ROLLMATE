@@ -2801,84 +2801,197 @@ function WeightTable({ ball, sel, onSel }) {
   );
 }
 
+// 탈퇴 모달 (별도 컴포넌트 - 리렌더링 방지)
+function DeleteModal({ onClose, onDelete }) {
+  const [pw, setPw] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+  const inputStyle = {width:"100%",background:"#f7f7fc",border:"1.5px solid #e2e2e0",borderRadius:10,
+    color:"#333",padding:"10px 13px",fontSize:13,outline:"none",fontFamily:"inherit",
+    boxSizing:"border-box",marginBottom:8};
+
+  const handle = async () => {
+    if(!pw) { setErr("비밀번호를 입력해주세요"); return; }
+    if(confirm !== "탈퇴") { setErr("'탈퇴'를 정확히 입력해주세요"); return; }
+    setLoading(true);
+    const res = await onDelete(pw);
+    setLoading(false);
+    if(res !== "ok") setErr(res);
+  };
+
+  return (
+    <div style={{position:"fixed",inset:0,zIndex:2500,
+      background:"rgba(10,10,30,0.55)",backdropFilter:"blur(10px)",
+      display:"flex",alignItems:"flex-start",justifyContent:"center",
+      padding:"60px 20px 20px",overflowY:"auto"}}
+      onClick={onClose}>
+      <div onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:22,
+        padding:"22px 20px",width:"100%",maxWidth:360,
+        boxShadow:"0 24px 60px rgba(0,0,0,0.2)"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}>
+          <div style={{fontSize:17,fontWeight:800,color:"#111"}}>🗑️ 계정 삭제</div>
+          <button onClick={onClose} style={{background:"none",border:"none",color:"#ccc",fontSize:22,cursor:"pointer"}}>✕</button>
+        </div>
+        <div style={{background:"#fff5f5",border:"1.5px solid #ffcdd2",borderRadius:10,
+          padding:"10px 12px",marginBottom:14,fontSize:12,color:"#c62828",lineHeight:1.7,fontWeight:600}}>
+          ⚠️ 삭제 시 모든 장비 데이터가 영구적으로 삭제돼요. 복구가 불가능해요.
+        </div>
+        <label style={{fontSize:12,color:"#555",fontWeight:700,display:"block",marginBottom:5}}>비밀번호 확인</label>
+        <input
+          type="password"
+          placeholder="현재 비밀번호"
+          value={pw}
+          onChange={e=>{ setPw(e.target.value); setErr(""); }}
+          style={inputStyle}
+          autoComplete="current-password"
+        />
+        <label style={{fontSize:12,color:"#555",fontWeight:700,display:"block",marginBottom:5,marginTop:4}}>'탈퇴' 입력</label>
+        <input
+          placeholder="탈퇴"
+          value={confirm}
+          onChange={e=>{ setConfirm(e.target.value); setErr(""); }}
+          style={inputStyle}
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck="false"
+        />
+        {err && <div style={{fontSize:12,color:"#ef5350",fontWeight:600,marginBottom:8}}>{err}</div>}
+        <button onClick={handle} disabled={loading} style={{
+          width:"100%",padding:"12px",background:loading?"#aaa":"#ef5350",
+          border:"none",borderRadius:11,color:"#fff",fontFamily:"inherit",
+          fontSize:14,fontWeight:800,cursor:loading?"not-allowed":"pointer",marginTop:4}}>
+          {loading?"삭제 중...":"계정 영구 삭제"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// 비밀번호 변경 모달 (별도 컴포넌트)
+function PwChangeModal({ onClose, onSave }) {
+  const [oldPw, setOldPw] = useState("");
+  const [newPw1, setNewPw1] = useState("");
+  const [newPw2, setNewPw2] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+  const inputStyle = {width:"100%",background:"#f7f7fc",border:"1.5px solid #e2e2e0",borderRadius:10,
+    color:"#333",padding:"10px 13px",fontSize:13,outline:"none",fontFamily:"inherit",
+    boxSizing:"border-box",marginBottom:8};
+
+  const handle = async () => {
+    if(!oldPw || !newPw1 || !newPw2) { setErr("모든 항목을 입력해주세요"); return; }
+    if(newPw1.length < 4) { setErr("새 비밀번호는 4자리 이상이어야 해요"); return; }
+    if(newPw1 !== newPw2) { setErr("새 비밀번호가 일치하지 않아요"); return; }
+    setLoading(true);
+    const res = await onSave(oldPw, newPw1);
+    setLoading(false);
+    if(res === "ok") onClose(true);
+    else setErr(res);
+  };
+
+  return (
+    <div style={{position:"fixed",inset:0,zIndex:2500,
+      background:"rgba(10,10,30,0.55)",backdropFilter:"blur(10px)",
+      display:"flex",alignItems:"flex-start",justifyContent:"center",
+      padding:"60px 20px 20px",overflowY:"auto"}}
+      onClick={()=>onClose(false)}>
+      <div onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:22,
+        padding:"22px 20px",width:"100%",maxWidth:360,
+        boxShadow:"0 24px 60px rgba(0,0,0,0.2)"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}>
+          <div style={{fontSize:17,fontWeight:800,color:"#111"}}>🔑 비밀번호 변경</div>
+          <button onClick={()=>onClose(false)} style={{background:"none",border:"none",color:"#ccc",fontSize:22,cursor:"pointer"}}>✕</button>
+        </div>
+        <input type="password" placeholder="현재 비밀번호" value={oldPw}
+          onChange={e=>{setOldPw(e.target.value);setErr("");}} style={inputStyle}/>
+        <input type="password" placeholder="새 비밀번호 (4자 이상)" value={newPw1}
+          onChange={e=>{setNewPw1(e.target.value);setErr("");}} style={inputStyle}/>
+        <input type="password" placeholder="새 비밀번호 확인" value={newPw2}
+          onChange={e=>{setNewPw2(e.target.value);setErr("");}} style={inputStyle}/>
+        {err && <div style={{fontSize:12,color:"#ef5350",fontWeight:600,marginBottom:8}}>{err}</div>}
+        <button onClick={handle} disabled={loading} style={{width:"100%",padding:"12px",
+          background:loading?"#aaa":"#1c1c1e",border:"none",borderRadius:11,color:"#fff",
+          fontFamily:"inherit",fontSize:14,fontWeight:800,cursor:"pointer",marginTop:4}}>
+          {loading?"변경 중...":"변경하기"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// 닉네임 변경 모달 (별도 컴포넌트)
+function NickChangeModal({ nickname, onClose, onSave }) {
+  const [newNick, setNewNick] = useState("");
+  const [pw, setPw] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+  const inputStyle = {width:"100%",background:"#f7f7fc",border:"1.5px solid #e2e2e0",borderRadius:10,
+    color:"#333",padding:"10px 13px",fontSize:13,outline:"none",fontFamily:"inherit",
+    boxSizing:"border-box",marginBottom:8};
+
+  const handle = async () => {
+    if(!newNick || newNick.trim().length < 2) { setErr("닉네임을 2글자 이상 입력해주세요"); return; }
+    if(!pw) { setErr("비밀번호를 입력해주세요"); return; }
+    setLoading(true);
+    const res = await onSave(newNick.trim(), pw);
+    setLoading(false);
+    if(res === "ok") onClose(true);
+    else setErr(res);
+  };
+
+  return (
+    <div style={{position:"fixed",inset:0,zIndex:2500,
+      background:"rgba(10,10,30,0.55)",backdropFilter:"blur(10px)",
+      display:"flex",alignItems:"flex-start",justifyContent:"center",
+      padding:"60px 20px 20px",overflowY:"auto"}}
+      onClick={()=>onClose(false)}>
+      <div onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:22,
+        padding:"22px 20px",width:"100%",maxWidth:360,
+        boxShadow:"0 24px 60px rgba(0,0,0,0.2)"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}>
+          <div style={{fontSize:17,fontWeight:800,color:"#111"}}>✏️ 닉네임 변경</div>
+          <button onClick={()=>onClose(false)} style={{background:"none",border:"none",color:"#ccc",fontSize:22,cursor:"pointer"}}>✕</button>
+        </div>
+        <div style={{fontSize:12,color:"#888",marginBottom:12,lineHeight:1.6}}>
+          현재: <b style={{color:"#ff8c00"}}>{nickname}</b>
+        </div>
+        <input placeholder="새 닉네임 (2글자 이상)" value={newNick}
+          onChange={e=>{setNewNick(e.target.value);setErr("");}} style={inputStyle}/>
+        <input type="password" placeholder="비밀번호 확인" value={pw}
+          onChange={e=>{setPw(e.target.value);setErr("");}} style={inputStyle}/>
+        {err && <div style={{fontSize:12,color:"#ef5350",fontWeight:600,marginBottom:8}}>{err}</div>}
+        <button onClick={handle} disabled={loading} style={{width:"100%",padding:"12px",
+          background:loading?"#aaa":"#1c1c1e",border:"none",borderRadius:11,color:"#fff",
+          fontFamily:"inherit",fontSize:14,fontWeight:800,cursor:"pointer",marginTop:4}}>
+          {loading?"변경 중...":"변경하기"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // 설정 화면
 function SettingsView({ nickname, arsenal, onPasswordChange, onNicknameChange, onDeleteAll, onLogout, showToast }) {
-  const [section, setSection] = useState(null); // null | "pw" | "nick" | "delete"
-  const [form, setForm] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState("");
-  const f = (k,v) => setForm(p=>({...p,[k]:v}));
-
-  const openSection = (s) => { setSection(s); setForm({}); setMsg(""); };
-
-  const inputStyle = {width:"100%",background:"#f7f7fc",border:"1.5px solid #e2e2e0",borderRadius:10,
-    color:"#333",padding:"10px 13px",fontSize:13,outline:"none",fontFamily:"inherit",boxSizing:"border-box",marginBottom:8};
-
-  const handlePwChange = async () => {
-    if(!form.old || !form.new1 || !form.new2) { setMsg("모든 항목을 입력해주세요"); return; }
-    if(form.new1.length < 4) { setMsg("새 비밀번호는 4자리 이상이어야 해요"); return; }
-    if(form.new1 !== form.new2) { setMsg("새 비밀번호가 일치하지 않아요"); return; }
-    setLoading(true);
-    const res = await onPasswordChange(form.old, form.new1);
-    setLoading(false);
-    if(res === "ok") { showToast("✅ 비밀번호 변경 완료"); setSection(null); }
-    else setMsg(res);
-  };
-
-  const handleNickChange = async () => {
-    if(!form.newNick || form.newNick.trim().length < 2) { setMsg("닉네임을 2글자 이상 입력해주세요"); return; }
-    if(!form.pw) { setMsg("비밀번호를 입력해주세요"); return; }
-    setLoading(true);
-    const res = await onNicknameChange(form.newNick.trim(), form.pw);
-    setLoading(false);
-    if(res === "ok") { showToast("✅ 닉네임 변경 완료"); setSection(null); }
-    else setMsg(res);
-  };
-
-  const handleDelete = async () => {
-    if(!form.pw) { setMsg("비밀번호를 입력해주세요"); return; }
-    if(!form.confirm || form.confirm !== "탈퇴") { setMsg("'탈퇴'를 정확히 입력해주세요"); return; }
-    setLoading(true);
-    const res = await onDeleteAll(form.pw);
-    setLoading(false);
-    if(res !== "ok") setMsg(res);
-  };
+  const [section, setSection] = useState(null);
 
   const Card = ({children, style={}}) => (
     <div style={{background:"#fff",borderRadius:16,overflow:"hidden",boxShadow:"0 1px 8px rgba(0,0,0,0.06)",...style}}>
       {children}
     </div>
   );
-  const Row = ({icon, label, sub, onClick, color="#111", danger=false}) => (
+  const Row = ({icon, label, sub, onClick, danger=false}) => (
     <button onClick={onClick} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",
       background:"none",border:"none",cursor:onClick?"pointer":"default",fontFamily:"inherit",
       borderBottom:"1px solid #f5f5f8",textAlign:"left"}}>
       <span style={{fontSize:22,width:32,textAlign:"center"}}>{icon}</span>
       <div style={{flex:1}}>
-        <div style={{fontSize:14,fontWeight:700,color:danger?"#ef5350":color}}>{label}</div>
+        <div style={{fontSize:14,fontWeight:700,color:danger?"#ef5350":"#111"}}>{label}</div>
         {sub&&<div style={{fontSize:11,color:"#aaa",marginTop:1}}>{sub}</div>}
       </div>
       {onClick&&<span style={{color:"#ddd",fontSize:16}}>›</span>}
     </button>
-  );
-
-  // 섹션 모달
-  const SectionModal = ({title, children}) => (
-    <div onClick={()=>setSection(null)} style={{position:"fixed",inset:0,zIndex:2500,
-      background:"rgba(10,10,30,0.55)",backdropFilter:"blur(10px)",
-      display:"flex",alignItems:"flex-start",justifyContent:"center",
-      padding:"60px 20px 20px",overflowY:"auto"}}>
-      <div onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:22,padding:"22px 20px",
-        width:"100%",maxWidth:360,boxShadow:"0 24px 60px rgba(0,0,0,0.2)",
-        animation:"modalIn .25s cubic-bezier(.34,1.56,.64,1)"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}>
-          <div style={{fontSize:17,fontWeight:800,color:"#111"}}>{title}</div>
-          <button onClick={()=>setSection(null)} style={{background:"none",border:"none",color:"#ccc",fontSize:22,cursor:"pointer"}}>✕</button>
-        </div>
-        {children}
-        {msg&&<div style={{fontSize:12,color:"#ef5350",fontWeight:600,marginTop:8}}>{msg}</div>}
-      </div>
-    </div>
   );
 
   return (
@@ -2902,413 +3015,48 @@ function SettingsView({ nickname, arsenal, onPasswordChange, onNicknameChange, o
       {/* 계정 관리 */}
       <div style={{fontSize:11,color:"#aaa",fontWeight:700,letterSpacing:1.5,marginBottom:6,paddingLeft:4}}>계정 관리</div>
       <Card style={{marginBottom:16}}>
-        <Row icon="🔑" label="비밀번호 변경" sub="현재 비밀번호 확인 후 변경" onClick={()=>openSection("pw")}/>
-        <Row icon="✏️" label="닉네임 변경" sub="변경 시 장비 데이터도 이동" onClick={()=>openSection("nick")}/>
-        <Row icon="🚪" label="로그아웃" sub="데이터는 클라우드에 유지됨" onClick={()=>{if(window.confirm("로그아웃 하시겠어요?")) onLogout();}} style={{borderBottom:"none"}}/>
+        <Row icon="🔑" label="비밀번호 변경" sub="현재 비밀번호 확인 후 변경" onClick={()=>setSection("pw")}/>
+        <Row icon="✏️" label="닉네임 변경" sub="변경 시 장비 데이터도 이동" onClick={()=>setSection("nick")}/>
+        <Row icon="🚪" label="로그아웃" sub="데이터는 클라우드에 유지됨"
+          onClick={()=>{if(window.confirm("로그아웃 하시겠어요?")) onLogout();}}/>
       </Card>
 
       {/* 데이터 관리 */}
       <div style={{fontSize:11,color:"#aaa",fontWeight:700,letterSpacing:1.5,marginBottom:6,paddingLeft:4}}>데이터 관리</div>
       <Card style={{marginBottom:16}}>
         <Row icon="📊" label="내 장비 현황" sub={`총 ${arsenal.length}개 · 클라우드 저장 중`}/>
-        <Row icon="🗑️" label="계정 및 데이터 삭제" sub="탈퇴 시 모든 데이터가 삭제돼요" onClick={()=>openSection("delete")} danger style={{borderBottom:"none"}}/>
+        <Row icon="🗑️" label="계정 및 데이터 삭제" sub="탈퇴 시 모든 데이터가 삭제돼요"
+          onClick={()=>setSection("delete")} danger/>
       </Card>
 
       {/* 앱 정보 */}
       <div style={{fontSize:11,color:"#aaa",fontWeight:700,letterSpacing:1.5,marginBottom:6,paddingLeft:4}}>앱 정보</div>
       <Card>
         <Row icon="🎳" label="ROLLMATE" sub="볼링 장비 관리 앱"/>
-        <Row icon="🔢" label="버전" sub="v7.6"/>
-        <Row icon="👨‍💻" label="만든이" sub="완태콩 & Claude" style={{borderBottom:"none"}}/>
+        <Row icon="🔢" label="버전" sub="v7.9"/>
+        <Row icon="👨‍💻" label="만든이" sub="완태콩 & Claude"/>
       </Card>
 
-      {/* 비밀번호 변경 모달 */}
+      {/* 모달들 - 별도 컴포넌트라 리렌더링 없음 */}
       {section==="pw" && (
-        <SectionModal title="🔑 비밀번호 변경">
-          <input type="password" placeholder="현재 비밀번호" value={form.old||""} onChange={e=>f("old",e.target.value)} style={inputStyle}/>
-          <input type="password" placeholder="새 비밀번호 (4자 이상)" value={form.new1||""} onChange={e=>f("new1",e.target.value)} style={inputStyle}/>
-          <input type="password" placeholder="새 비밀번호 확인" value={form.new2||""} onChange={e=>f("new2",e.target.value)} style={inputStyle}/>
-          <button onClick={handlePwChange} disabled={loading} style={{width:"100%",padding:"12px",background:loading?"#aaa":"#1c1c1e",
-            border:"none",borderRadius:11,color:"#fff",fontFamily:"inherit",fontSize:14,fontWeight:800,cursor:"pointer",marginTop:4}}>
-            {loading?"변경 중...":"변경하기"}
-          </button>
-        </SectionModal>
+        <PwChangeModal
+          onClose={(ok)=>{ setSection(null); if(ok) showToast("✅ 비밀번호 변경 완료"); }}
+          onSave={onPasswordChange}
+        />
       )}
-
-      {/* 닉네임 변경 모달 */}
       {section==="nick" && (
-        <SectionModal title="✏️ 닉네임 변경">
-          <div style={{fontSize:12,color:"#888",marginBottom:12,lineHeight:1.6}}>
-            현재: <b style={{color:"#ff8c00"}}>{nickname}</b>
-          </div>
-          <input placeholder="새 닉네임 (2글자 이상)" value={form.newNick||""} onChange={e=>f("newNick",e.target.value)} style={inputStyle}/>
-          <input type="password" placeholder="비밀번호 확인" value={form.pw||""} onChange={e=>f("pw",e.target.value)} style={inputStyle}/>
-          <button onClick={handleNickChange} disabled={loading} style={{width:"100%",padding:"12px",background:loading?"#aaa":"#1c1c1e",
-            border:"none",borderRadius:11,color:"#fff",fontFamily:"inherit",fontSize:14,fontWeight:800,cursor:"pointer",marginTop:4}}>
-            {loading?"변경 중...":"변경하기"}
-          </button>
-        </SectionModal>
+        <NickChangeModal
+          nickname={nickname}
+          onClose={(ok)=>{ setSection(null); if(ok) showToast("✅ 닉네임 변경 완료"); }}
+          onSave={onNicknameChange}
+        />
       )}
-
-      {/* 계정 삭제 모달 */}
       {section==="delete" && (
-        <SectionModal title="🗑️ 계정 삭제">
-          <div style={{background:"#fff5f5",border:"1.5px solid #ffcdd2",borderRadius:10,
-            padding:"10px 12px",marginBottom:14,fontSize:12,color:"#c62828",lineHeight:1.7,fontWeight:600}}>
-            ⚠️ 삭제 시 모든 장비 데이터가 영구적으로 삭제돼요. 복구가 불가능해요.
-          </div>
-          <input type="password" placeholder="비밀번호 확인" value={form.pw||""} onChange={e=>f("pw",e.target.value)} style={inputStyle}/>
-          <input placeholder={"확인을 위해 '탈퇴' 입력"} value={form.confirm||""} onChange={e=>f("confirm",e.target.value)} style={inputStyle}/>
-          <button onClick={handleDelete} disabled={loading} style={{width:"100%",padding:"12px",background:loading?"#aaa":"#ef5350",
-            border:"none",borderRadius:11,color:"#fff",fontFamily:"inherit",fontSize:14,fontWeight:800,cursor:"pointer",marginTop:4}}>
-            {loading?"삭제 중...":"계정 영구 삭제"}
-          </button>
-        </SectionModal>
+        <DeleteModal
+          onClose={()=>setSection(null)}
+          onDelete={onDeleteAll}
+        />
       )}
-    </div>
-  );
-}
-
-// 관리자 화면
-function AdminView({ nickname, onLogout, showToast }) {
-  const [tab, setTab] = useState("users");       // "users" | "notices"
-  const [users, setUsers] = useState([]);
-  const [notices, setNotices] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [selUser, setSelUser] = useState(null);  // 선택한 유저
-  const [userEquip, setUserEquip] = useState([]); // 선택 유저 장비
-  const [equipLoading, setEquipLoading] = useState(false);
-  const [noticeForm, setNoticeForm] = useState({title:"", content:""});
-  const [posting, setPosting] = useState(false);
-
-  // 회원 목록 불러오기
-  const loadUsers = async () => {
-    setLoading(true);
-    try {
-      const data = await sbGet("users", "order=created_at.desc&select=*");
-      setUsers(data);
-    } catch(e) { showToast("불러오기 오류","#ef5350"); }
-    setLoading(false);
-  };
-
-  // 공지사항 불러오기
-  const loadNotices = async () => {
-    setLoading(true);
-    try {
-      const data = await sbGet("notices", "order=created_at.desc");
-      setNotices(data);
-    } catch(e) { showToast("불러오기 오류","#ef5350"); }
-    setLoading(false);
-  };
-
-  // 탭 전환 시 로드
-  useEffect(()=>{
-    if(tab==="users") loadUsers();
-    if(tab==="notices") loadNotices();
-  },[tab]);
-
-  // 유저 장비 조회
-  const loadUserEquip = async (nick) => {
-    setEquipLoading(true);
-    try {
-      const data = await sbGet("equipment", `nickname=eq.${encodeURIComponent(nick)}&order=created_at.asc`);
-      setUserEquip(data);
-    } catch(e) { showToast("불러오기 오류","#ef5350"); }
-    setEquipLoading(false);
-  };
-
-  // 유저 강제 탈퇴
-  const deleteUser = async (nick) => {
-    if(!window.confirm(`'${nick}' 회원을 강제 탈퇴시킬까요?
-장비 데이터도 모두 삭제됩니다.`)) return;
-    try {
-      await sbFetch(`/equipment?nickname=eq.${encodeURIComponent(nick)}`, {method:"DELETE",prefer:""});
-      await sbFetch(`/users?nickname=eq.${encodeURIComponent(nick)}`, {method:"DELETE",prefer:""});
-      showToast(`🗑️ ${nick} 탈퇴 완료`,"#ef5350");
-      setSelUser(null);
-      loadUsers();
-    } catch(e) { showToast("삭제 오류","#ef5350"); }
-  };
-
-  // 공지 등록
-  const postNotice = async () => {
-    if(!noticeForm.title.trim() || !noticeForm.content.trim()) {
-      showToast("제목과 내용을 입력해주세요","#ef5350"); return;
-    }
-    setPosting(true);
-    try {
-      await sbInsert("notices", {title:noticeForm.title.trim(), content:noticeForm.content.trim(), is_active:true});
-      showToast("📢 공지사항 등록 완료");
-      setNoticeForm({title:"",content:""});
-      loadNotices();
-    } catch(e) { showToast("등록 오류","#ef5350"); }
-    setPosting(false);
-  };
-
-  // 공지 활성/비활성 토글
-  const toggleNotice = async (notice) => {
-    try {
-      await sbFetch(`/notices?id=eq.${notice.id}`, {
-        method:"PATCH", body:JSON.stringify({is_active:!notice.is_active}), prefer:"return=minimal"
-      });
-      loadNotices();
-    } catch(e) { showToast("오류 발생","#ef5350"); }
-  };
-
-  // 공지 삭제
-  const deleteNotice = async (id) => {
-    if(!window.confirm("공지사항을 삭제할까요?")) return;
-    try {
-      await sbFetch(`/notices?id=eq.${id}`, {method:"DELETE",prefer:""});
-      showToast("🗑️ 공지 삭제됨","#ef5350");
-      loadNotices();
-    } catch(e) { showToast("삭제 오류","#ef5350"); }
-  };
-
-  const inputStyle = {width:"100%",background:"#f7f7fc",border:"1.5px solid #e2e2e0",borderRadius:10,
-    color:"#333",padding:"10px 13px",fontSize:13,outline:"none",fontFamily:"inherit",boxSizing:"border-box",marginBottom:8};
-
-  return (
-    <div style={{fontFamily:"'Inter',sans-serif",background:"#f2f2f0",minHeight:"100vh",maxWidth:520,margin:"0 auto"}}>
-      {/* 관리자 탑바 */}
-      <div style={{background:"linear-gradient(135deg,#1c1c1e,#2d2014)",padding:"16px 20px",
-        display:"flex",alignItems:"center",justifyContent:"space-between",
-        boxShadow:"0 2px 12px rgba(0,0,0,0.2)"}}>
-        <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <span style={{fontSize:22}}>🛡️</span>
-          <div>
-            <div style={{fontSize:16,fontWeight:900,color:"#fff",letterSpacing:0.5}}>ROLLMATE 관리자</div>
-            <div style={{fontSize:11,color:"rgba(255,140,0,0.8)",fontWeight:600}}>@{nickname}</div>
-          </div>
-        </div>
-        <button onClick={()=>{if(window.confirm("로그아웃 할까요?")) onLogout();}}
-          style={{padding:"7px 14px",borderRadius:18,border:"1px solid rgba(255,255,255,0.2)",
-            background:"transparent",color:"rgba(255,255,255,0.7)",fontFamily:"inherit",
-            fontSize:12,fontWeight:700,cursor:"pointer"}}>로그아웃</button>
-      </div>
-
-      {/* 탭 */}
-      <div style={{display:"flex",background:"#fff",borderBottom:"2px solid #f2f2f0"}}>
-        {[{k:"users",l:"👥 회원 관리"},{k:"notices",l:"📢 공지사항"}].map(t=>(
-          <button key={t.k} onClick={()=>{setTab(t.k);setSelUser(null);}} style={{
-            flex:1,padding:"13px",border:"none",fontFamily:"inherit",fontSize:13,fontWeight:700,
-            cursor:"pointer",background:"transparent",
-            color:tab===t.k?"#ff8c00":"#999",
-            borderBottom:tab===t.k?"2.5px solid #ff8c00":"2.5px solid transparent",
-            transition:"all .15s"}}>
-            {t.l}
-            {t.k==="users"&&<span style={{marginLeft:5,fontSize:11,background:"#ff8c00",color:"#fff",
-              padding:"1px 6px",borderRadius:10,fontWeight:800}}>{users.length}</span>}
-          </button>
-        ))}
-      </div>
-
-      <div style={{padding:"16px 16px 40px"}}>
-
-        {/* 회원 관리 탭 */}
-        {tab==="users" && !selUser && (
-          <div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-              <div style={{fontWeight:800,fontSize:16,color:"#111"}}>전체 회원</div>
-              <button onClick={loadUsers} style={{padding:"6px 12px",borderRadius:14,border:"1.5px solid #e2e2e0",
-                background:"#fff",fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer",color:"#555"}}>
-                🔄 새로고침
-              </button>
-            </div>
-            {loading ? (
-              <div style={{textAlign:"center",padding:40,color:"#aaa"}}>불러오는 중...</div>
-            ) : users.length === 0 ? (
-              <div style={{textAlign:"center",padding:40,color:"#ccc"}}>회원이 없어요</div>
-            ) : (
-              <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                {users.map(u=>(
-                  <div key={u.id} onClick={()=>{setSelUser(u);loadUserEquip(u.nickname);}}
-                    style={{background:"#fff",borderRadius:14,padding:"13px 16px",cursor:"pointer",
-                      display:"flex",alignItems:"center",gap:12,
-                      boxShadow:"0 1px 6px rgba(0,0,0,0.06)",
-                      border:u.is_admin?"2px solid #ff8c0044":"1.5px solid transparent",
-                      transition:"all .15s"}}>
-                    <div style={{width:40,height:40,borderRadius:"50%",
-                      background:u.is_admin?"linear-gradient(135deg,#ff8c00,#e65100)":"linear-gradient(135deg,#1c1c1e,#444)",
-                      display:"flex",alignItems:"center",justifyContent:"center",
-                      fontSize:16,fontWeight:900,color:"#fff",flexShrink:0}}>
-                      {u.nickname.charAt(0).toUpperCase()}
-                    </div>
-                    <div style={{flex:1,minWidth:0}}>
-                      <div style={{display:"flex",alignItems:"center",gap:6}}>
-                        <div style={{fontWeight:700,fontSize:14,color:"#111"}}>{u.nickname}</div>
-                        {u.is_admin&&<span style={{fontSize:10,background:"#ff8c00",color:"#fff",
-                          padding:"1px 6px",borderRadius:8,fontWeight:800}}>관리자</span>}
-                      </div>
-                      <div style={{fontSize:11,color:"#aaa",marginTop:2}}>
-                        {u.real_name&&<span style={{color:"#888",fontWeight:600,marginRight:5}}>{u.real_name}</span>}
-                        {u.gender&&<span style={{marginRight:5}}>{u.gender}</span>}
-                        {u.birth_date&&<span>{u.birth_date}</span>}
-                      </div>
-                      <div style={{fontSize:11,color:"#ccc",marginTop:1}}>
-                        가입 {new Date(u.created_at).toLocaleDateString("ko-KR")}
-                      </div>
-                    </div>
-                    <span style={{color:"#ddd",fontSize:18}}>›</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* 회원 상세 */}
-        {tab==="users" && selUser && (
-          <div>
-            <button onClick={()=>setSelUser(null)} style={{background:"#fff",border:"1.5px solid #e2e2e0",
-              color:"#2d2d3d",padding:"6px 14px",borderRadius:18,cursor:"pointer",
-              fontWeight:700,fontSize:13,marginBottom:14,fontFamily:"inherit"}}>← 목록</button>
-
-            {/* 유저 프로필 */}
-            <div style={{background:"linear-gradient(135deg,#1c1c1e,#333)",borderRadius:18,
-              padding:"20px",marginBottom:14,display:"flex",alignItems:"center",gap:14}}>
-              <div style={{width:52,height:52,borderRadius:"50%",
-                background:selUser.is_admin?"linear-gradient(135deg,#ff8c00,#e65100)":"rgba(255,255,255,0.15)",
-                display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,fontWeight:900,color:"#fff"}}>
-                {selUser.nickname.charAt(0).toUpperCase()}
-              </div>
-              <div>
-                <div style={{display:"flex",alignItems:"center",gap:7}}>
-                  <div style={{fontSize:18,fontWeight:900,color:"#fff"}}>{selUser.nickname}</div>
-                  {selUser.is_admin&&<span style={{fontSize:11,background:"#ff8c00",color:"#fff",
-                    padding:"2px 8px",borderRadius:10,fontWeight:800}}>관리자</span>}
-                </div>
-                <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",marginTop:2}}>
-                  가입일 {new Date(selUser.created_at).toLocaleDateString("ko-KR")}
-                </div>
-                {selUser.real_name&&<div style={{fontSize:12,color:"rgba(255,140,0,0.7)",marginTop:1,fontWeight:600}}>{selUser.real_name}</div>}
-              </div>
-            </div>
-
-            {/* 개인 정보 카드 */}
-            <div style={{background:"#fff",borderRadius:16,padding:"16px",marginBottom:12,
-              boxShadow:"0 1px 8px rgba(0,0,0,0.06)"}}>
-              <div style={{fontWeight:800,fontSize:14,color:"#111",marginBottom:12}}>👤 회원 정보</div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-                {[
-                  {l:"성명", v:selUser.real_name||"-"},
-                  {l:"성별", v:selUser.gender||"-"},
-                  {l:"생년월일", v:selUser.birth_date||"-"},
-                  {l:"닉네임", v:selUser.nickname},
-                ].map(({l,v})=>(
-                  <div key={l} style={{background:"#f7f7fc",borderRadius:10,padding:"10px 12px"}}>
-                    <div style={{fontSize:10,color:"#aaa",fontWeight:700,letterSpacing:1,marginBottom:2}}>{l.toUpperCase()}</div>
-                    <div style={{fontSize:13,fontWeight:700,color:"#111"}}>{v}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* 장비 목록 */}
-            <div style={{background:"#fff",borderRadius:16,padding:"16px",marginBottom:12,
-              boxShadow:"0 1px 8px rgba(0,0,0,0.06)"}}>
-              <div style={{fontWeight:800,fontSize:14,color:"#111",marginBottom:12}}>
-                🎳 등록 장비 {equipLoading?"...":userEquip.length+"개"}
-              </div>
-              {equipLoading ? (
-                <div style={{textAlign:"center",padding:20,color:"#aaa",fontSize:13}}>불러오는 중...</div>
-              ) : userEquip.length === 0 ? (
-                <div style={{textAlign:"center",padding:16,color:"#ccc",fontSize:13}}>등록된 장비가 없어요</div>
-              ) : (
-                <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                  {userEquip.map(e=>(
-                    <div key={e.id} style={{background:"#f7f7fc",borderRadius:10,padding:"10px 13px"}}>
-                      <div style={{fontWeight:700,fontSize:13,color:"#111"}}>{e.ball_name}</div>
-                      <div style={{fontSize:11,color:"#888",marginTop:2}}>
-                        {e.weight}lb · {e.grip||"세미팁"}
-                        {e.purchase_price&&` · ${parseInt(e.purchase_price).toLocaleString()}원`}
-                        {e.purchase_date&&` · ${e.purchase_date}`}
-                      </div>
-                      {e.memo&&<div style={{fontSize:11,color:"#aaa",marginTop:3,fontStyle:"italic"}}>"{e.memo}"</div>}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* 강제 탈퇴 버튼 (관리자 계정은 삭제 불가) */}
-            {!selUser.is_admin && (
-              <button onClick={()=>deleteUser(selUser.nickname)} style={{
-                width:"100%",padding:"13px",background:"#ef5350",border:"none",borderRadius:14,
-                color:"#fff",fontFamily:"inherit",fontSize:14,fontWeight:800,cursor:"pointer",
-                boxShadow:"0 4px 14px rgba(239,83,80,0.35)"}}>
-                🗑️ 이 회원 강제 탈퇴
-              </button>
-            )}
-          </div>
-        )}
-
-        {/* 공지사항 탭 */}
-        {tab==="notices" && (
-          <div>
-            {/* 공지 작성 */}
-            <div style={{background:"#fff",borderRadius:16,padding:"16px",marginBottom:16,
-              boxShadow:"0 1px 8px rgba(0,0,0,0.06)"}}>
-              <div style={{fontWeight:800,fontSize:14,color:"#111",marginBottom:12}}>📝 새 공지 작성</div>
-              <input value={noticeForm.title} onChange={e=>setNoticeForm(f=>({...f,title:e.target.value}))}
-                placeholder="제목" style={inputStyle}/>
-              <textarea value={noticeForm.content} onChange={e=>setNoticeForm(f=>({...f,content:e.target.value}))}
-                placeholder="내용을 입력하세요..." rows={4}
-                style={{...inputStyle,resize:"vertical"}}/>
-              <button onClick={postNotice} disabled={posting} style={{
-                width:"100%",padding:"11px",background:posting?"#aaa":"#ff8c00",border:"none",borderRadius:11,
-                color:"#fff",fontFamily:"inherit",fontSize:13,fontWeight:800,cursor:"pointer",
-                boxShadow:"0 4px 14px rgba(255,140,0,0.3)"}}>
-                {posting?"등록 중...":"📢 공지 등록"}
-              </button>
-            </div>
-
-            {/* 공지 목록 */}
-            <div style={{fontWeight:800,fontSize:14,color:"#111",marginBottom:10}}>공지 목록</div>
-            {loading ? (
-              <div style={{textAlign:"center",padding:30,color:"#aaa"}}>불러오는 중...</div>
-            ) : notices.length === 0 ? (
-              <div style={{textAlign:"center",padding:30,color:"#ccc",fontSize:13}}>등록된 공지가 없어요</div>
-            ) : (
-              <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                {notices.map(n=>(
-                  <div key={n.id} style={{background:"#fff",borderRadius:14,padding:"14px 16px",
-                    boxShadow:"0 1px 6px rgba(0,0,0,0.06)",
-                    border:n.is_active?"1.5px solid #ff8c0033":"1.5px solid #e2e2e0",
-                    opacity:n.is_active?1:0.55}}>
-                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
-                      <div style={{flex:1,minWidth:0}}>
-                        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:3}}>
-                          <span style={{fontSize:11,fontWeight:800,padding:"2px 7px",borderRadius:8,
-                            background:n.is_active?"#ff8c00":"#ddd",color:"#fff"}}>
-                            {n.is_active?"게시 중":"숨김"}
-                          </span>
-                          <span style={{fontSize:11,color:"#aaa"}}>{new Date(n.created_at).toLocaleDateString("ko-KR")}</span>
-                        </div>
-                        <div style={{fontWeight:700,fontSize:14,color:"#111"}}>{n.title}</div>
-                        <div style={{fontSize:12,color:"#777",marginTop:4,lineHeight:1.5}}>{n.content}</div>
-                      </div>
-                    </div>
-                    <div style={{display:"flex",gap:6,marginTop:10}}>
-                      <button onClick={()=>toggleNotice(n)} style={{flex:1,padding:"7px",borderRadius:8,
-                        border:`1.5px solid ${n.is_active?"#ff8c0044":"#43a04744"}`,
-                        background:"transparent",color:n.is_active?"#ff8c00":"#43a047",
-                        fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer"}}>
-                        {n.is_active?"숨기기":"다시 게시"}
-                      </button>
-                      <button onClick={()=>deleteNotice(n.id)} style={{flex:1,padding:"7px",borderRadius:8,
-                        border:"1.5px solid #ef535044",background:"transparent",color:"#ef5350",
-                        fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer"}}>
-                        삭제
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
     </div>
   );
 }
