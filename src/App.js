@@ -3319,7 +3319,9 @@ function NicknameLogin({ onLogin }) {
   const [pw, setPw] = useState("");
   const [pw2, setPw2] = useState("");
   const [realName, setRealName] = useState("");
-  const [birthDate, setBirthDate] = useState("");
+  const [birthYear, setBirthYear] = useState("");
+  const [birthMonth, setBirthMonth] = useState("");
+  const [birthDay, setBirthDay] = useState("");
   const [gender, setGender] = useState("");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
@@ -3354,7 +3356,8 @@ function NicknameLogin({ onLogin }) {
 
   const handleRegister = async () => {
     if (!realName.trim()) { setErr("실명을 입력해주세요"); return; }
-    if (!birthDate) { setErr("생년월일을 입력해주세요"); return; }
+    if (!birthYear || !birthMonth || !birthDay) { setErr("생년월일을 모두 선택해주세요"); return; }
+    const birthDate = `${birthYear}-${birthMonth.padStart(2,"0")}-${birthDay.padStart(2,"0")}`;
     if (!gender) { setErr("성별을 선택해주세요"); return; }
     setLoading(true); setErr("");
     try {
@@ -3466,16 +3469,57 @@ function NicknameLogin({ onLogin }) {
             <input value={realName} onChange={e=>{setRealName(e.target.value);setErr("");}}
               placeholder="홍길동" maxLength={20} autoFocus style={inputStyle}/>
             <label style={labelStyle}>생년월일</label>
-            <input type="date" value={birthDate} onChange={e=>{setBirthDate(e.target.value);setErr("");}}
-              style={{...inputStyle, colorScheme:"dark"}}/>
+            <div style={{display:"flex",gap:6,marginBottom:8}}>
+              {/* 연도 */}
+              <select value={birthYear} onChange={e=>{setBirthYear(e.target.value);setErr("");}}
+                style={{flex:2,background:"rgba(255,255,255,0.1)",border:"1.5px solid rgba(255,255,255,0.2)",
+                  borderRadius:10,color:birthYear?"#fff":"rgba(255,255,255,0.35)",padding:"11px 8px",
+                  fontSize:13,outline:"none",fontFamily:"inherit",cursor:"pointer",appearance:"auto",
+                  colorScheme:"dark"}}>
+                <option value="" disabled>연도</option>
+                {Array.from({length:70},(_,i)=>new Date().getFullYear()-i).map(y=>(
+                  <option key={y} value={y} style={{background:"#1c1c1e",color:"#fff"}}>{y}년</option>
+                ))}
+              </select>
+              {/* 월 */}
+              <select value={birthMonth} onChange={e=>{setBirthMonth(e.target.value);setErr("");}}
+                style={{flex:1,background:"rgba(255,255,255,0.1)",border:"1.5px solid rgba(255,255,255,0.2)",
+                  borderRadius:10,color:birthMonth?"#fff":"rgba(255,255,255,0.35)",padding:"11px 6px",
+                  fontSize:13,outline:"none",fontFamily:"inherit",cursor:"pointer",appearance:"auto",
+                  colorScheme:"dark"}}>
+                <option value="" disabled>월</option>
+                {Array.from({length:12},(_,i)=>i+1).map(m=>(
+                  <option key={m} value={m} style={{background:"#1c1c1e",color:"#fff"}}>{m}월</option>
+                ))}
+              </select>
+              {/* 일 */}
+              <select value={birthDay} onChange={e=>{setBirthDay(e.target.value);setErr("");}}
+                style={{flex:1,background:"rgba(255,255,255,0.1)",border:"1.5px solid rgba(255,255,255,0.2)",
+                  borderRadius:10,color:birthDay?"#fff":"rgba(255,255,255,0.35)",padding:"11px 6px",
+                  fontSize:13,outline:"none",fontFamily:"inherit",cursor:"pointer",appearance:"auto",
+                  colorScheme:"dark"}}>
+                <option value="" disabled>일</option>
+                {Array.from({length:birthMonth&&birthYear
+                  ? new Date(birthYear, birthMonth, 0).getDate()
+                  : 31},(_,i)=>i+1).map(d=>(
+                  <option key={d} value={d} style={{background:"#1c1c1e",color:"#fff"}}>{d}일</option>
+                ))}
+              </select>
+            </div>
+            {/* 선택 미리보기 */}
+            {birthYear&&birthMonth&&birthDay&&(
+              <div style={{fontSize:12,color:"rgba(255,140,0,0.9)",fontWeight:700,marginBottom:8,textAlign:"center"}}>
+                📅 {birthYear}년 {birthMonth}월 {birthDay}일
+              </div>
+            )}
             <label style={labelStyle}>성별</label>
             <div style={{display:"flex",gap:6,marginBottom:8}}>
-              {["남성","여성","기타"].map(g=>(
+              {["남성","여성"].map(g=>(
                 <button key={g} onClick={()=>setGender(g)} style={{flex:1,padding:"11px 4px",
                   borderRadius:10,border:`1.5px solid ${gender===g?"#ff8c00":"rgba(255,255,255,0.15)"}`,
                   background:gender===g?"#ff8c00":"transparent",
                   color:gender===g?"#fff":"rgba(255,255,255,0.5)",
-                  fontFamily:"inherit",fontSize:13,fontWeight:700,cursor:"pointer",transition:"all .15s"}}>{g}</button>
+                  fontFamily:"inherit",fontSize:14,fontWeight:700,cursor:"pointer",transition:"all .15s"}}>{g}</button>
               ))}
             </div>
             {err&&<div style={{fontSize:12,color:"#ff6b6b",marginBottom:8,fontWeight:600}}>{err}</div>}
