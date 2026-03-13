@@ -2968,8 +2968,327 @@ function SettingsView({ nickname, arsenal, onPasswordChange, onNicknameChange, o
   );
 }
 
+// 관리자 화면
+function AdminView({ nickname, onLogout, showToast }) {
+  const [tab, setTab] = useState("users");       // "users" | "notices"
+  const [users, setUsers] = useState([]);
+  const [notices, setNotices] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selUser, setSelUser] = useState(null);  // 선택한 유저
+  const [userEquip, setUserEquip] = useState([]); // 선택 유저 장비
+  const [equipLoading, setEquipLoading] = useState(false);
+  const [noticeForm, setNoticeForm] = useState({title:"", content:""});
+  const [posting, setPosting] = useState(false);
+
+  // 회원 목록 불러오기
+  const loadUsers = async () => {
+    setLoading(true);
+    try {
+      const data = await sbGet("users", "order=created_at.desc&select=*");
+      setUsers(data);
+    } catch(e) { showToast("불러오기 오류","#ef5350"); }
+    setLoading(false);
+  };
+
+  // 공지사항 불러오기
+  const loadNotices = async () => {
+    setLoading(true);
+    try {
+      const data = await sbGet("notices", "order=created_at.desc");
+      setNotices(data);
+    } catch(e) { showToast("불러오기 오류","#ef5350"); }
+    setLoading(false);
+  };
+
+  // 탭 전환 시 로드
+  useEffect(()=>{
+    if(tab==="users") loadUsers();
+    if(tab==="notices") loadNotices();
+  },[tab]);
+
+  // 유저 장비 조회
+  const loadUserEquip = async (nick) => {
+    setEquipLoading(true);
+    try {
+      const data = await sbGet("equipment", `nickname=eq.${encodeURIComponent(nick)}&order=created_at.asc`);
+      setUserEquip(data);
+    } catch(e) { showToast("불러오기 오류","#ef5350"); }
+    setEquipLoading(false);
+  };
+
+  // 유저 강제 탈퇴
+  const deleteUser = async (nick) => {
+    if(!window.confirm(`'${nick}' 회원을 강제 탈퇴시킬까요?
+장비 데이터도 모두 삭제됩니다.`)) return;
+    try {
+      await sbFetch(`/equipment?nickname=eq.${encodeURIComponent(nick)}`, {method:"DELETE",prefer:""});
+      await sbFetch(`/users?nickname=eq.${encodeURIComponent(nick)}`, {method:"DELETE",prefer:""});
+      showToast(`🗑️ ${nick} 탈퇴 완료`,"#ef5350");
+      setSelUser(null);
+      loadUsers();
+    } catch(e) { showToast("삭제 오류","#ef5350"); }
+  };
+
+  // 공지 등록
+  const postNotice = async () => {
+    if(!noticeForm.title.trim() || !noticeForm.content.trim()) {
+      showToast("제목과 내용을 입력해주세요","#ef5350"); return;
+    }
+    setPosting(true);
+    try {
+      await sbInsert("notices", {title:noticeForm.title.trim(), content:noticeForm.content.trim(), is_active:true});
+      showToast("📢 공지사항 등록 완료");
+      setNoticeForm({title:"",content:""});
+      loadNotices();
+    } catch(e) { showToast("등록 오류","#ef5350"); }
+    setPosting(false);
+  };
+
+  // 공지 활성/비활성 토글
+  const toggleNotice = async (notice) => {
+    try {
+      await sbFetch(`/notices?id=eq.${notice.id}`, {
+        method:"PATCH", body:JSON.stringify({is_active:!notice.is_active}), prefer:"return=minimal"
+      });
+      loadNotices();
+    } catch(e) { showToast("오류 발생","#ef5350"); }
+  };
+
+  // 공지 삭제
+  const deleteNotice = async (id) => {
+    if(!window.confirm("공지사항을 삭제할까요?")) return;
+    try {
+      await sbFetch(`/notices?id=eq.${id}`, {method:"DELETE",prefer:""});
+      showToast("🗑️ 공지 삭제됨","#ef5350");
+      loadNotices();
+    } catch(e) { showToast("삭제 오류","#ef5350"); }
+  };
+
+  const inputStyle = {width:"100%",background:"#f7f7fc",border:"1.5px solid #e2e2e0",borderRadius:10,
+    color:"#333",padding:"10px 13px",fontSize:13,outline:"none",fontFamily:"inherit",boxSizing:"border-box",marginBottom:8};
+
+  return (
+    <div style={{fontFamily:"'Inter',sans-serif",background:"#f2f2f0",minHeight:"100vh",maxWidth:520,margin:"0 auto"}}>
+      {/* 관리자 탑바 */}
+      <div style={{background:"linear-gradient(135deg,#1c1c1e,#2d2014)",padding:"16px 20px",
+        display:"flex",alignItems:"center",justifyContent:"space-between",
+        boxShadow:"0 2px 12px rgba(0,0,0,0.2)"}}>
+        <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <span style={{fontSize:22}}>🛡️</span>
+          <div>
+            <div style={{fontSize:16,fontWeight:900,color:"#fff",letterSpacing:0.5}}>ROLLMATE 관리자</div>
+            <div style={{fontSize:11,color:"rgba(255,140,0,0.8)",fontWeight:600}}>@{nickname}</div>
+          </div>
+        </div>
+        <button onClick={()=>{if(window.confirm("로그아웃 할까요?")) onLogout();}}
+          style={{padding:"7px 14px",borderRadius:18,border:"1px solid rgba(255,255,255,0.2)",
+            background:"transparent",color:"rgba(255,255,255,0.7)",fontFamily:"inherit",
+            fontSize:12,fontWeight:700,cursor:"pointer"}}>로그아웃</button>
+      </div>
+
+      {/* 탭 */}
+      <div style={{display:"flex",background:"#fff",borderBottom:"2px solid #f2f2f0"}}>
+        {[{k:"users",l:"👥 회원 관리"},{k:"notices",l:"📢 공지사항"}].map(t=>(
+          <button key={t.k} onClick={()=>{setTab(t.k);setSelUser(null);}} style={{
+            flex:1,padding:"13px",border:"none",fontFamily:"inherit",fontSize:13,fontWeight:700,
+            cursor:"pointer",background:"transparent",
+            color:tab===t.k?"#ff8c00":"#999",
+            borderBottom:tab===t.k?"2.5px solid #ff8c00":"2.5px solid transparent",
+            transition:"all .15s"}}>
+            {t.l}
+            {t.k==="users"&&<span style={{marginLeft:5,fontSize:11,background:"#ff8c00",color:"#fff",
+              padding:"1px 6px",borderRadius:10,fontWeight:800}}>{users.length}</span>}
+          </button>
+        ))}
+      </div>
+
+      <div style={{padding:"16px 16px 40px"}}>
+
+        {/* 회원 관리 탭 */}
+        {tab==="users" && !selUser && (
+          <div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+              <div style={{fontWeight:800,fontSize:16,color:"#111"}}>전체 회원</div>
+              <button onClick={loadUsers} style={{padding:"6px 12px",borderRadius:14,border:"1.5px solid #e2e2e0",
+                background:"#fff",fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer",color:"#555"}}>
+                🔄 새로고침
+              </button>
+            </div>
+            {loading ? (
+              <div style={{textAlign:"center",padding:40,color:"#aaa"}}>불러오는 중...</div>
+            ) : users.length === 0 ? (
+              <div style={{textAlign:"center",padding:40,color:"#ccc"}}>회원이 없어요</div>
+            ) : (
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {users.map(u=>(
+                  <div key={u.id} onClick={()=>{setSelUser(u);loadUserEquip(u.nickname);}}
+                    style={{background:"#fff",borderRadius:14,padding:"13px 16px",cursor:"pointer",
+                      display:"flex",alignItems:"center",gap:12,
+                      boxShadow:"0 1px 6px rgba(0,0,0,0.06)",
+                      border:u.is_admin?"2px solid #ff8c0044":"1.5px solid transparent",
+                      transition:"all .15s"}}>
+                    <div style={{width:40,height:40,borderRadius:"50%",
+                      background:u.is_admin?"linear-gradient(135deg,#ff8c00,#e65100)":"linear-gradient(135deg,#1c1c1e,#444)",
+                      display:"flex",alignItems:"center",justifyContent:"center",
+                      fontSize:16,fontWeight:900,color:"#fff",flexShrink:0}}>
+                      {u.nickname.charAt(0).toUpperCase()}
+                    </div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{display:"flex",alignItems:"center",gap:6}}>
+                        <div style={{fontWeight:700,fontSize:14,color:"#111"}}>{u.nickname}</div>
+                        {u.is_admin&&<span style={{fontSize:10,background:"#ff8c00",color:"#fff",
+                          padding:"1px 6px",borderRadius:8,fontWeight:800}}>관리자</span>}
+                      </div>
+                      <div style={{fontSize:11,color:"#aaa",marginTop:2}}>
+                        가입 {new Date(u.created_at).toLocaleDateString("ko-KR")}
+                      </div>
+                    </div>
+                    <span style={{color:"#ddd",fontSize:18}}>›</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 회원 상세 */}
+        {tab==="users" && selUser && (
+          <div>
+            <button onClick={()=>setSelUser(null)} style={{background:"#fff",border:"1.5px solid #e2e2e0",
+              color:"#2d2d3d",padding:"6px 14px",borderRadius:18,cursor:"pointer",
+              fontWeight:700,fontSize:13,marginBottom:14,fontFamily:"inherit"}}>← 목록</button>
+
+            {/* 유저 프로필 */}
+            <div style={{background:"linear-gradient(135deg,#1c1c1e,#333)",borderRadius:18,
+              padding:"20px",marginBottom:14,display:"flex",alignItems:"center",gap:14}}>
+              <div style={{width:52,height:52,borderRadius:"50%",
+                background:selUser.is_admin?"linear-gradient(135deg,#ff8c00,#e65100)":"rgba(255,255,255,0.15)",
+                display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,fontWeight:900,color:"#fff"}}>
+                {selUser.nickname.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <div style={{display:"flex",alignItems:"center",gap:7}}>
+                  <div style={{fontSize:18,fontWeight:900,color:"#fff"}}>{selUser.nickname}</div>
+                  {selUser.is_admin&&<span style={{fontSize:11,background:"#ff8c00",color:"#fff",
+                    padding:"2px 8px",borderRadius:10,fontWeight:800}}>관리자</span>}
+                </div>
+                <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",marginTop:2}}>
+                  가입일 {new Date(selUser.created_at).toLocaleDateString("ko-KR")}
+                </div>
+              </div>
+            </div>
+
+            {/* 장비 목록 */}
+            <div style={{background:"#fff",borderRadius:16,padding:"16px",marginBottom:12,
+              boxShadow:"0 1px 8px rgba(0,0,0,0.06)"}}>
+              <div style={{fontWeight:800,fontSize:14,color:"#111",marginBottom:12}}>
+                🎳 등록 장비 {equipLoading?"...":userEquip.length+"개"}
+              </div>
+              {equipLoading ? (
+                <div style={{textAlign:"center",padding:20,color:"#aaa",fontSize:13}}>불러오는 중...</div>
+              ) : userEquip.length === 0 ? (
+                <div style={{textAlign:"center",padding:16,color:"#ccc",fontSize:13}}>등록된 장비가 없어요</div>
+              ) : (
+                <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                  {userEquip.map(e=>(
+                    <div key={e.id} style={{background:"#f7f7fc",borderRadius:10,padding:"10px 13px"}}>
+                      <div style={{fontWeight:700,fontSize:13,color:"#111"}}>{e.ball_name}</div>
+                      <div style={{fontSize:11,color:"#888",marginTop:2}}>
+                        {e.weight}lb · {e.grip||"세미팁"}
+                        {e.purchase_price&&` · ${parseInt(e.purchase_price).toLocaleString()}원`}
+                        {e.purchase_date&&` · ${e.purchase_date}`}
+                      </div>
+                      {e.memo&&<div style={{fontSize:11,color:"#aaa",marginTop:3,fontStyle:"italic"}}>"{e.memo}"</div>}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* 강제 탈퇴 버튼 (관리자 계정은 삭제 불가) */}
+            {!selUser.is_admin && (
+              <button onClick={()=>deleteUser(selUser.nickname)} style={{
+                width:"100%",padding:"13px",background:"#ef5350",border:"none",borderRadius:14,
+                color:"#fff",fontFamily:"inherit",fontSize:14,fontWeight:800,cursor:"pointer",
+                boxShadow:"0 4px 14px rgba(239,83,80,0.35)"}}>
+                🗑️ 이 회원 강제 탈퇴
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* 공지사항 탭 */}
+        {tab==="notices" && (
+          <div>
+            {/* 공지 작성 */}
+            <div style={{background:"#fff",borderRadius:16,padding:"16px",marginBottom:16,
+              boxShadow:"0 1px 8px rgba(0,0,0,0.06)"}}>
+              <div style={{fontWeight:800,fontSize:14,color:"#111",marginBottom:12}}>📝 새 공지 작성</div>
+              <input value={noticeForm.title} onChange={e=>setNoticeForm(f=>({...f,title:e.target.value}))}
+                placeholder="제목" style={inputStyle}/>
+              <textarea value={noticeForm.content} onChange={e=>setNoticeForm(f=>({...f,content:e.target.value}))}
+                placeholder="내용을 입력하세요..." rows={4}
+                style={{...inputStyle,resize:"vertical"}}/>
+              <button onClick={postNotice} disabled={posting} style={{
+                width:"100%",padding:"11px",background:posting?"#aaa":"#ff8c00",border:"none",borderRadius:11,
+                color:"#fff",fontFamily:"inherit",fontSize:13,fontWeight:800,cursor:"pointer",
+                boxShadow:"0 4px 14px rgba(255,140,0,0.3)"}}>
+                {posting?"등록 중...":"📢 공지 등록"}
+              </button>
+            </div>
+
+            {/* 공지 목록 */}
+            <div style={{fontWeight:800,fontSize:14,color:"#111",marginBottom:10}}>공지 목록</div>
+            {loading ? (
+              <div style={{textAlign:"center",padding:30,color:"#aaa"}}>불러오는 중...</div>
+            ) : notices.length === 0 ? (
+              <div style={{textAlign:"center",padding:30,color:"#ccc",fontSize:13}}>등록된 공지가 없어요</div>
+            ) : (
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {notices.map(n=>(
+                  <div key={n.id} style={{background:"#fff",borderRadius:14,padding:"14px 16px",
+                    boxShadow:"0 1px 6px rgba(0,0,0,0.06)",
+                    border:n.is_active?"1.5px solid #ff8c0033":"1.5px solid #e2e2e0",
+                    opacity:n.is_active?1:0.55}}>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:3}}>
+                          <span style={{fontSize:11,fontWeight:800,padding:"2px 7px",borderRadius:8,
+                            background:n.is_active?"#ff8c00":"#ddd",color:"#fff"}}>
+                            {n.is_active?"게시 중":"숨김"}
+                          </span>
+                          <span style={{fontSize:11,color:"#aaa"}}>{new Date(n.created_at).toLocaleDateString("ko-KR")}</span>
+                        </div>
+                        <div style={{fontWeight:700,fontSize:14,color:"#111"}}>{n.title}</div>
+                        <div style={{fontSize:12,color:"#777",marginTop:4,lineHeight:1.5}}>{n.content}</div>
+                      </div>
+                    </div>
+                    <div style={{display:"flex",gap:6,marginTop:10}}>
+                      <button onClick={()=>toggleNotice(n)} style={{flex:1,padding:"7px",borderRadius:8,
+                        border:`1.5px solid ${n.is_active?"#ff8c0044":"#43a04744"}`,
+                        background:"transparent",color:n.is_active?"#ff8c00":"#43a047",
+                        fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                        {n.is_active?"숨기기":"다시 게시"}
+                      </button>
+                      <button onClick={()=>deleteNotice(n.id)} style={{flex:1,padding:"7px",borderRadius:8,
+                        border:"1.5px solid #ef535044",background:"transparent",color:"#ef5350",
+                        fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                        삭제
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // 닉네임 + 비밀번호 로그인
-function NicknameLogin({ onLogin }) {
+function NicknameLogin({ onLogin }) {  // onLogin(nickname, data, isAdmin)
   const [mode, setMode] = useState("login"); // "login" | "register"
   const [name, setName] = useState("");
   const [pw, setPw] = useState("");
@@ -2993,11 +3312,14 @@ function NicknameLogin({ onLogin }) {
         setErr("비밀번호가 틀렸어요.");
         setLoading(false); return;
       }
-      // 장비 불러오기
+      // 관리자 여부 저장
+      const isAdmin = users[0].is_admin === true;
       localStorage.setItem("rm_nickname", n);
       localStorage.setItem("rm_pw", pw);
+      localStorage.setItem("rm_admin", isAdmin ? "1" : "0");
+      // 장비 불러오기
       const data = await sbGet("equipment", `nickname=eq.${encodeURIComponent(n)}&order=created_at.asc`);
-      onLogin(n, data);
+      onLogin(n, data, isAdmin);
     } catch(e) {
       setErr("연결 오류. 잠시 후 다시 시도해주세요.");
     }
@@ -3814,7 +4136,9 @@ export default function RollmateApp() {
   const [splash,setSplash]   = useState(true);
   const [sortBy,setSortBy]   = useState("popular");
   const [nickname,setNickname] = useState(()=>localStorage.getItem("rm_nickname")||"");
+  const [isAdmin,setIsAdmin]   = useState(()=>localStorage.getItem("rm_admin")==="1");
   const [dbLoading,setDbLoading] = useState(false);
+  const [notices,setNotices]   = useState([]);
   const scrollPos            = useRef(0);
 
   useEffect(()=>{setTimeout(()=>setSplash(false),2000);},[]);
@@ -3860,6 +4184,9 @@ export default function RollmateApp() {
         .catch(()=>{})
         .finally(()=>setDbLoading(false));
     }
+    // 공지사항 불러오기
+    sbGet("notices","is_active=eq.true&order=created_at.desc")
+      .then(d=>setNotices(d)).catch(()=>{});
   },[]);
 
   // 홈 복귀 시 이전 스크롤 위치 복원
@@ -3984,8 +4311,9 @@ export default function RollmateApp() {
 
   // 닉네임 로그인이 없으면 로그인 화면
   if(!nickname) return (
-    <NicknameLogin onLogin={(n, data)=>{
+    <NicknameLogin onLogin={(n, data, admin)=>{
       setNickname(n);
+      setIsAdmin(!!admin);
       if(data.length === 0){ setArsenal([]); return; }
       const mapped = data.map(r=>({
         dbId: r.id,
@@ -4006,6 +4334,21 @@ export default function RollmateApp() {
       setArsenal(mapped);
     }}/>
   );
+
+  // 관리자면 관리자 화면
+  if(isAdmin) return (
+    <AdminView
+      nickname={nickname}
+      onLogout={()=>{
+        localStorage.removeItem("rm_nickname");
+        localStorage.removeItem("rm_pw");
+        localStorage.removeItem("rm_admin");
+        setNickname(""); setArsenal([]); setIsAdmin(false);
+      }}
+      showToast={showToast}
+    />
+  );
+
 
   return (
     <div style={{fontFamily:"'Inter',sans-serif",background:"#f2f2f0",minHeight:"100vh",overflowX:"hidden",maxWidth:"100vw",width:"100%"}}>
@@ -4082,6 +4425,27 @@ export default function RollmateApp() {
         {/* HOME */}
         {view==="home"&&!sel&&(
           <div style={{animation:"fadeUp .3s ease both"}}>
+            {/* 공지사항 배너 */}
+            {notices.length>0&&(
+              <div style={{marginBottom:14}}>
+                {notices.map(n=>(
+                  <div key={n.id} style={{background:"linear-gradient(135deg,#ff8c00,#e65100)",
+                    borderRadius:14,padding:"12px 16px",marginBottom:6,
+                    boxShadow:"0 4px 14px rgba(255,140,0,0.25)"}}>
+                    <div style={{display:"flex",alignItems:"flex-start",gap:10}}>
+                      <span style={{fontSize:18,flexShrink:0}}>📢</span>
+                      <div>
+                        <div style={{fontSize:13,fontWeight:800,color:"#fff",marginBottom:2}}>{n.title}</div>
+                        <div style={{fontSize:12,color:"rgba(255,255,255,0.85)",lineHeight:1.5}}>{n.content}</div>
+                        <div style={{fontSize:10,color:"rgba(255,255,255,0.55)",marginTop:4}}>
+                          {new Date(n.created_at).toLocaleDateString("ko-KR")}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
             {/* 브랜드 필터 칩 — 바 차트 제거 */}
             <div style={{marginBottom:14}}>
               <div style={{fontSize:13,color:"#4a4a5a",fontWeight:700,letterSpacing:2,marginBottom:9}}>
@@ -4380,14 +4744,16 @@ export default function RollmateApp() {
                 });
                 localStorage.removeItem("rm_nickname");
                 localStorage.removeItem("rm_pw");
-                setNickname(""); setArsenal([]);
+                localStorage.removeItem("rm_admin");
+                setNickname(""); setArsenal([]); setIsAdmin(false);
                 return "ok";
               } catch(e) { return "오류가 발생했어요."; }
             }}
             onLogout={()=>{
               localStorage.removeItem("rm_nickname");
               localStorage.removeItem("rm_pw");
-              setNickname(""); setArsenal([]);
+              localStorage.removeItem("rm_admin");
+              setNickname(""); setArsenal([]); setIsAdmin(false);
             }}
             showToast={showToast}
           />
