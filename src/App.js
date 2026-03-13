@@ -1,5 +1,34 @@
 import { useState, useEffect, useRef } from "react";
 
+// ── Supabase 설정 ──────────────────────────────────────────────
+const SUPABASE_URL = "https://klesgczkebudkuidhflc.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtsZXNnY3prZWJ1ZGt1aWRoZmxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzOTE1MjksImV4cCI6MjA4ODk2NzUyOX0.ZKAAmR2yj9Aia-1-q_3ZAOfx-95MnW9OWz9jpr2qxfw";
+
+const sbFetch = async (path, options={}) => {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1${path}`, {
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Authorization": `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+      "Prefer": options.prefer || "return=representation",
+      ...options.headers,
+    },
+    ...options,
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : [];
+};
+
+const sbGet = (table, query="") => sbFetch(`/${table}?${query}`);
+const sbInsert = (table, data) => sbFetch(`/${table}`, { method:"POST", body:JSON.stringify(data) });
+const sbUpdate = (table, id, data) => sbFetch(`/${table}?id=eq.${id}`, { method:"PATCH", body:JSON.stringify(data) });
+const sbDelete = (table, id) => sbFetch(`/${table}?id=eq.${id}`, { method:"DELETE", prefer:"" });
+// ──────────────────────────────────────────────────────────────
+
 const BOWWWL_BALL = (slug) =>
   `https://www.bowwwl.com/sites/default/files/styles/ball_grid/public/balls/${slug}.png`;
 const BOWWWL_CORE = (slug) =>
@@ -2772,72 +2801,287 @@ function WeightTable({ ball, sel, onSel }) {
   );
 }
 
-// 등록 모달
+// 닉네임 + 비밀번호 로그인
+function NicknameLogin({ onLogin }) {
+  const [mode, setMode] = useState("login"); // "login" | "register"
+  const [name, setName] = useState("");
+  const [pw, setPw] = useState("");
+  const [pw2, setPw2] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+
+  const handleLogin = async () => {
+    const n = name.trim();
+    if (!n) { setErr("닉네임을 입력해주세요"); return; }
+    if (!pw) { setErr("비밀번호를 입력해주세요"); return; }
+    setLoading(true); setErr("");
+    try {
+      // 유저 확인
+      const users = await sbGet("users", `nickname=eq.${encodeURIComponent(n)}&select=*`);
+      if (users.length === 0) {
+        setErr("존재하지 않는 닉네임이에요. 회원가입을 해주세요.");
+        setLoading(false); return;
+      }
+      if (users[0].password !== pw) {
+        setErr("비밀번호가 틀렸어요.");
+        setLoading(false); return;
+      }
+      // 장비 불러오기
+      localStorage.setItem("rm_nickname", n);
+      localStorage.setItem("rm_pw", pw);
+      const data = await sbGet("equipment", `nickname=eq.${encodeURIComponent(n)}&order=created_at.asc`);
+      onLogin(n, data);
+    } catch(e) {
+      setErr("연결 오류. 잠시 후 다시 시도해주세요.");
+    }
+    setLoading(false);
+  };
+
+  const handleRegister = async () => {
+    const n = name.trim();
+    if (!n || n.length < 2) { setErr("닉네임을 2글자 이상 입력해주세요"); return; }
+    if (!pw || pw.length < 4) { setErr("비밀번호를 4자리 이상 입력해주세요"); return; }
+    if (pw !== pw2) { setErr("비밀번호가 일치하지 않아요"); return; }
+    setLoading(true); setErr("");
+    try {
+      // 닉네임 중복 확인
+      const existing = await sbGet("users", `nickname=eq.${encodeURIComponent(n)}&select=id`);
+      if (existing.length > 0) {
+        setErr("이미 사용 중인 닉네임이에요."); setLoading(false); return;
+      }
+      // 회원가입
+      await sbInsert("users", { nickname: n, password: pw });
+      localStorage.setItem("rm_nickname", n);
+      localStorage.setItem("rm_pw", pw);
+      onLogin(n, []);
+    } catch(e) {
+      setErr("연결 오류. 잠시 후 다시 시도해주세요.");
+    }
+    setLoading(false);
+  };
+
+  const inputStyle = {
+    width:"100%", background:"rgba(255,255,255,0.1)", border:"1.5px solid rgba(255,255,255,0.2)",
+    borderRadius:12, color:"#fff", padding:"12px 14px", fontSize:14, outline:"none",
+    fontFamily:"inherit", boxSizing:"border-box", marginBottom:8
+  };
+
+  return (
+    <div style={{position:"fixed",inset:0,zIndex:3000,background:"linear-gradient(160deg,#1c1c1e 0%,#2d2014 100%)",
+      display:"flex",alignItems:"center",justifyContent:"center",padding:24,overflowY:"auto"}}>
+      <div style={{width:"100%",maxWidth:340,textAlign:"center"}}>
+        <div style={{fontSize:60,marginBottom:6}}>🎳</div>
+        <div style={{fontSize:28,fontWeight:900,color:"#fff",letterSpacing:-0.5,marginBottom:2}}>ROLLMATE</div>
+        <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",marginBottom:28,fontWeight:600}}>나만의 장비 관리 앱</div>
+
+        {/* 탭 */}
+        <div style={{display:"flex",background:"rgba(255,255,255,0.08)",borderRadius:12,padding:4,marginBottom:20}}>
+          {[{k:"login",l:"로그인"},{k:"register",l:"회원가입"}].map(t=>(
+            <button key={t.k} onClick={()=>{setMode(t.k);setErr("");}} style={{flex:1,padding:"9px",borderRadius:9,
+              border:"none",fontFamily:"inherit",fontSize:13,fontWeight:700,cursor:"pointer",
+              background:mode===t.k?"#ff8c00":"transparent",
+              color:mode===t.k?"#fff":"rgba(255,255,255,0.4)",
+              transition:"all .15s"}}>{t.l}</button>
+          ))}
+        </div>
+
+        <div style={{background:"rgba(255,255,255,0.06)",borderRadius:20,padding:"24px 20px",border:"1px solid rgba(255,255,255,0.1)"}}>
+          <input value={name} onChange={e=>{setName(e.target.value);setErr("");}}
+            onKeyDown={e=>e.key==="Enter"&&(mode==="login"?handleLogin():handleRegister())}
+            placeholder="닉네임" maxLength={20} autoFocus style={inputStyle}/>
+          <input type="password" value={pw} onChange={e=>{setPw(e.target.value);setErr("");}}
+            onKeyDown={e=>e.key==="Enter"&&(mode==="login"?handleLogin():handleRegister())}
+            placeholder="비밀번호" maxLength={30} style={inputStyle}/>
+          {mode==="register" && (
+            <input type="password" value={pw2} onChange={e=>{setPw2(e.target.value);setErr("");}}
+              onKeyDown={e=>e.key==="Enter"&&handleRegister()}
+              placeholder="비밀번호 확인" maxLength={30} style={inputStyle}/>
+          )}
+          {err && <div style={{fontSize:12,color:"#ff6b6b",marginBottom:8,fontWeight:600,textAlign:"left"}}>{err}</div>}
+          <button onClick={mode==="login"?handleLogin:handleRegister} disabled={loading} style={{
+            width:"100%",padding:"13px",background:loading?"#555":"#ff8c00",border:"none",borderRadius:12,
+            color:"#fff",fontFamily:"inherit",fontSize:14,fontWeight:800,
+            cursor:loading?"not-allowed":"pointer",boxShadow:"0 6px 20px rgba(255,140,0,0.4)",marginTop:4}}>
+            {loading ? "확인 중..." : mode==="login" ? "로그인 →" : "회원가입 →"}
+          </button>
+        </div>
+        <div style={{fontSize:11,color:"rgba(255,255,255,0.2)",marginTop:14,lineHeight:1.7}}>
+          비밀번호는 암호화 없이 저장돼요<br/>소중한 비밀번호는 사용하지 마세요
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// 등록 모달 (드릴링 + 구매정보 + 표면관리 + 메모)
 function RegModal({ ball, existing, onSave, onClose }) {
   const [form, setForm] = useState({
-    nickname:existing?.nickname||"", weight:existing?.weight||15,
-    grip:existing?.grip||"세미팁", surface:existing?.surface||"팩토리", memo:existing?.memo||""
+    nickname: existing?.nickname||"",
+    weight: existing?.weight||15,
+    grip: existing?.grip||"세미팁",
+    drill_pin: existing?.drill_pin||"",
+    drill_cg: existing?.drill_cg||"",
+    drill_mb: existing?.drill_mb||"",
+    drill_note: existing?.drill_note||"",
+    purchase_date: existing?.purchase_date||"",
+    purchase_price: existing?.purchase_price||"",
+    memo: existing?.memo||"",
+    surface_logs: existing?.surface_logs||[],
   });
+  const [tab, setTab] = useState("basic");
+  const [newLog, setNewLog] = useState({date:"",method:"",grit:"",note:""});
   const set = (k,v) => setForm(f=>({...f,[k]:v}));
+  const addLog = () => {
+    if (!newLog.date && !newLog.method) return;
+    set("surface_logs", [...form.surface_logs, {...newLog, id:Date.now()}]);
+    setNewLog({date:"",method:"",grit:"",note:""});
+  };
+  const removeLog = (id) => set("surface_logs", form.surface_logs.filter(l=>l.id!==id));
+  const tabs = [{k:"basic",l:"기본"},{k:"drill",l:"드릴링"},{k:"purchase",l:"구매"},{k:"surface",l:"표면관리"}];
+  const inputStyle = {width:"100%",background:"#f7f7fc",border:"1.5px solid #e2e2e0",borderRadius:10,
+    color:"#333",padding:"8px 12px",fontSize:13,outline:"none",fontFamily:"inherit",boxSizing:"border-box"};
+  const labelStyle = {fontSize:12,color:"#1c1c1e",fontWeight:700,letterSpacing:1.2,display:"block",marginBottom:4};
   return (
     <div onClick={onClose} style={{position:"fixed",inset:0,zIndex:2000,
       background:"rgba(10,10,30,0.6)",backdropFilter:"blur(14px)",
-      display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+      display:"flex",alignItems:"center",justifyContent:"center",padding:16,overflowY:"auto"}}>
       <div onClick={e=>e.stopPropagation()} style={{
-        background:"#ffffff",borderRadius:24,padding:"22px 20px",width:"100%",maxWidth:380,
-        boxShadow:"0 32px 80px rgba(0,0,0,0.25)",animation:"modalIn .28s cubic-bezier(.34,1.56,.64,1)"}}>
+        background:"#ffffff",borderRadius:24,padding:"22px 20px",width:"100%",maxWidth:400,
+        boxShadow:"0 32px 80px rgba(0,0,0,0.25)",animation:"modalIn .28s cubic-bezier(.34,1.56,.64,1)",
+        maxHeight:"90vh",overflowY:"auto"}}>
         <style>{`@keyframes modalIn{from{transform:scale(.88) translateY(20px);opacity:0}to{transform:scale(1);opacity:1}}`}</style>
-        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:18}}>
-          <BallImg ball={ball} size={50}/>
+        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
+          <BallImg ball={ball} size={48}/>
           <div style={{flex:1}}>
-            <div style={{fontSize:13,color:"#6b6b7e",fontWeight:700,letterSpacing:1.5}}>{ball.brand.toUpperCase()}</div>
-            <div style={{fontSize:18,fontWeight:800,color:"#111",lineHeight:1.1}}>{ball.name}</div>
+            <div style={{fontSize:12,color:"#6b6b7e",fontWeight:700,letterSpacing:1.5}}>{ball.brand.toUpperCase()}</div>
+            <div style={{fontSize:17,fontWeight:800,color:"#111",lineHeight:1.1}}>{ball.name}</div>
           </div>
           <button onClick={onClose} style={{background:"none",border:"none",color:"#ddd",fontSize:20,cursor:"pointer"}}>✕</button>
         </div>
-        <div style={{display:"flex",flexDirection:"column",gap:11}}>
-          <div>
-            <label style={{fontSize:13,color:"#1c1c1e",fontWeight:700,letterSpacing:1.5,display:"block",marginBottom:5}}>별명 (선택)</label>
-            <input value={form.nickname} onChange={e=>set("nickname",e.target.value)} placeholder="나만의 이름" maxLength={20}
-              style={{width:"100%",background:"#f7f7fc",border:"1.5px solid #e2e2e0",borderRadius:10,
-                color:"#333",padding:"8px 12px",fontSize:13,outline:"none",fontFamily:"inherit"}}/>
-          </div>
-          <div>
-            <label style={{fontSize:13,color:"#1c1c1e",fontWeight:700,letterSpacing:1.5,display:"block",marginBottom:5}}>무게</label>
-            <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
-              {[10,11,12,13,14,15,16].map(w=>(
-                <button key={w} onClick={()=>set("weight",w)} style={{padding:"4px 10px",borderRadius:7,cursor:"pointer",
-                  fontSize:13,fontWeight:700,border:"none",fontFamily:"inherit",
-                  background:form.weight===w?ball.accent:"#e8ecf5",color:form.weight===w?"#fff":"#2d2d3d"}}>{w}lb</button>
-              ))}
+        <div style={{display:"flex",gap:4,marginBottom:16,background:"#f7f7fc",borderRadius:12,padding:4}}>
+          {tabs.map(t=>(
+            <button key={t.k} onClick={()=>setTab(t.k)} style={{flex:1,padding:"7px 4px",borderRadius:9,border:"none",
+              fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer",transition:"all .15s",
+              background:tab===t.k?"#fff":"transparent",
+              color:tab===t.k?"#111":"#999",
+              boxShadow:tab===t.k?"0 1px 4px rgba(0,0,0,0.1)":"none"}}>{t.l}</button>
+          ))}
+        </div>
+        {tab==="basic" && (
+          <div style={{display:"flex",flexDirection:"column",gap:12}}>
+            <div>
+              <label style={labelStyle}>볼 별명 (선택)</label>
+              <input value={form.nickname} onChange={e=>set("nickname",e.target.value)} placeholder="나만의 이름" maxLength={20} style={inputStyle}/>
             </div>
-          </div>
-          {[
-            {label:"인서트",key:"grip",opts:["파워리프트","오발","세미팁"]},
-            {label:"표면 상태",key:"surface",opts:["팩토리","폴리싱","샌딩"]},
-          ].map(({label,key,opts})=>(
-            <div key={key}>
-              <label style={{fontSize:13,color:"#1c1c1e",fontWeight:700,letterSpacing:1.5,display:"block",marginBottom:5}}>{label}</label>
-              <div style={{display:"flex",gap:4}}>
-                {opts.map(o=>(
-                  <button key={o} onClick={()=>set(key,o)} style={{flex:1,padding:"7px",borderRadius:7,cursor:"pointer",
+            <div>
+              <label style={labelStyle}>무게</label>
+              <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
+                {[10,11,12,13,14,15,16].map(w=>(
+                  <button key={w} onClick={()=>set("weight",w)} style={{padding:"5px 10px",borderRadius:7,cursor:"pointer",
                     fontSize:13,fontWeight:700,border:"none",fontFamily:"inherit",
-                    background:form[key]===o?ball.accent:"#e8ecf5",color:form[key]===o?"#fff":"#2d2d3d"}}>{o}</button>
+                    background:form.weight===w?ball.accent:"#e8ecf5",color:form.weight===w?"#fff":"#2d2d3d"}}>{w}lb</button>
                 ))}
               </div>
             </div>
-          ))}
-          <div>
-            <label style={{fontSize:13,color:"#1c1c1e",fontWeight:700,letterSpacing:1.5,display:"block",marginBottom:5}}>메모</label>
-            <textarea value={form.memo} onChange={e=>set("memo",e.target.value)} placeholder="레인 조건, 세팅 팁, 사용 기록..." rows={3}
-              style={{width:"100%",background:"#f7f7fc",border:"1.5px solid #e2e2e0",borderRadius:10,
-                color:"#333",padding:"8px 12px",fontSize:12,outline:"none",resize:"vertical",fontFamily:"inherit"}}/>
+            <div>
+              <label style={labelStyle}>인서트</label>
+              <div style={{display:"flex",gap:4}}>
+                {["파워리프트","오발","세미팁"].map(o=>(
+                  <button key={o} onClick={()=>set("grip",o)} style={{flex:1,padding:"7px",borderRadius:7,cursor:"pointer",
+                    fontSize:12,fontWeight:700,border:"none",fontFamily:"inherit",
+                    background:form.grip===o?ball.accent:"#e8ecf5",color:form.grip===o?"#fff":"#2d2d3d"}}>{o}</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label style={labelStyle}>메모</label>
+              <textarea value={form.memo} onChange={e=>set("memo",e.target.value)} placeholder="레인 조건, 세팅 팁, 사용 기록..." rows={3}
+                style={{...inputStyle,resize:"vertical"}}/>
+            </div>
           </div>
-        </div>
+        )}
+        {tab==="drill" && (
+          <div style={{display:"flex",flexDirection:"column",gap:12}}>
+            <div style={{background:"#fff8f0",borderRadius:10,padding:"10px 12px",fontSize:12,color:"#e65100",fontWeight:600,lineHeight:1.6}}>
+              💡 드릴링 레이아웃 정보를 기록해두면 나중에 동일하게 맞출 수 있어요
+            </div>
+            {[
+              {k:"drill_pin",l:"PIN 각도",ph:"예) 45°, 60° PIN UP"},
+              {k:"drill_cg",l:"CG 위치",ph:"예) CG 레프트 3/8인치"},
+              {k:"drill_mb",l:"MB 각도",ph:"예) 90° MB, MB 위"},
+            ].map(({k,l,ph})=>(
+              <div key={k}>
+                <label style={labelStyle}>{l}</label>
+                <input value={form[k]} onChange={e=>set(k,e.target.value)} placeholder={ph} style={inputStyle}/>
+              </div>
+            ))}
+            <div>
+              <label style={labelStyle}>드릴러 메모</label>
+              <textarea value={form.drill_note} onChange={e=>set("drill_note",e.target.value)}
+                placeholder="드릴러 이름, 핏 정보, 피치 등..." rows={3} style={{...inputStyle,resize:"vertical"}}/>
+            </div>
+          </div>
+        )}
+        {tab==="purchase" && (
+          <div style={{display:"flex",flexDirection:"column",gap:12}}>
+            <div>
+              <label style={labelStyle}>구매일</label>
+              <input type="date" value={form.purchase_date} onChange={e=>set("purchase_date",e.target.value)} style={inputStyle}/>
+            </div>
+            <div>
+              <label style={labelStyle}>구매 가격 (원)</label>
+              <input type="number" value={form.purchase_price} onChange={e=>set("purchase_price",e.target.value)}
+                placeholder="예) 180000" style={inputStyle}/>
+              {form.purchase_price && (
+                <div style={{fontSize:12,color:"#ff8c00",fontWeight:700,marginTop:4}}>
+                  {parseInt(form.purchase_price).toLocaleString()}원
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        {tab==="surface" && (
+          <div style={{display:"flex",flexDirection:"column",gap:12}}>
+            <div style={{fontWeight:700,fontSize:13,color:"#111"}}>관리 이력</div>
+            {form.surface_logs.length === 0 && (
+              <div style={{textAlign:"center",padding:"20px",color:"#ccc",fontSize:13}}>아직 기록이 없어요</div>
+            )}
+            {form.surface_logs.map(log=>(
+              <div key={log.id} style={{background:"#f7f7fc",borderRadius:10,padding:"10px 12px",position:"relative"}}>
+                <button onClick={()=>removeLog(log.id)} style={{position:"absolute",top:8,right:8,background:"none",
+                  border:"none",color:"#ccc",fontSize:14,cursor:"pointer"}}>✕</button>
+                <div style={{fontSize:12,fontWeight:700,color:"#ff8c00"}}>{log.date}</div>
+                <div style={{fontSize:13,fontWeight:700,color:"#111"}}>{log.method}{log.grit&&` (${log.grit})`}</div>
+                {log.note&&<div style={{fontSize:12,color:"#666",marginTop:2}}>{log.note}</div>}
+              </div>
+            ))}
+            <div style={{background:"#fff",border:"1.5px dashed #e2e2e0",borderRadius:12,padding:"12px"}}>
+              <div style={{fontSize:12,fontWeight:700,color:"#111",marginBottom:8}}>+ 새 기록 추가</div>
+              <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                <input type="date" value={newLog.date} onChange={e=>setNewLog(l=>({...l,date:e.target.value}))} style={inputStyle}/>
+                <div style={{display:"flex",gap:4}}>
+                  {["샌딩","폴리싱","리서피싱","세척"].map(m=>(
+                    <button key={m} onClick={()=>setNewLog(l=>({...l,method:m}))} style={{flex:1,padding:"6px 4px",
+                      borderRadius:7,border:"none",fontFamily:"inherit",fontSize:11,fontWeight:700,cursor:"pointer",
+                      background:newLog.method===m?ball.accent:"#e8ecf5",color:newLog.method===m?"#fff":"#2d2d3d"}}>{m}</button>
+                  ))}
+                </div>
+                <input value={newLog.grit} onChange={e=>setNewLog(l=>({...l,grit:e.target.value}))}
+                  placeholder="그릿 (예: 500, 2000)" style={inputStyle}/>
+                <input value={newLog.note} onChange={e=>setNewLog(l=>({...l,note:e.target.value}))}
+                  placeholder="메모 (선택)" style={inputStyle}/>
+                <button onClick={addLog} style={{padding:"8px",background:"#1c1c1e",border:"none",borderRadius:9,
+                  color:"#fff",fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer"}}>기록 추가 ✓</button>
+              </div>
+            </div>
+          </div>
+        )}
         <button onClick={()=>onSave(form)} style={{
-          marginTop:14,width:"100%",padding:"13px",background:ball.accent,border:"none",borderRadius:12,
+          marginTop:16,width:"100%",padding:"13px",background:ball.accent,border:"none",borderRadius:12,
           color:"#fff",fontFamily:"inherit",fontSize:14,fontWeight:800,cursor:"pointer",
-          boxShadow:`0 6px 20px ${ball.accent}55`}}>내 장비로 등록하기 →</button>
+          boxShadow:`0 6px 20px ${ball.accent}55`}}>
+          {existing ? "수정 완료 ✓" : "내 장비로 등록하기 →"}
+        </button>
       </div>
     </div>
   );
@@ -2869,7 +3113,7 @@ function MyCard({ entry, ball, onRemove, onEdit }) {
               <span style={{fontSize:13,color:"#ddd"}}>탭↺</span>
             </div>
             <div style={{display:"flex",flexWrap:"wrap",gap:3,marginBottom:6}}>
-              {[{v:`${entry.weight}lb`,i:"⚖️"},{v:entry.grip,i:"🤙"},{v:entry.surface,i:"🔧"}].map(p=>(
+              {[{v:`${entry.weight}lb`,i:"⚖️"},{v:entry.grip||"세미팁",i:"🤙"}].map(p=>(
                 <span key={p.v} style={{fontSize:11,fontWeight:700,padding:"2px 5px",borderRadius:4,
                   background:`${ball.accent}12`,color:ball.accent}}>{p.i} {p.v}</span>
               ))}
@@ -2891,11 +3135,34 @@ function MyCard({ entry, ball, onRemove, onEdit }) {
           border:`1.5px solid ${ball.accent}22`,borderRadius:18,padding:13,
           display:"flex",flexDirection:"column",justifyContent:"space-between",
           boxShadow:"0 2px 12px rgba(0,0,0,0.06)"}}>
-          <div>
-            <div style={{fontSize:13,color:"#6b6b7e",fontWeight:700,letterSpacing:1.5,marginBottom:5}}>MY MEMO</div>
-            <p style={{fontSize:13,color:"#777",lineHeight:1.65}}>{entry.memo||"메모가 없어요."}</p>
+          <div style={{flex:1,overflowY:"auto"}}>
+            {(entry.drill_pin||entry.drill_cg||entry.drill_mb) && (
+              <div style={{marginBottom:7}}>
+                <div style={{fontSize:10,color:"#6b6b7e",fontWeight:700,letterSpacing:1.5,marginBottom:2}}>DRILLING</div>
+                {entry.drill_pin&&<div style={{fontSize:11,color:"#333"}}>📌 PIN: {entry.drill_pin}</div>}
+                {entry.drill_cg&&<div style={{fontSize:11,color:"#333"}}>⚖️ CG: {entry.drill_cg}</div>}
+                {entry.drill_mb&&<div style={{fontSize:11,color:"#333"}}>🔵 MB: {entry.drill_mb}</div>}
+              </div>
+            )}
+            {(entry.purchase_date||entry.purchase_price) && (
+              <div style={{marginBottom:7}}>
+                <div style={{fontSize:10,color:"#6b6b7e",fontWeight:700,letterSpacing:1.5,marginBottom:2}}>구매정보</div>
+                {entry.purchase_date&&<div style={{fontSize:11,color:"#333"}}>📅 {entry.purchase_date}</div>}
+                {entry.purchase_price&&<div style={{fontSize:11,color:"#333"}}>💰 {parseInt(entry.purchase_price).toLocaleString()}원</div>}
+              </div>
+            )}
+            {entry.surface_logs?.length>0 && (
+              <div style={{marginBottom:7}}>
+                <div style={{fontSize:10,color:"#6b6b7e",fontWeight:700,letterSpacing:1.5,marginBottom:2}}>표면관리 {entry.surface_logs.length}회</div>
+                <div style={{fontSize:11,color:"#333"}}>최근: {entry.surface_logs[entry.surface_logs.length-1]?.date} {entry.surface_logs[entry.surface_logs.length-1]?.method}</div>
+              </div>
+            )}
+            {entry.memo&&<div style={{fontSize:11,color:"#777",lineHeight:1.5}}>{entry.memo}</div>}
+            {!entry.drill_pin&&!entry.purchase_date&&!entry.surface_logs?.length&&!entry.memo&&(
+              <p style={{fontSize:12,color:"#ccc",textAlign:"center",marginTop:16}}>기록 없음<br/>✏️ 수정으로 추가</p>
+            )}
           </div>
-          <div style={{display:"flex",gap:5}}>
+          <div style={{display:"flex",gap:5,marginTop:6}}>
             <button onClick={e=>{e.stopPropagation();onEdit();}} style={{flex:1,padding:"6px",borderRadius:7,
               border:`1.5px solid ${ball.accent}44`,background:"transparent",color:ball.accent,
               cursor:"pointer",fontWeight:700,fontSize:13}}>✏️ 수정</button>
@@ -3379,9 +3646,54 @@ export default function RollmateApp() {
   const [toast,setToast]     = useState(null);
   const [splash,setSplash]   = useState(true);
   const [sortBy,setSortBy]   = useState("popular");
+  const [nickname,setNickname] = useState(()=>localStorage.getItem("rm_nickname")||"");
+  const [dbLoading,setDbLoading] = useState(false);
   const scrollPos            = useRef(0);
 
   useEffect(()=>{setTimeout(()=>setSplash(false),2000);},[]);
+
+  // 앱 시작 시 저장된 닉네임+비번 있으면 자동 로그인
+  useEffect(()=>{
+    const saved = localStorage.getItem("rm_nickname");
+    const savedPw = localStorage.getItem("rm_pw");
+    if(saved && savedPw && arsenal.length===0){
+      setDbLoading(true);
+      // 비밀번호 재확인
+      sbGet("users", `nickname=eq.${encodeURIComponent(saved)}&select=password`)
+        .then(users=>{
+          if(users.length===0 || users[0].password !== savedPw){
+            // 비번 불일치 → 로그아웃
+            localStorage.removeItem("rm_nickname");
+            localStorage.removeItem("rm_pw");
+            setNickname("");
+            return;
+          }
+          return sbGet("equipment", `nickname=eq.${encodeURIComponent(saved)}&order=created_at.asc`);
+        })
+        .then(data=>{
+          if(!data) return;
+          const mapped = data.map(r=>({
+            dbId: r.id,
+            ballId: r.ball_id,
+            nickname: r.ball_name_alias||"",
+            weight: r.weight||15,
+            grip: r.grip||"세미팁",
+            drill_pin: r.drilling_pin||"",
+            drill_cg: r.drilling_cg||"",
+            drill_mb: r.drilling_mb_angle||"",
+            drill_note: r.drilling_notes||"",
+            purchase_date: r.purchase_date||"",
+            purchase_price: r.purchase_price||"",
+            memo: r.memo||"",
+            surface_logs: r.surface_logs||[],
+            addedAt: new Date(r.created_at).getTime(),
+          }));
+          setArsenal(mapped);
+        })
+        .catch(()=>{})
+        .finally(()=>setDbLoading(false));
+    }
+  },[]);
 
   // 홈 복귀 시 이전 스크롤 위치 복원
   useEffect(()=>{
@@ -3420,15 +3732,48 @@ export default function RollmateApp() {
     if(cmpList.find(b=>b.id===ball.id)) setCmpList(cmpList.filter(b=>b.id!==ball.id));
     else if(cmpList.length<3) setCmpList([...cmpList,ball]);
   };
-  const handleSave = form => {
-    if(editEnt) {
-      setArsenal(prev=>prev.map(e=>e.addedAt===editEnt.addedAt?{...e,...form}:e));
-      showToast("✏️ 수정 완료");
-    } else {
-      setArsenal(prev=>[...prev,{ballId:modal.id,...form,addedAt:Date.now()}]);
-      showToast(`🎳 ${modal.name} 등록 완료!`);
+  const handleSave = async form => {
+    const dbRow = {
+      nickname: nickname,
+      ball_id: modal.id,
+      ball_name: modal.name,
+      ball_name_alias: form.nickname||"",
+      weight: form.weight,
+      grip: form.grip||"세미팁",
+      drilling_pin: form.drill_pin||"",
+      drilling_cg: form.drill_cg||"",
+      drilling_mb_angle: form.drill_mb||"",
+      drilling_notes: form.drill_note||"",
+      purchase_date: form.purchase_date||null,
+      purchase_price: form.purchase_price ? parseInt(form.purchase_price) : null,
+      memo: form.memo||"",
+      surface_logs: form.surface_logs||[],
+    };
+    try {
+      if(editEnt && editEnt.dbId) {
+        await sbUpdate("equipment", editEnt.dbId, {...dbRow, updated_at: new Date().toISOString()});
+        setArsenal(prev=>prev.map(e=>e.addedAt===editEnt.addedAt?{...e,...form,dbId:editEnt.dbId}:e));
+        showToast("✏️ 수정 완료");
+      } else {
+        const res = await sbInsert("equipment", dbRow);
+        const newDbId = res[0]?.id;
+        setArsenal(prev=>[...prev,{ballId:modal.id,...form,dbId:newDbId,addedAt:Date.now()}]);
+        showToast(`🎳 ${modal.name} 등록 완료!`);
+      }
+    } catch(e) {
+      showToast("저장 오류 발생","#ef5350");
     }
     setModal(null); setEditEnt(null);
+  };
+
+  const handleRemove = async (entry) => {
+    try {
+      if(entry.dbId) await sbDelete("equipment", entry.dbId);
+      setArsenal(prev=>prev.filter(e=>e.addedAt!==entry.addedAt));
+      showToast("🗑️ 삭제됨","#ef5350");
+    } catch(e) {
+      showToast("삭제 오류","#ef5350");
+    }
   };
 
   const NAV=[
@@ -3467,6 +3812,31 @@ export default function RollmateApp() {
         <div style={{height:"100%",background:"#ff8c00",animation:"trackLine 1.1s 1s ease both"}}/>
       </div>
     </div>
+  );
+
+  // 닉네임 로그인이 없으면 로그인 화면
+  if(!nickname) return (
+    <NicknameLogin onLogin={(n, data)=>{
+      setNickname(n);
+      if(data.length === 0){ setArsenal([]); return; }
+      const mapped = data.map(r=>({
+        dbId: r.id,
+        ballId: r.ball_id,
+        nickname: r.ball_name_alias||"",
+        weight: r.weight||15,
+        grip: r.grip||"세미팁",
+        drill_pin: r.drilling_pin||"",
+        drill_cg: r.drilling_cg||"",
+        drill_mb: r.drilling_mb_angle||"",
+        drill_note: r.drilling_notes||"",
+        purchase_date: r.purchase_date||"",
+        purchase_price: r.purchase_price||"",
+        memo: r.memo||"",
+        surface_logs: r.surface_logs||[],
+        addedAt: new Date(r.created_at).getTime(),
+      }));
+      setArsenal(mapped);
+    }}/>
   );
 
   return (
@@ -3713,16 +4083,31 @@ export default function RollmateApp() {
         {/* ARSENAL */}
         {view==="arsenal"&&(
           <div style={{animation:"fadeUp .3s ease both"}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:16}}>
-              <div>
-                <div style={{fontWeight:800,fontSize:22,color:"#111"}}>내 장비함</div>
-                <div style={{fontSize:13,color:"#1c1c1e",marginTop:2}}>
-                  {arsenal.length>0?`${arsenal.length}개 등록됨 · 탭하면 뒤집혀요`:"아직 등록된 볼링공이 없어요"}
+            <div style={{marginBottom:16}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                <div style={{display:"flex",alignItems:"center",gap:8}}>
+                  <div style={{fontWeight:800,fontSize:22,color:"#111"}}>내 장비함</div>
+                  <div style={{background:"#ff8c00",color:"#fff",fontSize:11,fontWeight:800,
+                    padding:"2px 8px",borderRadius:20}}>@{nickname}</div>
+                </div>
+                <div style={{display:"flex",gap:6}}>
+                  <button onClick={()=>setView("home")} style={{padding:"7px 13px",borderRadius:18,border:"none",
+                    background:"#1c1c1e",color:"#fff",cursor:"pointer",fontWeight:700,fontSize:13,fontFamily:"inherit",
+                    boxShadow:"0 3px 10px rgba(15,37,87,.28)"}}>+ 볼 추가</button>
+                  <button onClick={()=>{
+                    if(window.confirm("로그아웃 하시겠어요?\n(데이터는 클라우드에 저장되어 있어요)")){
+                      localStorage.removeItem("rm_nickname");
+                      localStorage.removeItem("rm_pw");
+                      setNickname("");
+                      setArsenal([]);
+                    }
+                  }} style={{padding:"7px 10px",borderRadius:18,border:"1.5px solid #ddd",
+                    background:"#fff",color:"#888",cursor:"pointer",fontWeight:700,fontSize:12,fontFamily:"inherit"}}>로그아웃</button>
                 </div>
               </div>
-              <button onClick={()=>setView("home")} style={{padding:"7px 13px",borderRadius:18,border:"none",
-                background:"#1c1c1e",color:"#fff",cursor:"pointer",fontWeight:700,fontSize:13,fontFamily:"inherit",
-                boxShadow:"0 3px 10px rgba(15,37,87,.28)"}}>+ 볼 추가</button>
+              <div style={{fontSize:13,color:"#1c1c1e"}}>
+                {dbLoading ? "☁️ 불러오는 중..." : arsenal.length>0?`${arsenal.length}개 등록됨 · 탭하면 뒤집혀요`:"아직 등록된 볼링공이 없어요"}
+              </div>
             </div>
             {arsenal.length===0?(
               <div style={{textAlign:"center",padding:"55px 20px",background:"#ffffff",border:"2px dashed #e2e2e0",borderRadius:18}}>
@@ -3751,7 +4136,7 @@ export default function RollmateApp() {
                     const ball=ALL_BALLS.find(b=>b.id===entry.ballId);
                     if(!ball) return null;
                     return <MyCard key={entry.addedAt} entry={entry} ball={ball}
-                      onRemove={()=>{setArsenal(prev=>prev.filter(e=>e.addedAt!==entry.addedAt));showToast("🗑️ 삭제됨","#ef5350");}}
+                      onRemove={()=>handleRemove(entry)}
                       onEdit={()=>{setModal(ball);setEditEnt(entry);}}/>;
                   })}
                 </div>
