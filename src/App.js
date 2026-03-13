@@ -2866,7 +2866,8 @@ function SettingsView({ nickname, arsenal, onPasswordChange, onNicknameChange, o
   const SectionModal = ({title, children}) => (
     <div onClick={()=>setSection(null)} style={{position:"fixed",inset:0,zIndex:2500,
       background:"rgba(10,10,30,0.55)",backdropFilter:"blur(10px)",
-      display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+      display:"flex",alignItems:"flex-start",justifyContent:"center",
+      padding:"60px 20px 20px",overflowY:"auto"}}>
       <div onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:22,padding:"22px 20px",
         width:"100%",maxWidth:360,boxShadow:"0 24px 60px rgba(0,0,0,0.2)",
         animation:"modalIn .25s cubic-bezier(.34,1.56,.64,1)"}}>
@@ -3190,7 +3191,7 @@ function AdminView({ nickname, onLogout, showToast }) {
               <div style={{fontWeight:800,fontSize:14,color:"#111",marginBottom:12}}>👤 회원 정보</div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
                 {[
-                  {l:"실명", v:selUser.real_name||"-"},
+                  {l:"성명", v:selUser.real_name||"-"},
                   {l:"성별", v:selUser.gender||"-"},
                   {l:"생년월일", v:selUser.birth_date||"-"},
                   {l:"닉네임", v:selUser.nickname},
@@ -3355,7 +3356,7 @@ function NicknameLogin({ onLogin }) {
   };
 
   const handleRegister = async () => {
-    if (!realName.trim()) { setErr("실명을 입력해주세요"); return; }
+    if (!realName.trim()) { setErr("성명을 입력해주세요"); return; }
     if (!birthYear || !birthMonth || !birthDay) { setErr("생년월일을 모두 선택해주세요"); return; }
     const birthDate = `${birthYear}-${birthMonth.padStart(2,"0")}-${birthDay.padStart(2,"0")}`;
     if (!gender) { setErr("성별을 선택해주세요"); return; }
@@ -3465,51 +3466,39 @@ function NicknameLogin({ onLogin }) {
               <div style={{flex:1,height:1,background:"rgba(255,255,255,0.1)"}}/>
               <div style={{fontSize:11,color:"rgba(255,255,255,0.3)"}}>2단계 중 2</div>
             </div>
-            <label style={labelStyle}>실명</label>
+            <label style={labelStyle}>성명</label>
             <input value={realName} onChange={e=>{setRealName(e.target.value);setErr("");}}
               placeholder="홍길동" maxLength={20} autoFocus style={inputStyle}/>
             <label style={labelStyle}>생년월일</label>
-            <div style={{display:"flex",gap:6,marginBottom:8}}>
-              {/* 연도 */}
-              <select value={birthYear} onChange={e=>{setBirthYear(e.target.value);setErr("");}}
-                style={{flex:2,background:"rgba(255,255,255,0.1)",border:"1.5px solid rgba(255,255,255,0.2)",
-                  borderRadius:10,color:birthYear?"#fff":"rgba(255,255,255,0.35)",padding:"11px 8px",
-                  fontSize:13,outline:"none",fontFamily:"inherit",cursor:"pointer",appearance:"auto",
-                  colorScheme:"dark"}}>
-                <option value="" disabled>연도</option>
-                {Array.from({length:70},(_,i)=>new Date().getFullYear()-i).map(y=>(
-                  <option key={y} value={y} style={{background:"#1c1c1e",color:"#fff"}}>{y}년</option>
-                ))}
-              </select>
-              {/* 월 */}
-              <select value={birthMonth} onChange={e=>{setBirthMonth(e.target.value);setErr("");}}
-                style={{flex:1,background:"rgba(255,255,255,0.1)",border:"1.5px solid rgba(255,255,255,0.2)",
-                  borderRadius:10,color:birthMonth?"#fff":"rgba(255,255,255,0.35)",padding:"11px 6px",
-                  fontSize:13,outline:"none",fontFamily:"inherit",cursor:"pointer",appearance:"auto",
-                  colorScheme:"dark"}}>
-                <option value="" disabled>월</option>
-                {Array.from({length:12},(_,i)=>i+1).map(m=>(
-                  <option key={m} value={m} style={{background:"#1c1c1e",color:"#fff"}}>{m}월</option>
-                ))}
-              </select>
-              {/* 일 */}
-              <select value={birthDay} onChange={e=>{setBirthDay(e.target.value);setErr("");}}
-                style={{flex:1,background:"rgba(255,255,255,0.1)",border:"1.5px solid rgba(255,255,255,0.2)",
-                  borderRadius:10,color:birthDay?"#fff":"rgba(255,255,255,0.35)",padding:"11px 6px",
-                  fontSize:13,outline:"none",fontFamily:"inherit",cursor:"pointer",appearance:"auto",
-                  colorScheme:"dark"}}>
-                <option value="" disabled>일</option>
-                {Array.from({length:birthMonth&&birthYear
-                  ? new Date(birthYear, birthMonth, 0).getDate()
-                  : 31},(_,i)=>i+1).map(d=>(
-                  <option key={d} value={d} style={{background:"#1c1c1e",color:"#fff"}}>{d}일</option>
-                ))}
-              </select>
+            <div style={{background:"rgba(255,255,255,0.07)",borderRadius:14,padding:"4px",
+              display:"flex",gap:2,marginBottom:8}}>
+              {[
+                {val:birthYear, set:setBirthYear, placeholder:"연도",
+                 opts:Array.from({length:70},(_,i)=>new Date().getFullYear()-i),
+                 fmt:v=>v, flex:5},
+                {val:birthMonth, set:setBirthMonth, placeholder:"월",
+                 opts:Array.from({length:12},(_,i)=>i+1),
+                 fmt:v=>v, flex:3},
+                {val:birthDay, set:setBirthDay, placeholder:"일",
+                 opts:Array.from({length:birthMonth&&birthYear?new Date(birthYear,birthMonth,0).getDate():31},(_,i)=>i+1),
+                 fmt:v=>v, flex:3},
+              ].map(({val,set,placeholder,opts,fmt,flex})=>(
+                <select key={placeholder} value={val} onChange={e=>{set(e.target.value);setErr("");}}
+                  style={{flex,background:"transparent",border:"none",
+                    color:val?"#fff":"rgba(255,255,255,0.3)",
+                    padding:"11px 4px",fontSize:13,outline:"none",fontFamily:"inherit",
+                    cursor:"pointer",colorScheme:"dark",textAlign:"center"}}>
+                  <option value="" disabled style={{background:"#2d2014"}}>{placeholder}</option>
+                  {opts.map(o=>(
+                    <option key={o} value={o} style={{background:"#2d2014",color:"#fff"}}>{fmt(o)}</option>
+                  ))}
+                </select>
+              ))}
             </div>
-            {/* 선택 미리보기 */}
             {birthYear&&birthMonth&&birthDay&&(
-              <div style={{fontSize:12,color:"rgba(255,140,0,0.9)",fontWeight:700,marginBottom:8,textAlign:"center"}}>
-                📅 {birthYear}년 {birthMonth}월 {birthDay}일
+              <div style={{fontSize:12,color:"rgba(255,140,0,0.85)",fontWeight:700,
+                marginBottom:8,textAlign:"center",letterSpacing:0.5}}>
+                {birthYear} · {String(birthMonth).padStart(2,"0")} · {String(birthDay).padStart(2,"0")}
               </div>
             )}
             <label style={labelStyle}>성별</label>
