@@ -3410,8 +3410,11 @@ function NicknameLogin({ onLogin }) {
       localStorage.setItem("rm_nickname", n);
       localStorage.setItem("rm_pw", pw);
       localStorage.setItem("rm_admin", isAdmin ? "1" : "0");
-      const data = await sbGet("equipment", `nickname=eq.${encodeURIComponent(n)}&order=created_at.asc`);
-      onLogin(n, data, isAdmin);
+      const [data, noticeData] = await Promise.all([
+        sbGet("equipment", `nickname=eq.${encodeURIComponent(n)}&order=created_at.asc`),
+        sbGet("notices", "is_active=eq.true&order=created_at.desc"),
+      ]);
+      onLogin(n, data, isAdmin, noticeData);
     } catch(e) { setErr("연결 오류. 잠시 후 다시 시도해주세요."); }
     setLoading(false);
   };
@@ -4392,6 +4395,16 @@ export default function RollmateApp() {
       .then(d=>setNotices(d)).catch(()=>{});
   },[]);
 
+  // 공지사항 주기적 갱신 (30초)
+  useEffect(()=>{
+    if(!nickname || isAdmin) return;
+    const timer = setInterval(()=>{
+      sbGet("notices","is_active=eq.true&order=created_at.desc")
+        .then(d=>setNotices(d)).catch(()=>{});
+    }, 30000);
+    return ()=>clearInterval(timer);
+  },[nickname, isAdmin]);
+
   // 홈 복귀 시 이전 스크롤 위치 복원
   useEffect(()=>{
     if(view==="home"){
@@ -4514,9 +4527,10 @@ export default function RollmateApp() {
 
   // 닉네임 로그인이 없으면 로그인 화면
   if(!nickname) return (
-    <NicknameLogin onLogin={(n, data, admin)=>{
+    <NicknameLogin onLogin={(n, data, admin, noticeData)=>{
       setNickname(n);
       setIsAdmin(!!admin);
+      if(noticeData) setNotices(noticeData);
       if(data.length === 0){ setArsenal([]); return; }
       const mapped = data.map(r=>({
         dbId: r.id,
