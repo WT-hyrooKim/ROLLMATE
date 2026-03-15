@@ -3466,10 +3466,15 @@ function NicknameLogin({ onLogin }) {
       display:"flex",alignItems:"center",justifyContent:"center",padding:24,overflowY:"auto"}}>
       <div style={{width:"100%",maxWidth:340,textAlign:"center",paddingTop:20,paddingBottom:20}}>
         <div style={{fontSize:56,marginBottom:4}}>🎳</div>
-        <div style={{fontFamily:"'Black Han Sans','Inter',sans-serif",fontWeight:400,
-          fontSize:32,color:"#fff",letterSpacing:5,marginBottom:2,
-          textShadow:"0 0 20px rgba(255,140,0,0.4)"}}>
-          ROLL<span style={{color:"#ff8c00"}}>MATE</span>
+        <div style={{fontFamily:"'Bebas Neue','Inter',sans-serif",fontWeight:400,
+          fontSize:44,color:"#fff",letterSpacing:7,marginBottom:2,
+          textShadow:"0 0 24px rgba(255,140,0,0.4)"}}>
+          ROLL<span style={{
+            color:"#ff8c00",
+            textShadow:"0 0 18px rgba(255,140,0,0.75)",
+            borderBottom:"2.5px solid #ff8c00",
+            paddingBottom:2
+          }}>MATE</span>
         </div>
         <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",marginBottom:24,fontWeight:600}}>나만의 장비 관리 앱</div>
 
@@ -4512,7 +4517,7 @@ export default function RollmateApp() {
       display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
         @keyframes rollIn{from{transform:translateX(-90px) rotate(-300deg);opacity:0}to{transform:none;opacity:1}}
         @keyframes fadeUp{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
         @keyframes trackLine{from{width:0}to{width:100%}}
@@ -4520,9 +4525,16 @@ export default function RollmateApp() {
       `}</style>
       <div style={{animation:"rollIn .9s cubic-bezier(.34,1.26,.64,1) both",fontSize:80,
         filter:"drop-shadow(0 0 36px rgba(144,202,249,.55))"}}>🎳</div>
-      <div style={{fontFamily:"'Black Han Sans','Inter',sans-serif",fontWeight:400,fontSize:42,color:"#fff",letterSpacing:6,
-        animation:"fadeUp .6s .5s both",marginTop:8,textShadow:"0 0 30px rgba(255,140,0,0.4)"}}>
-        ROLL<span style={{color:"#ff8c00",textShadow:"0 0 20px rgba(255,140,0,0.7)"}}>MATE</span>
+      <div style={{fontFamily:"'Bebas Neue','Inter',sans-serif",fontWeight:400,fontSize:52,
+        color:"#fff",letterSpacing:8,
+        animation:"fadeUp .6s .5s both",marginTop:8,
+        textShadow:"0 0 30px rgba(255,140,0,0.35)"}}>
+        ROLL<span style={{
+          color:"#ff8c00",
+          textShadow:"0 0 24px rgba(255,140,0,0.8)",
+          borderBottom:"3px solid #ff8c00",
+          paddingBottom:2
+        }}>MATE</span>
       </div>
       <div style={{fontSize:15,color:"#ff8c00",letterSpacing:1.5,
         fontWeight:700,
@@ -4647,10 +4659,16 @@ export default function RollmateApp() {
           <div onClick={()=>{setSel(null);setView("home");setBrand("전체");setSearch("");}}
             style={{display:"flex",alignItems:"center",gap:7,marginRight:"auto",cursor:"pointer"}}>
             <span style={{fontSize:22}}>🎳</span>
-            <span style={{fontFamily:"'Black Han Sans','Inter',sans-serif",fontWeight:400,
-              fontSize:26,letterSpacing:4,color:"#ffffff",
-              textShadow:"0 0 16px rgba(255,140,0,0.35)"}}>
-              ROLL<span style={{color:"#ff8c00"}}>MATE</span>
+            <span style={{fontFamily:"'Bebas Neue','Inter',sans-serif",fontWeight:400,
+              fontSize:30,letterSpacing:5,color:"#ffffff",
+              textShadow:"0 0 16px rgba(255,140,0,0.35)",
+              lineHeight:1}}>
+              ROLL<span style={{
+                color:"#ff8c00",
+                textShadow:"0 0 14px rgba(255,140,0,0.7)",
+                borderBottom:"2px solid #ff8c00",
+                paddingBottom:1
+              }}>MATE</span>
             </span>
           </div>
           <div style={{position:"relative",flex:1,minWidth:0}}>
