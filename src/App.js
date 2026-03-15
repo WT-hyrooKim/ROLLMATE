@@ -4532,8 +4532,6 @@ export default function RollmateApp() {
         ROLL<span style={{
           color:"#ff8c00",
           textShadow:"0 0 24px rgba(255,140,0,0.8)",
-          borderBottom:"3px solid #ff8c00",
-          paddingBottom:2
         }}>MATE</span>
       </div>
       <div style={{fontSize:15,color:"#ff8c00",letterSpacing:1.5,
@@ -4660,15 +4658,16 @@ export default function RollmateApp() {
             style={{display:"flex",alignItems:"center",gap:7,marginRight:"auto",cursor:"pointer"}}>
             <span style={{fontSize:22}}>🎳</span>
             <span style={{fontFamily:"'Bebas Neue','Inter',sans-serif",fontWeight:400,
-              fontSize:30,letterSpacing:5,color:"#ffffff",
-              textShadow:"0 0 16px rgba(255,140,0,0.35)",
-              lineHeight:1}}>
-              ROLL<span style={{
+              fontSize:28,color:"#ffffff",lineHeight:1,letterSpacing:2}}>
+              <span style={{
+                color:"#fff",
+                textShadow:"0 2px 12px rgba(255,255,255,0.15)",
+                letterSpacing:4}}>ROLL</span>
+              <span style={{color:"rgba(255,140,0,0.4)",fontSize:20,margin:"0 1px"}}>/</span>
+              <span style={{
                 color:"#ff8c00",
-                textShadow:"0 0 14px rgba(255,140,0,0.7)",
-                borderBottom:"2px solid #ff8c00",
-                paddingBottom:1
-              }}>MATE</span>
+                textShadow:"0 0 14px rgba(255,140,0,0.6)",
+                letterSpacing:4}}>MATE</span>
             </span>
           </div>
           <div style={{position:"relative",flex:1,minWidth:0}}>
@@ -4774,16 +4773,16 @@ export default function RollmateApp() {
               </div>
             )}
 
-            {/* 정렬 옵션 - 한 줄 가로 스크롤 */}
-            <div style={{display:"flex",gap:5,marginBottom:12,overflowX:"auto",
-              msOverflowStyle:"none",scrollbarWidth:"none",paddingBottom:2}}>
-              {/* 최신순 / 인기순 버튼 */}
+            {/* 정렬 옵션 - 한 줄, 드롭다운 방식 */}
+            <div style={{display:"flex",gap:5,marginBottom:12,alignItems:"center",
+              overflowX:"auto",msOverflowStyle:"none",scrollbarWidth:"none"}}>
+              {/* 최신순 / 인기순 */}
               {[
                 {k:"latest",  label:"🆕 최신순"},
                 {k:"popular", label:"🔥 인기순"},
               ].map(({k,label})=>(
                 <button key={k} onClick={()=>setSortBy(k)} style={{
-                  padding:"5px 12px",borderRadius:20,fontSize:12,fontWeight:700,
+                  padding:"5px 10px",borderRadius:20,fontSize:11,fontWeight:700,
                   border:"1.5px solid",cursor:"pointer",fontFamily:"inherit",flexShrink:0,
                   background:sortBy===k?"#1c1c1e":"#fff",
                   color:sortBy===k?"#ff8c00":"#6b6b7e",
@@ -4793,38 +4792,52 @@ export default function RollmateApp() {
                   {label}
                 </button>
               ))}
-              {/* RG 버튼 4개 (낮은순/높은순) */}
-              {[
-                {k:"rg", ord:"asc",  label:"⚙️ RG 낮은순"},
-                {k:"rg", ord:"desc", label:"⚙️ RG 높은순"},
-              ].map(({k,ord,label})=>(
-                <button key={k+ord} onClick={()=>{setSortBy(k);setRgOrder(ord);}} style={{
-                  padding:"5px 12px",borderRadius:20,fontSize:12,fontWeight:700,
-                  border:"1.5px solid",cursor:"pointer",fontFamily:"inherit",flexShrink:0,
-                  background:sortBy===k&&rgOrder===ord?"#1c1c1e":"#fff",
-                  color:sortBy===k&&rgOrder===ord?"#ff8c00":"#6b6b7e",
-                  borderColor:sortBy===k&&rgOrder===ord?"#ff8c00":"#d0d0d8",
-                  whiteSpace:"nowrap",transition:"all .15s",
-                }}>
-                  {label}
-                </button>
-              ))}
-              {/* DIFF 버튼 2개 */}
-              {[
-                {k:"diff", ord:"desc", label:"📐 차이 높은순"},
-                {k:"diff", ord:"asc",  label:"📐 차이 낮은순"},
-              ].map(({k,ord,label})=>(
-                <button key={k+ord} onClick={()=>{setSortBy(k);setDiffOrder(ord);}} style={{
-                  padding:"5px 12px",borderRadius:20,fontSize:12,fontWeight:700,
-                  border:"1.5px solid",cursor:"pointer",fontFamily:"inherit",flexShrink:0,
-                  background:sortBy===k&&diffOrder===ord?"#1c1c1e":"#fff",
-                  color:sortBy===k&&diffOrder===ord?"#ff8c00":"#6b6b7e",
-                  borderColor:sortBy===k&&diffOrder===ord?"#ff8c00":"#d0d0d8",
-                  whiteSpace:"nowrap",transition:"all .15s",
-                }}>
-                  {label}
-                </button>
-              ))}
+              {/* RG 드롭다운 - 좁게 */}
+              <div style={{position:"relative",flexShrink:0}}>
+                <select value={sortBy==="rg"?`rg_${rgOrder}`:""}
+                  onChange={e=>{
+                    if(!e.target.value) return;
+                    const [,ord]=e.target.value.split("_");
+                    setRgOrder(ord); setSortBy("rg");
+                  }}
+                  style={{
+                    padding:"5px 22px 5px 8px",borderRadius:20,fontSize:11,fontWeight:700,
+                    border:`1.5px solid ${sortBy==="rg"?"#ff8c00":"#d0d0d8"}`,
+                    cursor:"pointer",fontFamily:"inherit",appearance:"none",
+                    background:sortBy==="rg"?"#1c1c1e":"#fff",
+                    color:sortBy==="rg"?"#ff8c00":"#6b6b7e",
+                    outline:"none",whiteSpace:"nowrap",
+                  }}>
+                  <option value="" disabled style={{background:"#fff",color:"#333"}}>⚙️ RG</option>
+                  <option value="rg_asc" style={{background:"#fff",color:"#333"}}>⚙️ RG 낮은순</option>
+                  <option value="rg_desc" style={{background:"#fff",color:"#333"}}>⚙️ RG 높은순</option>
+                </select>
+                <span style={{position:"absolute",right:7,top:"50%",transform:"translateY(-50%)",
+                  fontSize:8,color:sortBy==="rg"?"#ff8c00":"#bbb",pointerEvents:"none"}}>▼</span>
+              </div>
+              {/* DIFF 드롭다운 - 좁게 */}
+              <div style={{position:"relative",flexShrink:0}}>
+                <select value={sortBy==="diff"?`diff_${diffOrder}`:""}
+                  onChange={e=>{
+                    if(!e.target.value) return;
+                    const [,ord]=e.target.value.split("_");
+                    setDiffOrder(ord); setSortBy("diff");
+                  }}
+                  style={{
+                    padding:"5px 22px 5px 8px",borderRadius:20,fontSize:11,fontWeight:700,
+                    border:`1.5px solid ${sortBy==="diff"?"#ff8c00":"#d0d0d8"}`,
+                    cursor:"pointer",fontFamily:"inherit",appearance:"none",
+                    background:sortBy==="diff"?"#1c1c1e":"#fff",
+                    color:sortBy==="diff"?"#ff8c00":"#6b6b7e",
+                    outline:"none",whiteSpace:"nowrap",
+                  }}>
+                  <option value="" disabled style={{background:"#fff",color:"#333"}}>📐 차이</option>
+                  <option value="diff_desc" style={{background:"#fff",color:"#333"}}>📐 차이 높은순</option>
+                  <option value="diff_asc" style={{background:"#fff",color:"#333"}}>📐 차이 낮은순</option>
+                </select>
+                <span style={{position:"absolute",right:7,top:"50%",transform:"translateY(-50%)",
+                  fontSize:8,color:sortBy==="diff"?"#ff8c00":"#bbb",pointerEvents:"none"}}>▼</span>
+              </div>
             </div>
 
             {/* 볼 그리드 */}
