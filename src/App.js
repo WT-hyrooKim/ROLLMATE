@@ -3466,7 +3466,11 @@ function NicknameLogin({ onLogin }) {
       display:"flex",alignItems:"center",justifyContent:"center",padding:24,overflowY:"auto"}}>
       <div style={{width:"100%",maxWidth:340,textAlign:"center",paddingTop:20,paddingBottom:20}}>
         <div style={{fontSize:56,marginBottom:4}}>🎳</div>
-        <div style={{fontSize:26,fontWeight:900,color:"#fff",letterSpacing:-0.5,marginBottom:2}}>ROLLMATE</div>
+        <div style={{fontFamily:"'Black Han Sans','Inter',sans-serif",fontWeight:400,
+          fontSize:32,color:"#fff",letterSpacing:5,marginBottom:2,
+          textShadow:"0 0 20px rgba(255,140,0,0.4)"}}>
+          ROLL<span style={{color:"#ff8c00"}}>MATE</span>
+        </div>
         <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",marginBottom:24,fontWeight:600}}>나만의 장비 관리 앱</div>
 
         {/* 로그인/회원가입 탭 */}
@@ -4341,9 +4345,12 @@ export default function RollmateApp() {
   const [toast,setToast]     = useState(null);
   const [splash,setSplash]   = useState(true);
   const [sortBy,setSortBy]   = useState("popular");
+  const [rgOrder,setRgOrder]   = useState("asc");   // asc=낮은순 desc=높은순
+  const [diffOrder,setDiffOrder] = useState("desc"); // asc=낮은순 desc=높은순
   const [nickname,setNickname] = useState(()=>localStorage.getItem("rm_nickname")||"");
   const [isAdmin,setIsAdmin]   = useState(()=>localStorage.getItem("rm_admin")==="1");
   const [dbLoading,setDbLoading] = useState(false);
+  const [showLoginModal,setShowLoginModal] = useState(false);
   const [notices,setNotices]   = useState([]);
   const scrollPos            = useRef(0);
 
@@ -4432,8 +4439,12 @@ export default function RollmateApp() {
       const parseDate=s=>{if(!s)return 0;const[m,y]=s.split(" ");const months={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};return parseInt(y)*100+(months[m]||0);};
       return parseDate(b.releaseDate)-parseDate(a.releaseDate);
     }
-    if(sortBy==="rg") return (a.weightData?.[15]?.rg||9)-(b.weightData?.[15]?.rg||9);
-    if(sortBy==="diff") return (b.weightData?.[15]?.diff||0)-(a.weightData?.[15]?.diff||0);
+    if(sortBy==="rg") return rgOrder==="asc"
+      ? (a.weightData?.[15]?.rg||9)-(b.weightData?.[15]?.rg||9)
+      : (b.weightData?.[15]?.rg||9)-(a.weightData?.[15]?.rg||9);
+    if(sortBy==="diff") return diffOrder==="desc"
+      ? (b.weightData?.[15]?.diff||0)-(a.weightData?.[15]?.diff||0)
+      : (a.weightData?.[15]?.diff||0)-(b.weightData?.[15]?.diff||0);
     return 0;
   });
 
@@ -4501,6 +4512,7 @@ export default function RollmateApp() {
       display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
         @keyframes rollIn{from{transform:translateX(-90px) rotate(-300deg);opacity:0}to{transform:none;opacity:1}}
         @keyframes fadeUp{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
         @keyframes trackLine{from{width:0}to{width:100%}}
@@ -4508,9 +4520,9 @@ export default function RollmateApp() {
       `}</style>
       <div style={{animation:"rollIn .9s cubic-bezier(.34,1.26,.64,1) both",fontSize:80,
         filter:"drop-shadow(0 0 36px rgba(144,202,249,.55))"}}>🎳</div>
-      <div style={{fontFamily:"'Inter',sans-serif",fontWeight:800,fontSize:38,color:"#fff",letterSpacing:3,
-        animation:"fadeUp .6s .5s both",marginTop:8}}>
-        ROLL<span style={{color:"#ff8c00"}}>MATE</span>
+      <div style={{fontFamily:"'Black Han Sans','Inter',sans-serif",fontWeight:400,fontSize:42,color:"#fff",letterSpacing:6,
+        animation:"fadeUp .6s .5s both",marginTop:8,textShadow:"0 0 30px rgba(255,140,0,0.4)"}}>
+        ROLL<span style={{color:"#ff8c00",textShadow:"0 0 20px rgba(255,140,0,0.7)"}}>MATE</span>
       </div>
       <div style={{fontSize:15,color:"#ff8c00",letterSpacing:1.5,
         fontWeight:700,
@@ -4525,35 +4537,34 @@ export default function RollmateApp() {
     </div>
   );
 
-  // 닉네임 로그인이 없으면 로그인 화면
-  if(!nickname) return (
-    <NicknameLogin onLogin={(n, data, admin, noticeData)=>{
-      setNickname(n);
-      setIsAdmin(!!admin);
-      if(noticeData) setNotices(noticeData);
-      if(data.length === 0){ setArsenal([]); return; }
-      const mapped = data.map(r=>({
-        dbId: r.id,
-        ballId: r.ball_id,
-        nickname: r.ball_name_alias||"",
-        weight: r.weight||15,
-        grip: r.grip||"세미팁",
-        drill_pin: r.drilling_pin||"",
-        drill_cg: r.drilling_cg||"",
-        drill_mb: r.drilling_mb_angle||"",
-        drill_note: r.drilling_notes||"",
-        purchase_date: r.purchase_date||"",
-        purchase_price: r.purchase_price||"",
-        memo: r.memo||"",
-        surface_logs: r.surface_logs||[],
-        addedAt: new Date(r.created_at).getTime(),
-      }));
-      setArsenal(mapped);
-    }}/>
-  );
+  // 로그인 후 콜백
+  const handleLogin = (n, data, admin, noticeData) => {
+    setNickname(n);
+    setIsAdmin(!!admin);
+    setShowLoginModal(false);
+    if(noticeData) setNotices(noticeData);
+    if(!data || data.length === 0){ setArsenal([]); return; }
+    const mapped = data.map(r=>({
+      dbId: r.id,
+      ballId: r.ball_id,
+      nickname: r.ball_name_alias||"",
+      weight: r.weight||15,
+      grip: r.grip||"세미팁",
+      drill_pin: r.drilling_pin||"",
+      drill_cg: r.drilling_cg||"",
+      drill_mb: r.drilling_mb_angle||"",
+      drill_note: r.drilling_notes||"",
+      purchase_date: r.purchase_date||"",
+      purchase_price: r.purchase_price||"",
+      memo: r.memo||"",
+      surface_logs: r.surface_logs||[],
+      addedAt: new Date(r.created_at).getTime(),
+    }));
+    setArsenal(mapped);
+  };
 
   // 관리자면 관리자 화면
-  if(isAdmin) return (
+  if(nickname && isAdmin) return (
     <AdminView
       nickname={nickname}
       onLogout={()=>{
@@ -4617,6 +4628,18 @@ export default function RollmateApp() {
       {modal&&<RegModal ball={modal} existing={editEnt} onSave={handleSave}
         onClose={()=>{setModal(null);setEditEnt(null);}}/>}
 
+      {/* 로그인 모달 (비로그인 탭 접근 시) */}
+      {showLoginModal&&(
+        <div style={{position:"fixed",inset:0,zIndex:4000}}>
+          <NicknameLogin onLogin={handleLogin}/>
+          <button onClick={()=>setShowLoginModal(false)}
+            style={{position:"fixed",top:16,right:16,zIndex:4001,
+              background:"rgba(255,255,255,0.15)",border:"none",borderRadius:"50%",
+              width:36,height:36,fontSize:18,color:"#fff",cursor:"pointer",
+              display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
+        </div>
+      )}
+
       {/* TOP BAR */}
       <div style={{background:"rgba(28,28,30,.97)",backdropFilter:"blur(16px)",
         borderBottom:"1px solid rgba(255,140,0,.2)",padding:"0 12px",position:"sticky",top:0,zIndex:100,overflow:"hidden",width:"100%",boxSizing:"border-box"}}>
@@ -4624,7 +4647,9 @@ export default function RollmateApp() {
           <div onClick={()=>{setSel(null);setView("home");setBrand("전체");setSearch("");}}
             style={{display:"flex",alignItems:"center",gap:7,marginRight:"auto",cursor:"pointer"}}>
             <span style={{fontSize:22}}>🎳</span>
-            <span style={{fontWeight:800,fontSize:28,letterSpacing:1,color:"#ffffff",fontFamily:"'Inter',sans-serif"}}>
+            <span style={{fontFamily:"'Black Han Sans','Inter',sans-serif",fontWeight:400,
+              fontSize:26,letterSpacing:4,color:"#ffffff",
+              textShadow:"0 0 16px rgba(255,140,0,0.35)"}}>
               ROLL<span style={{color:"#ff8c00"}}>MATE</span>
             </span>
           </div>
@@ -4646,15 +4671,16 @@ export default function RollmateApp() {
             {notices.length>0&&(
               <div style={{marginBottom:14}}>
                 {notices.map(n=>(
-                  <div key={n.id} style={{background:"linear-gradient(135deg,#ff8c00,#e65100)",
+                  <div key={n.id} style={{background:"#111",
                     borderRadius:14,padding:"12px 16px",marginBottom:6,
-                    boxShadow:"0 4px 14px rgba(255,140,0,0.25)"}}>
+                    boxShadow:"0 4px 14px rgba(0,0,0,0.3)",
+                    border:"1.5px solid #ff8c0044"}}>
                     <div style={{display:"flex",alignItems:"flex-start",gap:10}}>
                       <span style={{fontSize:18,flexShrink:0}}>📢</span>
                       <div>
-                        <div style={{fontSize:13,fontWeight:800,color:"#fff",marginBottom:2}}>{n.title}</div>
-                        <div style={{fontSize:12,color:"rgba(255,255,255,0.85)",lineHeight:1.5}}>{n.content}</div>
-                        <div style={{fontSize:10,color:"rgba(255,255,255,0.55)",marginTop:4}}>
+                        <div style={{fontSize:13,fontWeight:800,color:"#ff8c00",marginBottom:2}}>{n.title}</div>
+                        <div style={{fontSize:12,color:"rgba(255,140,0,0.75)",lineHeight:1.5}}>{n.content}</div>
+                        <div style={{fontSize:10,color:"rgba(255,140,0,0.4)",marginTop:4}}>
                           {new Date(n.created_at).toLocaleDateString("ko-KR")}
                         </div>
                       </div>
@@ -4720,16 +4746,15 @@ export default function RollmateApp() {
             )}
 
             {/* 정렬 옵션 */}
-            <div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>
+            <div style={{display:"flex",gap:5,marginBottom:12,alignItems:"center",flexWrap:"wrap"}}>
+              {/* 기본 정렬 버튼 */}
               {[
-                {k:"latest", label:"🆕 최신순"},
-                {k:"popular",label:"🔥 인기순"},
-                {k:"rg",     label:"RG 낮은순"},
-                {k:"diff",   label:"DIFF 높은순"},
+                {k:"latest",  label:"🆕 최신순"},
+                {k:"popular", label:"🔥 인기순"},
               ].map(({k,label})=>(
                 <button key={k} onClick={()=>setSortBy(k)} style={{
                   padding:"5px 11px",borderRadius:20,fontSize:12,fontWeight:700,
-                  border:"1.5px solid",cursor:"pointer",fontFamily:"inherit",
+                  border:"1.5px solid",cursor:"pointer",fontFamily:"inherit",flexShrink:0,
                   background:sortBy===k?"#1c1c1e":"#fff",
                   color:sortBy===k?"#ff8c00":"#6b6b7e",
                   borderColor:sortBy===k?"#ff8c00":"#d0d0d8",
@@ -4738,6 +4763,54 @@ export default function RollmateApp() {
                   {label}
                 </button>
               ))}
+              {/* RG 드롭다운 */}
+              <div style={{position:"relative",flexShrink:0}}>
+                <select
+                  value={sortBy==="rg" ? `rg_${rgOrder}` : ""}
+                  onChange={e=>{
+                    if(!e.target.value) return;
+                    const [,ord] = e.target.value.split("_");
+                    setRgOrder(ord); setSortBy("rg");
+                  }}
+                  style={{
+                    padding:"5px 28px 5px 10px",borderRadius:20,fontSize:12,fontWeight:700,
+                    border:`1.5px solid ${sortBy==="rg"?"#ff8c00":"#d0d0d8"}`,
+                    cursor:"pointer",fontFamily:"inherit",appearance:"none",
+                    background:sortBy==="rg"?"#1c1c1e":"#fff",
+                    color:sortBy==="rg"?"#ff8c00":"#6b6b7e",
+                    outline:"none",
+                  }}>
+                  <option value="" disabled>⚙️ RG</option>
+                  <option value="rg_asc">⚙️ RG 낮은순</option>
+                  <option value="rg_desc">⚙️ RG 높은순</option>
+                </select>
+                <span style={{position:"absolute",right:8,top:"50%",transform:"translateY(-50%)",
+                  fontSize:9,color:sortBy==="rg"?"#ff8c00":"#aaa",pointerEvents:"none"}}>▼</span>
+              </div>
+              {/* DIFF 드롭다운 */}
+              <div style={{position:"relative",flexShrink:0}}>
+                <select
+                  value={sortBy==="diff" ? `diff_${diffOrder}` : ""}
+                  onChange={e=>{
+                    if(!e.target.value) return;
+                    const [,ord] = e.target.value.split("_");
+                    setDiffOrder(ord); setSortBy("diff");
+                  }}
+                  style={{
+                    padding:"5px 28px 5px 10px",borderRadius:20,fontSize:12,fontWeight:700,
+                    border:`1.5px solid ${sortBy==="diff"?"#ff8c00":"#d0d0d8"}`,
+                    cursor:"pointer",fontFamily:"inherit",appearance:"none",
+                    background:sortBy==="diff"?"#1c1c1e":"#fff",
+                    color:sortBy==="diff"?"#ff8c00":"#6b6b7e",
+                    outline:"none",
+                  }}>
+                  <option value="" disabled>📐 차이</option>
+                  <option value="diff_desc">📐 차이 높은순</option>
+                  <option value="diff_asc">📐 차이 낮은순</option>
+                </select>
+                <span style={{position:"absolute",right:8,top:"50%",transform:"translateY(-50%)",
+                  fontSize:9,color:sortBy==="diff"?"#ff8c00":"#aaa",pointerEvents:"none"}}>▼</span>
+              </div>
             </div>
 
             {/* 볼 그리드 */}
@@ -4985,7 +5058,12 @@ export default function RollmateApp() {
         <div style={{display:"flex",justifyContent:"center",gap:4,maxWidth:820,margin:"0 auto"}}>
           {NAV.map(n=>(
             <button key={n.k} className={`nav-btn ${view===n.k?"act":""}`}
-              onClick={()=>{setView(n.k);setSel(null);}}>
+              onClick={()=>{
+                if(!nickname && n.k!=="home"){
+                  setShowLoginModal(true); return;
+                }
+                setView(n.k);setSel(null);
+              }}>
               <span style={{fontSize:20}}>{n.i}</span>
               <span className="nav-lbl" style={{color:view===n.k?"#ff8c00":"rgba(255,255,255,.5)"}}>{n.l}</span>
               {n.badge&&<span style={{position:"absolute",top:2,right:10,width:14,height:14,
