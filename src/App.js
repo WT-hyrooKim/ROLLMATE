@@ -3962,85 +3962,127 @@ function RegModal({ ball, existing, onSave, onClose }) {
 // 내 볼 플립 카드
 function MyCard({ entry, ball, onRemove, onEdit }) {
   const [flip, setFlip] = useState(false);
-  const d = ball.weightData[entry.weight];
+  const d = ball.weightData?.[entry.weight] || ball.weightData?.[15] || ball.weightData?.[16];
+  const oilLabel = ball.condition==="Heavy Oil"?"Heavy":ball.condition==="Medium-Heavy Oil"?"Med-Heavy":ball.condition==="Medium Oil"?"Medium":ball.condition==="Light-Medium Oil"?"Light-Med":"Light";
+  const oilColor = ball.condition==="Heavy Oil"?"#ef5350":ball.condition==="Medium-Heavy Oil"?"#fb8c00":ball.condition==="Medium Oil"?"#fdd835":ball.condition==="Light-Medium Oil"?"#66bb6a":"#42a5f5";
+
   return (
-    <div style={{perspective:1000,cursor:"pointer"}} onClick={()=>setFlip(f=>!f)}>
+    <div style={{perspective:1200,cursor:"pointer",marginBottom:0}} onClick={()=>setFlip(f=>!f)}>
       <div style={{position:"relative",width:"100%",transformStyle:"preserve-3d",
-        transition:"transform .5s cubic-bezier(.4,0,.2,1)",transform:flip?"rotateY(180deg)":"none",
-        minHeight:150}}>
-        <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",background:"#ffffff",
-          borderRadius:16,border:`1.5px solid ${ball.accent}22`,padding:10,
-          display:"flex",flexDirection:"column",justifyContent:"space-between",
-          boxShadow:"0 2px 10px rgba(0,0,0,0.06)"}}>
-          <div>
-            <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:ball.accent,borderRadius:"16px 16px 0 0"}}/>
-            <div style={{display:"flex",gap:7,alignItems:"flex-start",marginBottom:5,marginTop:2}}>
-              <BallImg ball={ball} size={36}/>
-              <div style={{flex:1,minWidth:0}}>
-                <div style={{fontSize:10,color:"#6b6b7e",fontWeight:700,letterSpacing:1.2}}>{ball.brand.toUpperCase()}</div>
-                <div style={{fontWeight:700,fontSize:11,color:"#111",lineHeight:1.25,
-                  overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ball.name}</div>
-                {entry.nickname&&<div style={{fontSize:10,color:ball.accent,fontWeight:600}}>"{entry.nickname}"</div>}
-              </div>
-              <span style={{fontSize:11,color:"#ddd"}}>탭↺</span>
-            </div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:3,marginBottom:4}}>
-              {[{v:`${entry.weight}lb`,i:"⚖️"},{v:entry.grip||"세미팁",i:"🤙"}].map(p=>(
-                <span key={p.v} style={{fontSize:10,fontWeight:700,padding:"1px 4px",borderRadius:4,
-                  background:`${ball.accent}12`,color:ball.accent}}>{p.i} {p.v}</span>
-              ))}
-            </div>
-          </div>
-          {d&&(
-            <div style={{display:"flex",gap:5,flexWrap:"wrap",borderTop:"1px solid #f5f5f8",paddingTop:4,marginTop:"auto"}}>
-              {[{l:"RG",v:d.rg},{l:"DIFF",v:d.diff},...(d.moi?[{l:"MOI",v:d.moi}]:[])].map(x=>(
-                <div key={x.l} style={{display:"flex",alignItems:"center",gap:2}}>
-                  <span style={{fontSize:10,color:"#6b6b7e",fontWeight:700,letterSpacing:.3}}>{x.l}</span>
-                  <span style={{fontSize:11,fontWeight:800,color:ball.accent}}>{x.v}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        transition:"transform .55s cubic-bezier(.4,0,.2,1)",
+        transform:flip?"rotateY(180deg)":"none",minHeight:200}}>
+
+        {/* ── 앞면 ── */}
         <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",
-          transform:"rotateY(180deg)",background:`linear-gradient(135deg,#fff,${ball.accent}07)`,
-          border:`1.5px solid ${ball.accent}22`,borderRadius:18,padding:13,
-          display:"flex",flexDirection:"column",justifyContent:"space-between",
-          boxShadow:"0 2px 12px rgba(0,0,0,0.06)"}}>
-          <div style={{flex:1,overflowY:"auto"}}>
-            {(entry.drill_pin||entry.drill_cg||entry.drill_mb) && (
-              <div style={{marginBottom:7}}>
-                <div style={{fontSize:10,color:"#6b6b7e",fontWeight:700,letterSpacing:1.5,marginBottom:2}}>DRILLING</div>
-                {entry.drill_pin&&<div style={{fontSize:11,color:"#333"}}>📌 PIN: {entry.drill_pin}</div>}
-                {entry.drill_cg&&<div style={{fontSize:11,color:"#333"}}>⚖️ CG: {entry.drill_cg}</div>}
-                {entry.drill_mb&&<div style={{fontSize:11,color:"#333"}}>🔵 MB: {entry.drill_mb}</div>}
+          borderRadius:20,overflow:"hidden",
+          background:`linear-gradient(145deg,#fff 60%,${ball.accent}08)`,
+          border:`1.5px solid ${ball.accent}30`,
+          boxShadow:`0 4px 20px ${ball.accent}18`}}>
+          {/* 상단 컬러 바 */}
+          <div style={{height:4,background:`linear-gradient(90deg,${ball.accent},${ball.accent}88)`}}/>
+          <div style={{padding:"12px 14px"}}>
+            {/* 헤더: 이미지 + 볼 이름 */}
+            <div style={{display:"flex",gap:12,alignItems:"center",marginBottom:10}}>
+              {/* 볼 이미지 크게 */}
+              <div style={{width:72,height:72,borderRadius:"50%",overflow:"hidden",flexShrink:0,
+                boxShadow:`0 6px 20px ${ball.accent}55`,border:`2.5px solid ${ball.accent}44`}}>
+                <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={72} radius="50%"/>
               </div>
-            )}
-            {(entry.purchase_date||entry.purchase_price) && (
-              <div style={{marginBottom:7}}>
-                <div style={{fontSize:10,color:"#6b6b7e",fontWeight:700,letterSpacing:1.5,marginBottom:2}}>구매정보</div>
-                {entry.purchase_date&&<div style={{fontSize:11,color:"#333"}}>📅 {entry.purchase_date}</div>}
-                {entry.purchase_price&&<div style={{fontSize:11,color:"#333"}}>💰 {parseInt(entry.purchase_price).toLocaleString()}원</div>}
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:10,color:"#999",fontWeight:700,letterSpacing:1.5,marginBottom:1}}>
+                  {ball.brand.toUpperCase()}
+                </div>
+                <div style={{fontWeight:800,fontSize:14,color:"#111",lineHeight:1.25,marginBottom:4}}>
+                  {ball.name}
+                </div>
+                {entry.nickname&&(
+                  <div style={{fontSize:11,color:ball.accent,fontWeight:700,
+                    background:`${ball.accent}12`,padding:"1px 7px",borderRadius:8,
+                    display:"inline-block"}}>"{entry.nickname}"</div>
+                )}
               </div>
-            )}
-            {entry.surface_logs?.length>0 && (
-              <div style={{marginBottom:7}}>
-                <div style={{fontSize:10,color:"#6b6b7e",fontWeight:700,letterSpacing:1.5,marginBottom:2}}>표면관리 {entry.surface_logs.length}회</div>
-                <div style={{fontSize:11,color:"#333"}}>최근: {entry.surface_logs[entry.surface_logs.length-1]?.date} {entry.surface_logs[entry.surface_logs.length-1]?.method}</div>
+              <span style={{fontSize:11,color:"#ccc",flexShrink:0}}>탭↺</span>
+            </div>
+            {/* 태그 행 */}
+            <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:10}}>
+              <span style={{fontSize:11,fontWeight:700,padding:"3px 8px",borderRadius:8,
+                background:`${ball.accent}15`,color:ball.accent}}>⚖️ {entry.weight}lb</span>
+              <span style={{fontSize:11,fontWeight:700,padding:"3px 8px",borderRadius:8,
+                background:`${ball.accent}15`,color:ball.accent}}>🤙 {entry.grip||"세미팁"}</span>
+              <span style={{fontSize:11,fontWeight:700,padding:"3px 8px",borderRadius:8,
+                background:`${oilColor}18`,color:oilColor}}>{oilLabel}</span>
+            </div>
+            {/* 수치 행 */}
+            {d&&(
+              <div style={{display:"flex",gap:0,background:"#f7f7fc",borderRadius:12,overflow:"hidden"}}>
+                {[
+                  {l:"RG",v:d.rg,accent:ball.accent},
+                  {l:"DIFF",v:d.diff,accent:ball.accent},
+                  ...(d.moi?[{l:"MOI",v:d.moi,accent:ball.accent}]:[]),
+                ].map((x,i,arr)=>(
+                  <div key={x.l} style={{flex:1,padding:"7px 0",textAlign:"center",
+                    borderRight:i<arr.length-1?`1px solid #eee`:"none"}}>
+                    <div style={{fontSize:9,color:"#aaa",fontWeight:700,letterSpacing:1}}>{x.l}</div>
+                    <div style={{fontSize:14,fontWeight:900,color:x.accent}}>{x.v}</div>
+                  </div>
+                ))}
               </div>
-            )}
-            {entry.memo&&<div style={{fontSize:11,color:"#777",lineHeight:1.5}}>{entry.memo}</div>}
-            {!entry.drill_pin&&!entry.purchase_date&&!entry.surface_logs?.length&&!entry.memo&&(
-              <p style={{fontSize:12,color:"#ccc",textAlign:"center",marginTop:16}}>기록 없음<br/>✏️ 수정으로 추가</p>
             )}
           </div>
-          <div style={{display:"flex",gap:5,marginTop:6}}>
-            <button onClick={e=>{e.stopPropagation();onEdit();}} style={{flex:1,padding:"6px",borderRadius:7,
-              border:`1.5px solid ${ball.accent}44`,background:"transparent",color:ball.accent,
-              cursor:"pointer",fontWeight:700,fontSize:13}}>✏️ 수정</button>
-            <button onClick={e=>{e.stopPropagation();onRemove();}} style={{flex:1,padding:"6px",borderRadius:7,
-              border:"1.5px solid #ef535044",background:"transparent",color:"#ef5350",
-              cursor:"pointer",fontWeight:700,fontSize:13}}>🗑️ 삭제</button>
+        </div>
+
+        {/* ── 뒷면 ── */}
+        <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",
+          transform:"rotateY(180deg)",
+          background:`linear-gradient(145deg,#1c1c1e,#2d2014)`,
+          borderRadius:20,overflow:"hidden",
+          boxShadow:`0 4px 20px rgba(0,0,0,0.2)`}}>
+          <div style={{height:4,background:`linear-gradient(90deg,${ball.accent},${ball.accent}55)`}}/>
+          <div style={{padding:"12px 14px",height:"calc(100% - 4px)",display:"flex",flexDirection:"column",boxSizing:"border-box"}}>
+            <div style={{flex:1,overflowY:"auto"}}>
+              {(entry.drill_pin||entry.drill_cg||entry.drill_mb)&&(
+                <div style={{marginBottom:8}}>
+                  <div style={{fontSize:9,color:ball.accent,fontWeight:800,letterSpacing:1.5,marginBottom:4}}>📌 DRILLING</div>
+                  {entry.drill_pin&&<div style={{fontSize:12,color:"rgba(255,255,255,0.8)",marginBottom:1}}>PIN: {entry.drill_pin}</div>}
+                  {entry.drill_cg&&<div style={{fontSize:12,color:"rgba(255,255,255,0.8)",marginBottom:1}}>CG: {entry.drill_cg}</div>}
+                  {entry.drill_mb&&<div style={{fontSize:12,color:"rgba(255,255,255,0.8)"}}>MB: {entry.drill_mb}</div>}
+                </div>
+              )}
+              {(entry.purchase_date||entry.purchase_price)&&(
+                <div style={{marginBottom:8}}>
+                  <div style={{fontSize:9,color:ball.accent,fontWeight:800,letterSpacing:1.5,marginBottom:4}}>💰 PURCHASE</div>
+                  {entry.purchase_date&&<div style={{fontSize:12,color:"rgba(255,255,255,0.8)",marginBottom:1}}>{entry.purchase_date}</div>}
+                  {entry.purchase_price&&<div style={{fontSize:12,color:"rgba(255,255,255,0.8)"}}>{parseInt(entry.purchase_price).toLocaleString()}원</div>}
+                </div>
+              )}
+              {entry.surface_logs?.length>0&&(
+                <div style={{marginBottom:8}}>
+                  <div style={{fontSize:9,color:ball.accent,fontWeight:800,letterSpacing:1.5,marginBottom:4}}>🔧 표면관리 {entry.surface_logs.length}회</div>
+                  <div style={{fontSize:12,color:"rgba(255,255,255,0.7)"}}>
+                    최근: {entry.surface_logs[entry.surface_logs.length-1]?.date} {entry.surface_logs[entry.surface_logs.length-1]?.method}
+                  </div>
+                </div>
+              )}
+              {entry.memo&&(
+                <div>
+                  <div style={{fontSize:9,color:ball.accent,fontWeight:800,letterSpacing:1.5,marginBottom:4}}>📝 MEMO</div>
+                  <div style={{fontSize:12,color:"rgba(255,255,255,0.7)",lineHeight:1.5}}>{entry.memo}</div>
+                </div>
+              )}
+              {!entry.drill_pin&&!entry.purchase_date&&!entry.surface_logs?.length&&!entry.memo&&(
+                <div style={{textAlign:"center",paddingTop:20,color:"rgba(255,255,255,0.25)",fontSize:12}}>
+                  기록 없음 · ✏️ 수정으로 추가
+                </div>
+              )}
+            </div>
+            <div style={{display:"flex",gap:6,marginTop:10,flexShrink:0}}>
+              <button onClick={e=>{e.stopPropagation();onEdit();}} style={{flex:1,padding:"8px",borderRadius:10,
+                border:`1px solid ${ball.accent}55`,background:"transparent",color:ball.accent,
+                cursor:"pointer",fontWeight:700,fontSize:12,fontFamily:"inherit"}}>✏️ 수정</button>
+              <button onClick={e=>{e.stopPropagation();onRemove();}} style={{flex:1,padding:"8px",borderRadius:10,
+                border:"1px solid rgba(239,83,80,0.4)",background:"transparent",color:"#ef5350",
+                cursor:"pointer",fontWeight:700,fontSize:12,fontFamily:"inherit"}}>🗑️ 삭제</button>
+            </div>
           </div>
         </div>
       </div>
@@ -4704,6 +4746,7 @@ export default function RollmateApp() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800;900&display=swap');
         @keyframes rollIn{from{transform:translateX(-90px) rotate(-300deg);opacity:0}to{transform:none;opacity:1}}
         @keyframes fadeUp{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
         @keyframes trackLine{from{width:0}to{width:100%}}
@@ -4849,10 +4892,10 @@ export default function RollmateApp() {
           <div onClick={()=>{setSel(null);setView("home");setBrand("전체");setSearch("");}}
             style={{display:"flex",alignItems:"center",gap:5,flexShrink:0,cursor:"pointer"}}>
             <span style={{fontSize:20}}>🎳</span>
-            <span style={{fontFamily:"'Bebas Neue','Inter',sans-serif",fontWeight:400,
-              fontSize:34,color:"#fff",letterSpacing:"0.06em",
-              textShadow:"0 0 20px rgba(255,140,0,0.4)",lineHeight:1}}>ROLL<span style={{
-                color:"#ff8c00",textShadow:"0 0 16px rgba(255,140,0,0.7)"}}>MATE</span>
+            <span style={{fontFamily:"'Exo 2','Inter',sans-serif",fontWeight:900,
+              fontSize:22,color:"#fff",letterSpacing:"0.01em",lineHeight:1,
+              textTransform:"uppercase"}}>
+              ROLL<span style={{color:"#ff8c00",textShadow:"0 0 12px rgba(255,140,0,0.6)"}}>MATE</span>
             </span>
           </div>
           {/* 검색창 */}
@@ -5121,29 +5164,31 @@ export default function RollmateApp() {
         {view==="arsenal"&&(
           <div style={{animation:"fadeUp .3s ease both"}}>
             <div style={{marginBottom:16}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-                <div style={{display:"flex",alignItems:"center",gap:8}}>
-                  <div style={{fontWeight:800,fontSize:22,color:"#111"}}>내 장비함</div>
-                  <div style={{background:"#ff8c00",color:"#fff",fontSize:11,fontWeight:800,
-                    padding:"2px 8px",borderRadius:20}}>@{nickname}</div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+                <div>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:2}}>
+                    <div style={{fontFamily:"'Exo 2','Inter',sans-serif",fontWeight:900,fontSize:20,color:"#111",letterSpacing:"-0.02em"}}>내 장비함</div>
+                    <div style={{background:"#ff8c00",color:"#fff",fontSize:10,fontWeight:800,
+                      padding:"2px 8px",borderRadius:20,letterSpacing:0.5}}>@{nickname}</div>
+                  </div>
+                  <div style={{fontSize:12,color:"#aaa",fontWeight:600}}>
+                    {dbLoading ? "☁️ 불러오는 중..." : arsenal.length>0?`${arsenal.length}개 등록 · 카드를 탭하면 뒤집혀요`:"아직 등록된 볼링공이 없어요"}
+                  </div>
                 </div>
                 <div style={{display:"flex",gap:6}}>
-                  <button onClick={()=>setView("home")} style={{padding:"7px 13px",borderRadius:18,border:"none",
-                    background:"#1c1c1e",color:"#fff",cursor:"pointer",fontWeight:700,fontSize:13,fontFamily:"inherit",
-                    boxShadow:"0 3px 10px rgba(15,37,87,.28)"}}>+ 볼 추가</button>
+                  <button onClick={()=>setView("home")} style={{padding:"8px 14px",borderRadius:20,border:"none",
+                    background:"#1c1c1e",color:"#fff",cursor:"pointer",fontWeight:700,fontSize:12,fontFamily:"inherit",
+                    boxShadow:"0 3px 10px rgba(0,0,0,.2)"}}>+ 추가</button>
                   <button onClick={()=>{
                     if(window.confirm("로그아웃 하시겠어요?\n(데이터는 클라우드에 저장되어 있어요)")){
                       localStorage.removeItem("rm_nickname");
                       localStorage.removeItem("rm_pw");
-                      setNickname("");
-                      setArsenal([]);
+                      localStorage.removeItem("rm_admin");
+                      setNickname(""); setArsenal([]); setIsAdmin(false);
                     }
-                  }} style={{padding:"7px 10px",borderRadius:18,border:"1.5px solid #ddd",
+                  }} style={{padding:"8px 12px",borderRadius:20,border:"1.5px solid #e2e2e0",
                     background:"#fff",color:"#888",cursor:"pointer",fontWeight:700,fontSize:12,fontFamily:"inherit"}}>로그아웃</button>
                 </div>
-              </div>
-              <div style={{fontSize:13,color:"#1c1c1e"}}>
-                {dbLoading ? "☁️ 불러오는 중..." : arsenal.length>0?`${arsenal.length}개 등록됨 · 탭하면 뒤집혀요`:"아직 등록된 볼링공이 없어요"}
               </div>
             </div>
             {arsenal.length===0?(
@@ -5156,19 +5201,49 @@ export default function RollmateApp() {
               </div>
             ):(
               <>
-                <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:7,marginBottom:14}}>
-                  {[{l:"등록 볼",v:arsenal.length,c:"#1c1c1e",i:"🎳"},
-                    {l:"평균 무게",v:`${(arsenal.reduce((a,e)=>a+e.weight,0)/arsenal.length).toFixed(1)}lb`,c:"#1c1c1e",i:"⚖️"},
-                    {l:"주요 커버",v:(()=>{const cv=arsenal.map(e=>ALL_BALLS.find(b=>b.id===e.ballId)?.cover).filter(Boolean);const f=cv.reduce((a,v)=>({...a,[v]:(a[v]||0)+1}),{});return Object.entries(f).sort((a,b)=>b[1]-a[1])[0]?.[0]||"-"})(),c:"#1c1c1e",i:"🔷"}
-                  ].map(s=>(
-                    <div key={s.l} style={{background:"#ffffff",borderRadius:13,padding:"10px 8px",boxShadow:"0 1px 8px rgba(0,0,0,.06)"}}>
-                      <div style={{fontSize:14,marginBottom:2}}>{s.i}</div>
-                      <div style={{fontWeight:800,fontSize:16,color:s.c,lineHeight:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.v}</div>
-                      <div style={{fontSize:10,color:"#6b6b7e",fontWeight:700,letterSpacing:.5,marginTop:2}}>{s.l.toUpperCase()}</div>
+                {/* 오일별 통계 */}
+                <div style={{marginBottom:14}}>
+                  {/* 전체 등록 볼 */}
+                  <div style={{background:"linear-gradient(135deg,#1c1c1e,#2d2d3d)",borderRadius:16,
+                    padding:"12px 16px",marginBottom:8,
+                    display:"flex",alignItems:"center",justifyContent:"space-between",
+                    boxShadow:"0 2px 12px rgba(0,0,0,0.12)"}}>
+                    <div style={{display:"flex",alignItems:"center",gap:10}}>
+                      <span style={{fontSize:24}}>🎳</span>
+                      <div>
+                        <div style={{fontSize:11,color:"rgba(255,255,255,0.45)",fontWeight:700,letterSpacing:1}}>TOTAL</div>
+                        <div style={{fontSize:22,fontWeight:900,color:"#fff",lineHeight:1}}>{arsenal.length}<span style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginLeft:3}}>개</span></div>
+                      </div>
                     </div>
-                  ))}
+                    <div style={{textAlign:"right"}}>
+                      <div style={{fontSize:11,color:"rgba(255,255,255,0.45)",fontWeight:700,letterSpacing:1}}>AVG WEIGHT</div>
+                      <div style={{fontSize:18,fontWeight:900,color:"#ff8c00"}}>{(arsenal.reduce((a,e)=>a+e.weight,0)/arsenal.length).toFixed(1)}<span style={{fontSize:12,color:"rgba(255,140,0,0.6)",marginLeft:2}}>lb</span></div>
+                    </div>
+                  </div>
+                  {/* 오일 조건별 */}
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
+                    {[
+                      {l:"Heavy",full:"Heavy Oil",color:"#ef5350",emoji:"🔴"},
+                      {l:"Medium",full:["Medium-Heavy Oil","Medium Oil"],color:"#fb8c00",emoji:"🟡"},
+                      {l:"Light",full:["Light-Medium Oil","Light Oil"],color:"#42a5f5",emoji:"🔵"},
+                    ].map(({l,full,color,emoji})=>{
+                      const cnt = arsenal.filter(e=>{
+                        const b = ALL_BALLS.find(x=>x.id===e.ballId);
+                        return Array.isArray(full)?full.includes(b?.condition):b?.condition===full;
+                      }).length;
+                      return (
+                        <div key={l} style={{background:"#fff",borderRadius:13,padding:"10px 8px",
+                          boxShadow:"0 1px 8px rgba(0,0,0,.06)",textAlign:"center",
+                          borderTop:`3px solid ${color}`}}>
+                          <div style={{fontSize:16,marginBottom:2}}>{emoji}</div>
+                          <div style={{fontWeight:900,fontSize:20,color,lineHeight:1}}>{cnt}</div>
+                          <div style={{fontSize:10,color:"#999",fontWeight:700,letterSpacing:.5,marginTop:2}}>{l.toUpperCase()}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="rm-arsenal-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9}}>
+                <div className="rm-arsenal-grid" style={{display:"grid",gridTemplateColumns:"1fr",gap:10}}>
                   {arsenal.map(entry=>{
                     const ball=ALL_BALLS.find(b=>b.id===entry.ballId);
                     if(!ball) return null;
