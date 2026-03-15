@@ -2853,13 +2853,23 @@ function LoginPopup({ onLogin, onClose }) {
     setLoading(false);
   };
 
+  useEffect(()=>{
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.width = "100%";
+    return ()=>{
+      document.body.style.overflow = prev;
+      document.body.style.position = "";
+      document.body.style.width = "";
+    };
+  },[]);
+
   return (
     <div onClick={onClose}
-      onTouchMove={e=>e.preventDefault()}
       style={{position:"fixed",inset:0,zIndex:4000,
         background:"rgba(0,0,0,0.6)",backdropFilter:"blur(8px)",
-        display:"flex",alignItems:"flex-end",justifyContent:"center",
-        overscrollBehavior:"none"}}>
+        display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
       <div onClick={e=>e.stopPropagation()} style={{
         background:"#fff",borderRadius:"24px 24px 0 0",
         padding:"24px 20px 36px",width:"100%",maxWidth:480,
@@ -3957,36 +3967,36 @@ function MyCard({ entry, ball, onRemove, onEdit }) {
     <div style={{perspective:1000,cursor:"pointer"}} onClick={()=>setFlip(f=>!f)}>
       <div style={{position:"relative",width:"100%",transformStyle:"preserve-3d",
         transition:"transform .5s cubic-bezier(.4,0,.2,1)",transform:flip?"rotateY(180deg)":"none",
-        minHeight:190}}>
+        minHeight:150}}>
         <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",background:"#ffffff",
-          borderRadius:18,border:`1.5px solid ${ball.accent}22`,padding:13,
+          borderRadius:16,border:`1.5px solid ${ball.accent}22`,padding:10,
           display:"flex",flexDirection:"column",justifyContent:"space-between",
-          boxShadow:"0 2px 12px rgba(0,0,0,0.06)"}}>
+          boxShadow:"0 2px 10px rgba(0,0,0,0.06)"}}>
           <div>
-            <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:ball.accent,borderRadius:"18px 18px 0 0"}}/>
-            <div style={{display:"flex",gap:9,alignItems:"flex-start",marginBottom:7,marginTop:2}}>
-              <BallImg ball={ball} size={42}/>
+            <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:ball.accent,borderRadius:"16px 16px 0 0"}}/>
+            <div style={{display:"flex",gap:7,alignItems:"flex-start",marginBottom:5,marginTop:2}}>
+              <BallImg ball={ball} size={36}/>
               <div style={{flex:1,minWidth:0}}>
-                <div style={{fontSize:13,color:"#6b6b7e",fontWeight:700,letterSpacing:1.3}}>{ball.brand.toUpperCase()}</div>
-                <div style={{fontWeight:700,fontSize:12,color:"#111",lineHeight:1.3,
+                <div style={{fontSize:10,color:"#6b6b7e",fontWeight:700,letterSpacing:1.2}}>{ball.brand.toUpperCase()}</div>
+                <div style={{fontWeight:700,fontSize:11,color:"#111",lineHeight:1.25,
                   overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ball.name}</div>
-                {entry.nickname&&<div style={{fontSize:12,color:ball.accent,fontWeight:600}}>"{entry.nickname}"</div>}
+                {entry.nickname&&<div style={{fontSize:10,color:ball.accent,fontWeight:600}}>"{entry.nickname}"</div>}
               </div>
-              <span style={{fontSize:13,color:"#ddd"}}>탭↺</span>
+              <span style={{fontSize:11,color:"#ddd"}}>탭↺</span>
             </div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:3,marginBottom:6}}>
+            <div style={{display:"flex",flexWrap:"wrap",gap:3,marginBottom:4}}>
               {[{v:`${entry.weight}lb`,i:"⚖️"},{v:entry.grip||"세미팁",i:"🤙"}].map(p=>(
-                <span key={p.v} style={{fontSize:11,fontWeight:700,padding:"2px 5px",borderRadius:4,
+                <span key={p.v} style={{fontSize:10,fontWeight:700,padding:"1px 4px",borderRadius:4,
                   background:`${ball.accent}12`,color:ball.accent}}>{p.i} {p.v}</span>
               ))}
             </div>
           </div>
           {d&&(
-            <div style={{display:"flex",gap:6,flexWrap:"wrap",borderTop:"1px solid #f5f5f8",paddingTop:6,marginTop:"auto"}}>
+            <div style={{display:"flex",gap:5,flexWrap:"wrap",borderTop:"1px solid #f5f5f8",paddingTop:4,marginTop:"auto"}}>
               {[{l:"RG",v:d.rg},{l:"DIFF",v:d.diff},...(d.moi?[{l:"MOI",v:d.moi}]:[])].map(x=>(
                 <div key={x.l} style={{display:"flex",alignItems:"center",gap:2}}>
-                  <span style={{fontSize:11,color:"#6b6b7e",fontWeight:700,letterSpacing:.5}}>{x.l}</span>
-                  <span style={{fontSize:12,fontWeight:800,color:ball.accent}}>{x.v}</span>
+                  <span style={{fontSize:10,color:"#6b6b7e",fontWeight:700,letterSpacing:.3}}>{x.l}</span>
+                  <span style={{fontSize:11,fontWeight:800,color:ball.accent}}>{x.v}</span>
                 </div>
               ))}
             </div>
@@ -4175,7 +4185,7 @@ function Detail({ ball, onBack, inArsenal, onReg }) {
 
 
 // ══ 볼링공 비교 컴포넌트 ══
-function CompareView({ cmpList, toggleCmp, setView }) {
+function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
   const [selW, setSelW] = useState(15);
   const allWeights = [16,15,14,13,12];
 
@@ -4833,24 +4843,24 @@ export default function RollmateApp() {
 
       {/* TOP BAR */}
       <div style={{background:"rgba(28,28,30,.97)",backdropFilter:"blur(16px)",
-        borderBottom:"1px solid rgba(255,140,0,.2)",padding:"0 12px",position:"sticky",top:0,zIndex:100,overflow:"hidden",width:"100%",boxSizing:"border-box"}}>
-        <div style={{width:"100%",display:"flex",alignItems:"center",height:52,gap:8}}>
+        borderBottom:"1px solid rgba(255,140,0,.2)",padding:"0 10px",position:"sticky",top:0,zIndex:100,overflow:"hidden",width:"100%",boxSizing:"border-box"}}>
+        <div style={{width:"100%",display:"flex",alignItems:"center",height:50,gap:6}}>
+          {/* 로고 */}
           <div onClick={()=>{setSel(null);setView("home");setBrand("전체");setSearch("");}}
-            style={{display:"flex",alignItems:"center",gap:7,marginRight:"auto",cursor:"pointer"}}>
-            <span style={{fontSize:22}}>🎳</span>
+            style={{display:"flex",alignItems:"center",gap:5,flexShrink:0,cursor:"pointer"}}>
+            <span style={{fontSize:20}}>🎳</span>
             <span style={{fontFamily:"'Bebas Neue','Inter',sans-serif",fontWeight:400,
-              fontSize:38,color:"#fff",letterSpacing:"0.18em",
-              textShadow:"0 0 24px rgba(255,140,0,0.4)",lineHeight:1}}>ROLL<span style={{
-                color:"#ff8c00",
-                textShadow:"0 0 18px rgba(255,140,0,0.75)",
-              }}>MATE</span>
+              fontSize:34,color:"#fff",letterSpacing:"0.06em",
+              textShadow:"0 0 20px rgba(255,140,0,0.4)",lineHeight:1}}>ROLL<span style={{
+                color:"#ff8c00",textShadow:"0 0 16px rgba(255,140,0,0.7)"}}>MATE</span>
             </span>
           </div>
+          {/* 검색창 */}
           <div style={{position:"relative",flex:1,minWidth:0}}>
-            <span style={{position:"absolute",left:9,top:"50%",transform:"translateY(-50%)",fontSize:13,color:"#ff8c00"}}>🔍</span>
+            <span style={{position:"absolute",left:8,top:"50%",transform:"translateY(-50%)",fontSize:12,color:"#ff8c00"}}>🔍</span>
             <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="볼 검색..."
-              style={{background:"rgba(255,255,255,.1)",border:"1.5px solid rgba(255,140,0,.3)",borderRadius:20,color:"#fff",
-                padding:"6px 12px 6px 26px",fontSize:13,fontWeight:600,outline:"none",width:"100%",boxSizing:"border-box",fontFamily:"inherit"}}/>
+              style={{background:"rgba(255,255,255,.08)",border:"1.5px solid rgba(255,140,0,.25)",borderRadius:18,color:"#fff",
+                padding:"5px 10px 5px 24px",fontSize:12,fontWeight:600,outline:"none",width:"100%",boxSizing:"border-box",fontFamily:"inherit"}}/>
           </div>
         </div>
       </div>
@@ -5191,7 +5201,7 @@ export default function RollmateApp() {
 
         {/* COMPARE */}
         {view==="compare"&&(
-          <CompareView cmpList={cmpList} toggleCmp={toggleCmp} setView={setView}/>
+          <CompareView cmpList={cmpList} setCmpList={setCmpList} toggleCmp={toggleCmp} setView={setView}/>
         )}
 
         {/* SETTINGS */}
