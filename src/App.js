@@ -5209,15 +5209,17 @@ export default function RollmateApp() {
                   {/* 전체 등록 볼 */}
                   {/* 컴팩트 통계 + 오일 필터 */}
                   <div style={{display:"flex",gap:6,marginBottom:0,alignItems:"stretch"}}>
-                    {/* TOTAL */}
-                    <div style={{background:"linear-gradient(135deg,#1c1c1e,#2a2a3a)",borderRadius:12,
-                      padding:"10px 12px",display:"flex",alignItems:"center",gap:8,flexShrink:0,
-                      boxShadow:"0 2px 8px rgba(0,0,0,0.15)"}}>
+                    {/* TOTAL - 클릭 시 필터 해제 */}
+                    <div onClick={()=>setArsenalFilter(null)}
+                      style={{background:arsenalFilter===null?"#ff8c00":"linear-gradient(135deg,#1c1c1e,#2a2a3a)",
+                        borderRadius:12,padding:"10px 12px",display:"flex",alignItems:"center",gap:8,flexShrink:0,
+                        boxShadow:arsenalFilter===null?"0 4px 14px rgba(255,140,0,0.4)":"0 2px 8px rgba(0,0,0,0.15)",
+                        cursor:"pointer",transition:"all .2s",border:`1.5px solid ${arsenalFilter===null?"#ff8c00":"transparent"}`}}>
                       <span style={{fontSize:16}}>🎳</span>
                       <div>
-                        <div style={{fontSize:9,color:"rgba(255,255,255,0.4)",fontWeight:700,letterSpacing:1}}>TOTAL</div>
+                        <div style={{fontSize:9,color:arsenalFilter===null?"rgba(255,255,255,0.8)":"rgba(255,255,255,0.4)",fontWeight:700,letterSpacing:1}}>ALL</div>
                         <div style={{fontFamily:"'Exo 2',sans-serif",fontWeight:900,fontSize:20,color:"#fff",lineHeight:1}}>
-                          {arsenal.length}<span style={{fontSize:10,color:"rgba(255,255,255,0.4)",marginLeft:2}}>개</span>
+                          {arsenal.length}<span style={{fontSize:10,color:arsenalFilter===null?"rgba(255,255,255,0.7)":"rgba(255,255,255,0.4)",marginLeft:2}}>개</span>
                         </div>
                       </div>
                     </div>
