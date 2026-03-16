@@ -2482,6 +2482,44 @@ const BRAND_ICON = {
   "Columbia 300":"🌊","SWAG":"🌀",
 };
 
+// 브랜드 로고 설정 (약자 + 고유 색상)
+const BRAND_LOGO = {
+  "Storm":      {abbr:"STM", color:"#e53935", bg:"#fff0f0", textColor:"#e53935"},
+  "Roto Grip":  {abbr:"RG",  color:"#1e88e5", bg:"#e3f2fd", textColor:"#1e88e5"},
+  "Motiv":      {abbr:"MTV", color:"#6d1f7e", bg:"#f3e5f5", textColor:"#6d1f7e"},
+  "Hammer":     {abbr:"HMR", color:"#d32f2f", bg:"#ffebee", textColor:"#c62828"},
+  "Brunswick":  {abbr:"BRN", color:"#e65100", bg:"#fff3e0", textColor:"#e65100"},
+  "900 Global": {abbr:"900", color:"#1565c0", bg:"#e8eaf6", textColor:"#1565c0"},
+  "DV8":        {abbr:"DV8", color:"#212121", bg:"#f5f5f5", textColor:"#212121"},
+  "Ebonite":    {abbr:"EBN", color:"#4a148c", bg:"#ede7f6", textColor:"#4a148c"},
+  "Columbia 300":{abbr:"C3", color:"#0277bd", bg:"#e1f5fe", textColor:"#0277bd"},
+  "SWAG":       {abbr:"SWG", color:"#558b2f", bg:"#f1f8e9", textColor:"#558b2f"},
+  "Radical":    {abbr:"RAD", color:"#ef6c00", bg:"#fff8e1", textColor:"#e65100"},
+  "Track":      {abbr:"TRK", color:"#00695c", bg:"#e0f2f1", textColor:"#00695c"},
+};
+
+function BrandLogo({ brand, size=28, active=false }) {
+  const logo = BRAND_LOGO[brand];
+  if (!logo) return <span style={{fontSize:14}}>{BRAND_ICON[brand]||"🎳"}</span>;
+  return (
+    <div style={{
+      width:size, height:size, borderRadius:6,
+      background: active ? "rgba(255,255,255,0.2)" : logo.bg,
+      display:"flex", alignItems:"center", justifyContent:"center",
+      flexShrink:0,
+    }}>
+      <span style={{
+        fontSize: size <= 24 ? 8 : 10,
+        fontWeight:900,
+        color: active ? "#fff" : logo.textColor,
+        letterSpacing:"-0.5px",
+        fontFamily:"'Exo 2','Inter',sans-serif",
+        lineHeight:1,
+      }}>{logo.abbr}</span>
+    </div>
+  );
+}
+
 // 인기/판매 순위 데이터 (BowlersMart·Bowling.com·PBA 투어 사용률 종합, 2024~2025)
 const POPULARITY = {
   // Hammer — 판매 1위 브랜드
@@ -5082,15 +5120,23 @@ export default function RollmateApp() {
                   boxShadow:brand==="전체"?"0 4px 14px rgba(15,37,87,.35)":"0 1px 4px rgba(0,0,0,.07)"}}>
                   All <span style={{background:"rgba(255,255,255,.2)",padding:"1px 5px",borderRadius:4,fontSize:12}}>{ALL_BALLS.length}</span>
                 </button>
-                {brandCounts.map(({brand:b,count,icon})=>{
+                {brandCounts.map(({brand:b,count})=>{
                   const act=brand===b;
-                  return <button key={b} className="chip" onClick={()=>setBrand(b)} style={{
-                    background:act?"#1c1c1e":"#fff",color:act?"#fff":"#1a1a2e",
-                    boxShadow:act?"0 4px 14px rgba(55,65,81,.28)":"0 1px 4px rgba(0,0,0,.07)"}}>
-                    {icon} {b}
-                    <span style={{background:act?"rgba(255,255,255,.2)":"#e8ecf5",color:act?"#fff":"#4a4a5a",
-                      padding:"1px 5px",borderRadius:4,fontSize:12,fontWeight:800}}>{count}</span>
-                  </button>;
+                  const logo=BRAND_LOGO[b];
+                  return (
+                    <button key={b} className="chip" onClick={()=>setBrand(b)} style={{
+                      background:act?(logo?logo.color:"#1c1c1e"):"#fff",
+                      color:act?"#fff":"#1a1a2e",
+                      borderColor:act?(logo?logo.color:"#1c1c1e"):"transparent",
+                      boxShadow:act?`0 4px 14px ${logo?logo.color+"66":"rgba(55,65,81,.28)"}`:"0 1px 4px rgba(0,0,0,.07)",
+                      display:"flex",alignItems:"center",gap:6,padding:"5px 10px 5px 6px"}}>
+                      <BrandLogo brand={b} size={22} active={act}/>
+                      <span style={{fontSize:12,fontWeight:700}}>{b}</span>
+                      <span style={{background:act?"rgba(255,255,255,.25)":"#e8ecf5",
+                        color:act?"#fff":"#4a4a5a",
+                        padding:"1px 5px",borderRadius:4,fontSize:11,fontWeight:800}}>{count}</span>
+                    </button>
+                  );
                 })}
               </div>
               {/* 바 차트 완전 제거 */}
@@ -5162,8 +5208,8 @@ export default function RollmateApp() {
                     outline:"none",whiteSpace:"nowrap",
                   }}>
                   <option value="__none__" style={{background:"#fff",color:"#aaa"}}>RG</option>
-                  <option value="rg_asc" style={{background:"#fff",color:"#333"}}>RG 낮은순</option>
-                  <option value="rg_desc" style={{background:"#fff",color:"#333"}}>RG 높은순</option>
+                  <option value="rg_asc" style={{background:"#fff",color:"#333"}}>낮은순</option>
+                  <option value="rg_desc" style={{background:"#fff",color:"#333"}}>높은순</option>
                   {sortBy==="rg"&&<option value="__none__" style={{background:"#fff",color:"#ef5350"}}>✕ 해제</option>}
                 </select>
                 <span style={{position:"absolute",right:7,top:"50%",transform:"translateY(-50%)",
@@ -5186,8 +5232,8 @@ export default function RollmateApp() {
                     outline:"none",whiteSpace:"nowrap",
                   }}>
                   <option value="__none__" style={{background:"#fff",color:"#aaa"}}>DIFF</option>
-                  <option value="diff_desc" style={{background:"#fff",color:"#333"}}>DIFF 높은순</option>
-                  <option value="diff_asc" style={{background:"#fff",color:"#333"}}>DIFF 낮은순</option>
+                  <option value="diff_desc" style={{background:"#fff",color:"#333"}}>높은순</option>
+                  <option value="diff_asc" style={{background:"#fff",color:"#333"}}>낮은순</option>
                   {sortBy==="diff"&&<option value="__none__" style={{background:"#fff",color:"#ef5350"}}>✕ 해제</option>}
                 </select>
                 <span style={{position:"absolute",right:7,top:"50%",transform:"translateY(-50%)",
