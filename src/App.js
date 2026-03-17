@@ -443,7 +443,7 @@ const ALL_BALLS = [
     id:33, brand:"Hammer", name:"Black Widow 3.0",
     cover:"Solid", coreType:"Asymmetric", coreName:"Gas Mask",
     finish:"500/1000/2000 Siaair Micro Pad", condition:"Heavy Oil", accent:"#212121",
-    ballSlug:"hammer-black-widow-3-0", coreSlug:"hammer-gas-mask-core",
+    ballSlug:"hammer-black-widow-30", coreSlug:"hammer-gas-mask-core",
     weightData:{
       16:{rg:2.510,diff:0.048,moi:0.015}, 15:{rg:2.500,diff:0.058,moi:0.016},
       14:{rg:2.500,diff:0.056,moi:0.016}, 13:{rg:2.589,diff:0.043,moi:0.011}, 12:{rg:2.612,diff:0.043,moi:0.011}
@@ -781,7 +781,7 @@ const ALL_BALLS = [
     id:60, brand:"Roto Grip", name:"Hustle BRY",
     cover:"Hybrid", coreType:"Symmetric", coreName:"HP1 A.I.",
     finish:"Reacta Gloss", condition:"Light-Medium Oil", accent:"#c62828",
-    ballSlug:"roto-grip-hustle-bry-burgundyredyale-blue", coreSlug:"roto-grip-hp1-ai-core",
+    ballSlug:"roto-grip-hustle-bry", coreSlug:"roto-grip-hp1-ai-core",
     weightData:{
       16:{rg:2.560,diff:0.035}, 15:{rg:2.560,diff:0.035},
       14:{rg:2.580,diff:0.033}, 13:{rg:2.640,diff:0.028}, 12:{rg:2.700,diff:0.023}
@@ -1803,7 +1803,7 @@ const ALL_BALLS = [
     id:141, brand:"Track", name:"I-Core Gen4",
     cover:"Solid", coreType:"Asymmetric", coreName:"I-Core Gen4",
     finish:"500/1000/1500 Siaair / Factory Compound", condition:"Heavy Oil", accent:"#37474f",
-    ballSlug:"track-i-core-gen4", coreSlug:"track-i-core-gen4-asym",
+    ballSlug:"track-i-core-gen4", coreSlug:"track-i-core-gen4-core",
     weightData:{
       16:{rg:2.480,diff:0.052,moi:0.017}, 15:{rg:2.480,diff:0.052,moi:0.017},
       14:{rg:2.510,diff:0.050,moi:0.015}, 13:{rg:2.580,diff:0.044,moi:0.012}
@@ -2339,7 +2339,7 @@ const ALL_BALLS = [
     id:196, brand:"Hammer", name:"Black Widow 2.0",
     cover:"Hybrid", coreType:"Asymmetric", coreName:"Gas Mask",
     finish:"500/1000/1500 Siaair", condition:"Medium-Heavy Oil", accent:"#1565c0",
-    ballSlug:"hammer-black-widow-2", coreSlug:"hammer-gas-mask-core",
+    ballSlug:"hammer-black-widow-20", coreSlug:"hammer-gas-mask-core",
     weightData:{16:{rg:2.480,diff:0.058,moi:0.017},15:{rg:2.481,diff:0.058,moi:0.017},14:{rg:2.500,diff:0.054,moi:0.015},13:{rg:2.570,diff:0.048,moi:0.012},12:{rg:2.630,diff:0.041,moi:0.010}},
     releaseDate:"Sep 2018",
     description:"HK22 Hybrid on Gas Mask — 블랙위도우 시리즈의 역대 판매 1위. 헤비~미디엄헤비 전천후 활약, 전 세계 볼링인의 사랑을 받은 레전드."
