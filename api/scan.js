@@ -29,52 +29,71 @@ export default async function handler(req, res) {
   "confidence": "high/medium/low"
 }`;
 
-  try {
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
-    
-    const body = JSON.stringify({
-      contents: [{ parts: [
-        { inline_data: { mime_type: mimeType, data: imageBase64 } },
-        { text: prompt }
-      ]}],
-      generationConfig: { temperature: 0.1, maxOutputTokens: 400 }
-    });
+  // 여러 모델 순서대로 시도
+  const models = [
+    "gemini-2.0-flash-lite",
+    "gemini-2.0-flash",
+    "gemini-1.5-flash-latest",
+    "gemini-1.5-flash-8b",
+  ];
 
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body
-    });
+  let lastError = null;
 
-    const data = await response.json();
-    
-    // 디버그: Gemini 응답 전체 반환
-    if (!response.ok) {
-      return res.status(200).json({ 
-        error: "gemini_error", 
-        status: response.status,
-        geminiError: data 
-      });
+  for (const model of models) {
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [
+              { inline_data: { mime_type: mimeType, data: imageBase64 } },
+              { text: prompt }
+            ]}],
+            generationConfig: { temperature: 0.1, maxOutputTokens: 400 }
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      // 할당량 초과 → 다음 모델 시도
+      if (response.status === 429 || response.status === 404) {
+        lastError = data.error?.message || `${model} failed`;
+        continue;
+      }
+
+      if (!response.ok) {
+        lastError = data.error?.message || "unknown error";
+        continue;
+      }
+
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      if (!text) {
+        lastError = `empty response from ${model}`;
+        continue;
+      }
+
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        lastError = `parse failed: ${text.slice(0, 100)}`;
+        continue;
+      }
+
+      const result = JSON.parse(jsonMatch[0]);
+      return res.status(200).json({ success: true, model, ...result });
+
+    } catch (e) {
+      lastError = e.message;
+      continue;
     }
-
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    
-    if (!text) {
-      return res.status(200).json({ 
-        error: "empty_response",
-        finishReason: data.candidates?.[0]?.finishReason,
-        safetyRatings: data.candidates?.[0]?.safetyRatings,
-        raw: data
-      });
-    }
-
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) return res.status(200).json({ error: "parse_failed", raw: text });
-    
-    const result = JSON.parse(jsonMatch[0]);
-    return res.status(200).json({ success: true, ...result });
-
-  } catch (e) {
-    return res.status(500).json({ error: e.message, stack: e.stack });
   }
+
+  // 모든 모델 실패
+  return res.status(500).json({ 
+    error: "all_models_failed", 
+    message: lastError,
+    tip: "Gemini API 키를 확인하거나 잠시 후 다시 시도해주세요"
+  });
 }

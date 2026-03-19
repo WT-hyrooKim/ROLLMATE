@@ -5651,15 +5651,6 @@ export default function RollmateApp() {
         {/* SCAN - AI 볼 인식 */}
         {view==="scan"&&(
           <div style={{animation:"fadeUp .3s ease both"}}>
-            <div style={{fontWeight:700,fontSize:26,color:"#111",marginBottom:6,fontFamily:"'Inter',sans-serif",letterSpacing:1}}>📷 AI 볼링공 스캔</div>
-            <p style={{fontSize:13,color:"#1c1c1e",marginBottom:12,fontWeight:600,lineHeight:1.5}}>볼링공 사진을 찍거나 업로드하면<br/>AI가 제품명과 스펙을 인식해요</p>
-            {!process.env.REACT_APP_GEMINI_KEY&&(
-              <div style={{background:"#fff3e0",border:"1.5px solid #ffcc80",borderRadius:14,padding:"12px 14px",marginBottom:14,fontSize:12,color:"#e65100",lineHeight:1.7,fontWeight:600}}>
-                ⚠️ <b>Gemini API 키 미설정</b><br/>
-                Vercel 대시보드 → 프로젝트 선택 → <b>Settings → Environment Variables</b><br/>
-                → <code style={{background:"#ffe0b2",padding:"1px 5px",borderRadius:4}}>REACT_APP_GEMINI_KEY</code> 추가 후 재배포 필요
-              </div>
-            )}
             <BallScanner balls={ALL_BALLS}/>
           </div>
         )}
