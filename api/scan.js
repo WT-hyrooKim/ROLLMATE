@@ -30,27 +30,51 @@ export default async function handler(req, res) {
 }`;
 
   try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [
-            { inline_data: { mime_type: mimeType, data: imageBase64 } },
-            { text: prompt }
-          ]}],
-          generationConfig: { temperature: 0.1, maxOutputTokens: 400 }
-        })
-      }
-    );
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
+    
+    const body = JSON.stringify({
+      contents: [{ parts: [
+        { inline_data: { mime_type: mimeType, data: imageBase64 } },
+        { text: prompt }
+      ]}],
+      generationConfig: { temperature: 0.1, maxOutputTokens: 400 }
+    });
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body
+    });
+
     const data = await response.json();
+    
+    // 디버그: Gemini 응답 전체 반환
+    if (!response.ok) {
+      return res.status(200).json({ 
+        error: "gemini_error", 
+        status: response.status,
+        geminiError: data 
+      });
+    }
+
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    
+    if (!text) {
+      return res.status(200).json({ 
+        error: "empty_response",
+        finishReason: data.candidates?.[0]?.finishReason,
+        safetyRatings: data.candidates?.[0]?.safetyRatings,
+        raw: data
+      });
+    }
+
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) return res.status(200).json({ error: "parse_failed", raw: text });
+    
     const result = JSON.parse(jsonMatch[0]);
     return res.status(200).json({ success: true, ...result });
+
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: e.message, stack: e.stack });
   }
 }
