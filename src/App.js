@@ -4520,150 +4520,154 @@ function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
   );
 }
 
-// ══ 볼 스캔 컴포넌트 (Tesseract.js OCR + DB 매칭) ══
+// ══ 볼 스캔 컴포넌트 (Gemini Vision + Vercel Serverless) ══
 function BallScanner({ balls }) {
   const [img, setImg] = useState(null);
   const [imgB64, setImgB64] = useState(null);
+  const [mimeType, setMimeType] = useState("image/jpeg");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState("idle"); // idle|ocr|matching|done|nomatch|error
-  const [ocrText, setOcrText] = useState("");
+  const [step, setStep] = useState("idle"); // idle|analyzing|matching|done|nomatch|error
+  const [analysis, setAnalysis] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
   const fileRef = useRef();
   const cameraRef = useRef();
-  const canvasRef = useRef();
 
   const handleFile = (file) => {
     if (!file) return;
+    const mime = file.type || "image/jpeg";
     const reader = new FileReader();
     reader.onload = (e) => {
       setImg(e.target.result);
       setImgB64(e.target.result.split(",")[1]);
-      setResults([]); setStep("idle"); setOcrText(""); setErrorMsg("");
+      setMimeType(mime);
+      setResults([]); setStep("idle"); setAnalysis(null); setErrorMsg("");
     };
     reader.readAsDataURL(file);
   };
 
-  // ── 유사도 매칭 ──────────────────────────────────────
-  const normalize = (s) => (s||"").toLowerCase().replace(/[^a-z0-9가-힣\s]/g,"").replace(/\s+/g," ").trim();
+  // ── 유사도 매칭 (텍스트 + 색상 + 패턴) ────────────────
+  const normalize = (s) => (s||"").toLowerCase()
+    .replace(/[^a-z0-9가-힣\s]/g,"").replace(/\s+/g," ").trim();
 
-  const wordOverlap = (a, b) => {
-    const wa = new Set(normalize(a).split(" ").filter(w=>w.length>1));
-    const wb = new Set(normalize(b).split(" ").filter(w=>w.length>1));
-    const inter = [...wa].filter(w=>wb.has(w)).length;
-    const union = new Set([...wa,...wb]).size;
-    return union>0 ? inter/union : 0;
+  // 색상→볼이름 키워드 맵
+  const COLOR_MAP = {
+    purple:["purple","violet","amethyst"],
+    black:["black","dark","shadow","night","midnight"],
+    red:["red","crimson","scarlet","ruby","blood"],
+    blue:["blue","sapphire","cobalt","navy","azure","sky"],
+    green:["green","emerald","lime","jade","forest"],
+    orange:["orange","amber","fire","flame","blaze"],
+    gold:["gold","golden","maxx","silver"],
+    pearl:["pearl","pearlescent"],
+    white:["white","ivory","ghost","ice","frost"],
+    gray:["gray","grey","silver","slate"],
+    pink:["pink","rose","magenta"],
+    teal:["teal","cyan","aqua","turquoise"],
   };
 
-  const matchBalls = (text) => {
-    const nt = normalize(text);
-    const words = nt.split(" ").filter(w=>w.length>1);
+  // 패턴→볼이름 키워드 맵
+  const PATTERN_MAP = {
+    marble:["marble","stone","vein"],
+    swirl:["swirl","twist","spiral","vortex"],
+    solid:["solid","pure"],
+    pearl:["pearl"],
+    hybrid:["hybrid"],
+    reactive:["reactive"],
+  };
 
-    // 브랜드 키워드 맵
-    const brandMap = {
-      "storm":["storm"],"hammer":["hammer"],"motiv":["motiv"],
-      "brunswick":["brunswick"],"roto grip":["roto","grip"],
-      "900 global":["900","global"],"dv8":["dv8"],
-      "columbia 300":["columbia"],"ebonite":["ebonite"],
-      "radical":["radical"],"track":["track"],"swag":["swag"],
-    };
-
-    // 감지된 브랜드
-    let detectedBrand = null;
-    let maxBrandScore = 0;
-    for (const [brand, keywords] of Object.entries(brandMap)) {
-      const hits = keywords.filter(k=>nt.includes(k)).length;
-      const score = hits / keywords.length;
-      if (score > maxBrandScore) { maxBrandScore = score; detectedBrand = brand; }
-    }
+  const matchBalls = (res) => {
+    const { brand, name, colors=[], pattern="" } = res;
+    const nb = normalize(brand||"");
+    const nn = normalize(name||"");
 
     const scored = balls.map(ball => {
       let score = 0;
-      const ballNameN = normalize(ball.name);
-      const ballBrandN = normalize(ball.brand);
+      const ballBrand = normalize(ball.brand);
+      const ballName  = normalize(ball.name);
+      const ballCover = (ball.cover||"").toLowerCase();
 
-      // 브랜드 일치
-      if (detectedBrand && ballBrandN.includes(detectedBrand)) score += 0.25;
-      else if (detectedBrand && detectedBrand.includes(ballBrandN)) score += 0.15;
+      // ① 브랜드 매칭 (25%)
+      if (nb) {
+        if (ballBrand.includes(nb) || nb.includes(ballBrand)) score += 0.25;
+        else if (ballBrand.split(" ").some(w=>nb.includes(w)&&w.length>2)) score += 0.12;
+      }
 
-      // 볼 이름 단어 매칭
-      const nameWords = ballNameN.split(" ").filter(w=>w.length>1);
-      const hitWords = nameWords.filter(w=>words.some(tw=>tw.includes(w)||w.includes(tw)));
-      if (nameWords.length > 0) score += (hitWords.length / nameWords.length) * 0.7;
+      // ② 제품명 단어 매칭 (50%)
+      if (nn) {
+        const nameWords = ballName.split(" ").filter(w=>w.length>1);
+        const queryWords = nn.split(" ").filter(w=>w.length>1);
+        const hits = nameWords.filter(w=>
+          queryWords.some(q=>q===w||q.includes(w)||w.includes(q))
+        ).length;
+        if (nameWords.length > 0) score += (hits / nameWords.length) * 0.50;
+        // 완전 포함 보너스
+        if (ballName.includes(nn)||nn.includes(ballName)) score += 0.10;
+      }
 
-      // 전체 텍스트 포함 여부
-      if (nt.includes(ballNameN) || ballNameN.includes(nt.replace(ballBrandN,"").trim())) score += 0.2;
+      // ③ 색상 매칭 (15%)
+      if (colors.length > 0) {
+        let colorScore = 0;
+        colors.forEach(c => {
+          const cl = c.toLowerCase();
+          const keywords = COLOR_MAP[cl] || [cl];
+          if (keywords.some(k => ballName.includes(k) || ballCover.includes(k))) {
+            colorScore += 0.05;
+          }
+        });
+        score += Math.min(colorScore, 0.15);
+      }
+
+      // ④ 패턴 매칭 (10%)
+      if (pattern) {
+        const pl = pattern.toLowerCase();
+        const keywords = PATTERN_MAP[pl] || [pl];
+        if (keywords.some(k => ballName.includes(k) || ballCover.includes(k))) {
+          score += 0.10;
+        }
+        // cover 타입과 패턴 비교
+        if (pl==="solid" && ballCover.includes("solid")) score += 0.05;
+        if (pl==="pearl" && ballCover.includes("pearl")) score += 0.05;
+        if (pl==="hybrid" && ballCover.includes("hybrid")) score += 0.05;
+      }
 
       return { ball, score };
     });
 
     return scored
       .sort((a,b) => b.score - a.score)
-      .filter(x => x.score > 0.2)
+      .filter(x => x.score > 0.12)
       .slice(0, 3)
       .map(x => ({ ...x.ball, matchScore: Math.round(x.score * 100) }));
   };
 
-  // ── Tesseract OCR ─────────────────────────────────────
+  // ── 스캔 실행 ─────────────────────────────────────────
   const runScan = async () => {
-    if (!img) return;
-    setLoading(true); setStep("ocr"); setResults([]); setErrorMsg("");
+    if (!imgB64) return;
+    setLoading(true); setStep("analyzing"); setResults([]); setAnalysis(null); setErrorMsg("");
 
     try {
-      // Tesseract.js 동적 로드
-      if (!window.Tesseract) {
-        await new Promise((res, rej) => {
-          const s = document.createElement("script");
-          s.src = "https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js";
-          s.onload = res; s.onerror = rej;
-          document.head.appendChild(s);
-        });
+      // Vercel Serverless Function 호출
+      const res = await fetch("/api/scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageBase64: imgB64, mimeType }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        throw new Error(data.error || "서버 오류");
       }
 
-      // 이미지 전처리 (캔버스로 고대비 변환)
-      const canvas = canvasRef.current;
-      const ctxEl = canvas.getContext("2d");
-      const image = new Image();
-      await new Promise(res => { image.onload = res; image.src = img; });
-      canvas.width = image.width;
-      canvas.height = image.height;
-      ctxEl.drawImage(image, 0, 0);
-
-      // 그레이스케일 + 대비 강화
-      const imgData = ctxEl.getImageData(0, 0, canvas.width, canvas.height);
-      const d = imgData.data;
-      for (let i = 0; i < d.length; i += 4) {
-        const gray = 0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2];
-        const enhanced = gray > 128 ? Math.min(255, gray * 1.3) : Math.max(0, gray * 0.7);
-        d[i] = d[i+1] = d[i+2] = enhanced;
-      }
-      ctxEl.putImageData(imgData, 0, 0);
-      const processedImg = canvas.toDataURL("image/png");
-
-      // OCR 실행
-      const { data: { text } } = await window.Tesseract.recognize(
-        processedImg,
-        "eng",
-        { logger: () => {} }
-      );
-
-      const cleanText = text.trim();
-      setOcrText(cleanText);
+      setAnalysis(data);
       setStep("matching");
 
-      if (!cleanText || cleanText.length < 2) {
-        setStep("nomatch");
-        setLoading(false);
-        return;
-      }
-
-      // DB 매칭
-      const matched = matchBalls(cleanText);
+      const matched = matchBalls(data);
       setResults(matched);
       setStep(matched.length > 0 ? "done" : "nomatch");
 
     } catch (e) {
-      console.error(e);
       setErrorMsg(e.message || "스캔 중 오류 발생");
       setStep("error");
     }
@@ -4672,7 +4676,7 @@ function BallScanner({ balls }) {
 
   const reset = () => {
     setImg(null); setImgB64(null); setResults([]);
-    setStep("idle"); setOcrText(""); setErrorMsg("");
+    setStep("idle"); setAnalysis(null); setErrorMsg("");
   };
 
   const COND_C = {
@@ -4682,14 +4686,14 @@ function BallScanner({ balls }) {
 
   return (
     <div style={{animation:"fadeUp .3s ease both"}}>
-      <canvas ref={canvasRef} style={{display:"none"}}/>
       <div style={{fontWeight:800,fontSize:22,color:"#111",marginBottom:4}}>📷 볼링공 스캔</div>
       <p style={{fontSize:13,color:"#666",marginBottom:16,lineHeight:1.6}}>
-        볼링공 사진을 업로드하면 텍스트를 인식해서<br/>DB에서 매칭된 볼을 찾아드려요
+        볼링공 사진을 찍거나 업로드하면<br/>AI가 브랜드·제품명을 인식해서 DB와 매칭해드려요
       </p>
 
       {!img ? (
         <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          {/* 업로드 */}
           <div onClick={()=>fileRef.current?.click()} style={{
             background:"#fff",border:"2px dashed #e2e2e0",borderRadius:20,
             padding:"40px 20px",textAlign:"center",cursor:"pointer",transition:"border-color .2s"}}
@@ -4701,6 +4705,7 @@ function BallScanner({ balls }) {
             <input ref={fileRef} type="file" accept="image/*" style={{display:"none"}}
               onChange={e=>handleFile(e.target.files[0])}/>
           </div>
+          {/* 카메라 */}
           <button onClick={()=>cameraRef.current?.click()} style={{
             padding:"14px",background:"#1c1c1e",border:"none",borderRadius:16,
             color:"#fff",fontFamily:"inherit",fontSize:14,fontWeight:700,cursor:"pointer",
@@ -4709,8 +4714,9 @@ function BallScanner({ balls }) {
             <input ref={cameraRef} type="file" accept="image/*" capture="environment"
               style={{display:"none"}} onChange={e=>handleFile(e.target.files[0])}/>
           </button>
-          <div style={{background:"#f0f4ff",borderRadius:12,padding:"10px 14px",fontSize:12,
-            color:"#5c6bc0",lineHeight:1.7,fontWeight:600}}>
+          {/* 팁 */}
+          <div style={{background:"#f0f4ff",borderRadius:12,padding:"12px 14px",
+            fontSize:12,color:"#5c6bc0",lineHeight:1.8,fontWeight:600}}>
             💡 <b>인식 팁</b><br/>
             · 볼 이름이 선명하게 보이도록 촬영<br/>
             · 조명이 밝은 환경에서 촬영<br/>
@@ -4719,6 +4725,7 @@ function BallScanner({ balls }) {
         </div>
       ) : (
         <div>
+          {/* 미리보기 */}
           <div style={{position:"relative",marginBottom:14}}>
             <img src={img} alt="scan" style={{width:"100%",borderRadius:18,
               maxHeight:280,objectFit:"contain",background:"#111"}}/>
@@ -4730,51 +4737,91 @@ function BallScanner({ balls }) {
             )}
           </div>
 
+          {/* 분석 전 */}
           {step==="idle" && (
             <button onClick={runScan} style={{
               width:"100%",padding:"14px",background:"#ff8c00",border:"none",
               borderRadius:16,color:"#fff",fontFamily:"inherit",
               fontSize:15,fontWeight:800,cursor:"pointer",
               boxShadow:"0 6px 20px rgba(255,140,0,0.35)"}}>
-              🔍 텍스트 인식 시작
+              🔍 AI 분석 시작
             </button>
           )}
 
-          {(step==="ocr"||step==="matching") && (
-            <div style={{background:"#fff",borderRadius:16,padding:"20px",textAlign:"center",
-              boxShadow:"0 2px 12px rgba(0,0,0,0.06)"}}>
-              <div style={{fontSize:32,marginBottom:10,display:"inline-block",
+          {/* 분석 중 */}
+          {(step==="analyzing"||step==="matching") && (
+            <div style={{background:"#fff",borderRadius:16,padding:"24px 20px",
+              textAlign:"center",boxShadow:"0 2px 12px rgba(0,0,0,0.06)"}}>
+              <div style={{fontSize:36,marginBottom:12,display:"inline-block",
                 animation:"spin 1s linear infinite"}}>⚙️</div>
               <div style={{fontWeight:700,fontSize:14,color:"#333",marginBottom:4}}>
-                {step==="ocr"?"텍스트 인식 중...":"DB 매칭 중..."}
+                {step==="analyzing"?"AI 이미지 분석 중...":"DB 매칭 중..."}
               </div>
               <div style={{fontSize:12,color:"#aaa"}}>
-                {step==="ocr"?"볼에 쓰인 글자를 읽고 있어요":"209개 볼과 비교 중"}
+                {step==="analyzing"?"Gemini Vision이 볼을 인식하고 있어요":"209개 볼과 비교 중"}
               </div>
               <style>{`@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}`}</style>
             </div>
           )}
 
-          {/* OCR 인식 텍스트 */}
-          {ocrText && (step==="done"||step==="nomatch") && (
-            <div style={{background:"#f7f7fc",borderRadius:12,padding:"10px 14px",
+          {/* 인식 결과 태그 */}
+          {analysis && (step==="done"||step==="nomatch") && (
+            <div style={{background:"#f7f7fc",borderRadius:14,padding:"12px 14px",
               marginBottom:12}}>
-              <div style={{fontSize:10,color:"#aaa",fontWeight:700,letterSpacing:1,marginBottom:4}}>
-                인식된 텍스트
+              <div style={{display:"flex",gap:6,flexWrap:"wrap",alignItems:"center",marginBottom:6}}>
+                <span style={{fontSize:10,color:"#aaa",fontWeight:700,letterSpacing:1}}>AI 인식</span>
+                {analysis.brand && (
+                  <span style={{fontSize:11,fontWeight:700,background:"#1c1c1e",color:"#fff",
+                    padding:"2px 8px",borderRadius:8}}>{analysis.brand}</span>
+                )}
+                {analysis.name && (
+                  <span style={{fontSize:11,fontWeight:700,background:"#ff8c0022",color:"#ff8c00",
+                    padding:"2px 8px",borderRadius:8,border:"1px solid #ff8c0033"}}>{analysis.name}</span>
+                )}
+                {analysis.pattern && (
+                  <span style={{fontSize:10,fontWeight:700,background:"#e3f2fd",color:"#1565c0",
+                    padding:"2px 7px",borderRadius:8}}>{analysis.pattern}</span>
+                )}
+                <span style={{fontSize:10,marginLeft:"auto",fontWeight:700,
+                  color:analysis.confidence==="high"?"#43a047":
+                        analysis.confidence==="medium"?"#fb8c00":"#ef5350"}}>
+                  {analysis.confidence==="high"?"높음":
+                   analysis.confidence==="medium"?"보통":"낮음"}
+                </span>
               </div>
-              <div style={{fontSize:12,color:"#333",fontWeight:600,fontFamily:"monospace",
-                lineHeight:1.5,wordBreak:"break-all"}}>
-                "{ocrText.slice(0,100)}{ocrText.length>100?"...":""}"
-              </div>
+              {/* 색상 칩 */}
+              {analysis.colors?.length>0 && (
+                <div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:4}}>
+                  {analysis.colors.map(c=>{
+                    const colorMap={purple:"#9c27b0",black:"#333",red:"#e53935",blue:"#1e88e5",
+                      green:"#43a047",orange:"#fb8c00",gold:"#fdd835",pearl:"#e0e0e0",
+                      white:"#f5f5f5",gray:"#9e9e9e",pink:"#e91e63",teal:"#009688",silver:"#bdbdbd"};
+                    const bg = colorMap[c.toLowerCase()]||"#ddd";
+                    return (
+                      <span key={c} style={{
+                        fontSize:10,padding:"2px 8px",borderRadius:20,fontWeight:700,
+                        background:bg,color:["white","pearl","gold","silver","gray"].includes(c)?"#333":"#fff",
+                        border:"1px solid rgba(0,0,0,0.1)"}}>
+                        {c}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
+              {/* 색상 설명 */}
+              {analysis.colorDescription && (
+                <div style={{fontSize:11,color:"#666",fontStyle:"italic"}}>
+                  "{analysis.colorDescription}"
+                </div>
+              )}
             </div>
           )}
 
-          {/* 결과 */}
+          {/* 매칭 결과 */}
           {step==="done" && results.length>0 && (
             <div>
-              <div style={{fontSize:12,color:"#888",fontWeight:700,marginBottom:10,letterSpacing:1}}>
-                매칭된 볼 ({results.length}개)
-              </div>
+              <div style={{fontSize:12,color:"#888",fontWeight:700,marginBottom:10,
+                letterSpacing:1}}>매칭된 볼 ({results.length}개)</div>
               <div style={{display:"flex",flexDirection:"column",gap:8}}>
                 {results.map((ball,idx)=>{
                   const d = ball.weightData?.[15]||ball.weightData?.[16];
@@ -4790,12 +4837,14 @@ function BallScanner({ balls }) {
                           <div style={{width:56,height:56,borderRadius:"50%",overflow:"hidden",
                             boxShadow:`0 4px 14px ${ball.accent}44`,
                             border:`2px solid ${ball.accent}33`}}>
-                            <BowwwlImg src={`https://www.bowwwl.com/sites/default/files/styles/ball_grid/public/balls/${ball.ballSlug}.png`}
+                            <BowwwlImg
+                              src={`https://www.bowwwl.com/sites/default/files/styles/ball_grid/public/balls/${ball.ballSlug}.png`}
                               alt={ball.name} size={56} radius="50%"/>
                           </div>
                           {idx===0&&(
-                            <div style={{position:"absolute",top:-4,right:-4,width:18,height:18,
-                              borderRadius:"50%",background:"#ff8c00",border:"2px solid #fff",
+                            <div style={{position:"absolute",top:-4,right:-4,
+                              width:18,height:18,borderRadius:"50%",
+                              background:"#ff8c00",border:"2px solid #fff",
                               display:"flex",alignItems:"center",justifyContent:"center",
                               fontSize:10,fontWeight:900,color:"#fff"}}>1</div>
                           )}
@@ -4831,28 +4880,33 @@ function BallScanner({ balls }) {
             </div>
           )}
 
+          {/* 매칭 실패 */}
           {step==="nomatch" && (
-            <div style={{background:"#fff3e0",borderRadius:14,padding:"16px",textAlign:"center",
-              border:"1px solid #ffcc80"}}>
-              <div style={{fontSize:24,marginBottom:8}}>🤔</div>
-              <div style={{fontWeight:700,fontSize:14,color:"#e65100",marginBottom:4}}>
+            <div style={{background:"#fff3e0",borderRadius:14,padding:"18px",
+              textAlign:"center",border:"1px solid #ffcc80"}}>
+              <div style={{fontSize:28,marginBottom:8}}>🤔</div>
+              <div style={{fontWeight:700,fontSize:14,color:"#e65100",marginBottom:6}}>
                 매칭된 볼을 찾지 못했어요
               </div>
-              <div style={{fontSize:12,color:"#888",lineHeight:1.6}}>
-                볼 이름이 선명하게 보이도록<br/>더 가까이서 다시 촬영해보세요
+              <div style={{fontSize:12,color:"#888",lineHeight:1.7}}>
+                {analysis?.brand||analysis?.name?
+                  `"${[analysis.brand,analysis.name].filter(Boolean).join(" ")}" 으로 인식됐지만\nDB에 없는 제품이에요`:
+                  "볼 이름이 보이도록 더 가까이서 촬영해보세요"}
               </div>
             </div>
           )}
 
+          {/* 오류 */}
           {step==="error" && (
-            <div style={{background:"#ffebee",borderRadius:14,padding:"16px",
+            <div style={{background:"#ffebee",borderRadius:14,padding:"18px",
               border:"1px solid #ffcdd2",textAlign:"center"}}>
-              <div style={{fontSize:24,marginBottom:8}}>⚠️</div>
+              <div style={{fontSize:28,marginBottom:8}}>⚠️</div>
               <div style={{fontWeight:700,fontSize:14,color:"#c62828",marginBottom:4}}>오류 발생</div>
               <div style={{fontSize:12,color:"#888"}}>{errorMsg}</div>
             </div>
           )}
 
+          {/* 다시 시도 */}
           {(step==="done"||step==="nomatch"||step==="error") && (
             <button onClick={reset} style={{
               marginTop:12,width:"100%",padding:"12px",background:"#f5f5f7",
