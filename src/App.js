@@ -2790,7 +2790,7 @@ function WeightTable({ ball, sel, onSel }) {
               <div key={item.l} style={{textAlign:"center"}}>
                 <div style={{fontSize:12,color:"#1c1c1e",fontWeight:700,letterSpacing:2,marginBottom:4,fontFamily:"'Inter',sans-serif"}}>{item.l}</div>
                 <div style={{fontSize:hasMoi&&d.moi?28:34,fontWeight:700,color:ball.accent,lineHeight:1,fontFamily:"'Inter',sans-serif"}}>{item.v}</div>
-                <div style={{fontSize:11,color:"rgba(255,255,255,0.7)",marginTop:3,fontFamily:"'Inter',sans-serif",letterSpacing:.3}}>{item.desc}</div>
+                <div style={{fontSize:11,color:"#6b7280",marginTop:3,fontFamily:"'Inter',sans-serif",letterSpacing:.3}}>{item.desc}</div>
               </div>
             ))}
           </div>
@@ -2855,7 +2855,7 @@ function LoginPopup({ onLogin, onClose }) {
 
   const inputStyle = {
     width:"100%", background:"#f7f7fc", border:"1.5px solid #e2e2e0", borderRadius:10,
-    color:"rgba(255,255,255,0.85)", padding:"10px 13px", fontSize:14, outline:"none",
+    color:"#333", padding:"10px 13px", fontSize:14, outline:"none",
     fontFamily:"inherit", boxSizing:"border-box", marginBottom:8,
   };
 
@@ -2939,14 +2939,14 @@ function LoginPopup({ onLogin, onClose }) {
         background:"rgba(0,0,0,0.6)",backdropFilter:"blur(8px)",
         display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
       <div onClick={e=>e.stopPropagation()} style={{
-        background:"rgba(255,255,255,0.08)",borderRadius:"24px 24px 0 0",
+        background:"#fff",borderRadius:"24px 24px 0 0",
         padding:"20px 20px 36px",width:"100%",maxWidth:480,
         boxShadow:"0 -8px 40px rgba(0,0,0,0.2)",
         animation:"slideUp .3s cubic-bezier(.34,1.1,.64,1)"}}>
         <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
         <div style={{width:40,height:4,background:"#e2e2e0",borderRadius:2,margin:"0 auto 16px"}}/>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
-          <div style={{fontSize:17,fontWeight:900,color:"#fff",fontFamily:"'Exo 2',sans-serif"}}>ROLLMATE</div>
+          <div style={{fontSize:17,fontWeight:900,color:"#111",fontFamily:"'Exo 2',sans-serif"}}>ROLLMATE</div>
           <button onClick={onClose} style={{background:"none",border:"none",fontSize:20,color:"#ccc",cursor:"pointer"}}>✕</button>
         </div>
         {/* 탭 */}
@@ -3055,7 +3055,7 @@ function LoginPopup({ onLogin, onClose }) {
           {findResult==="fail"&&(
             <div style={{textAlign:"center",padding:"20px 0"}}>
               <div style={{fontSize:32,marginBottom:10}}>😕</div>
-              <div style={{fontWeight:700,fontSize:15,color:"#fff",marginBottom:6}}>일치하는 계정을 찾지 못했어요</div>
+              <div style={{fontWeight:700,fontSize:15,color:"#111",marginBottom:6}}>일치하는 계정을 찾지 못했어요</div>
               <div style={{fontSize:13,color:"#aaa",marginBottom:20,lineHeight:1.6}}>입력한 정보를 다시 확인해주세요</div>
               <button onClick={()=>setFindResult(null)} style={{padding:"10px 24px",
                 background:"#f5f5f7",border:"none",borderRadius:10,fontFamily:"inherit",
@@ -3065,10 +3065,10 @@ function LoginPopup({ onLogin, onClose }) {
           {findResult&&findResult!=="fail"&&(
             <div style={{textAlign:"center",padding:"16px 0"}}>
               <div style={{fontSize:32,marginBottom:10}}>🎉</div>
-              <div style={{fontWeight:700,fontSize:15,color:"#fff",marginBottom:16}}>계정을 찾았어요!</div>
+              <div style={{fontWeight:700,fontSize:15,color:"#111",marginBottom:16}}>계정을 찾았어요!</div>
               <div style={{background:"#f7f7fc",borderRadius:14,padding:"16px",marginBottom:16,textAlign:"left"}}>
                 <div style={{fontSize:11,color:"#aaa",fontWeight:700,marginBottom:4}}>닉네임</div>
-                <div style={{fontSize:16,fontWeight:800,color:"rgba(255,255,255,0.95)",marginBottom:12}}>{findResult.nickname}</div>
+                <div style={{fontSize:16,fontWeight:800,color:"#111",marginBottom:12}}>{findResult.nickname}</div>
                 <div style={{fontSize:11,color:"#aaa",fontWeight:700,marginBottom:4}}>비밀번호</div>
                 <div style={{fontSize:20,fontWeight:900,color:"#ff8c00",letterSpacing:2}}>{findResult.pw}</div>
               </div>
@@ -3216,7 +3216,7 @@ function AdminView({ nickname, onLogout, showToast }) {
   };
 
   const inputStyle = {width:"100%",background:"#f7f7fc",border:"1.5px solid #e2e2e0",borderRadius:10,
-    color:"rgba(255,255,255,0.85)",padding:"10px 13px",fontSize:13,outline:"none",fontFamily:"inherit",
+    color:"#333",padding:"10px 13px",fontSize:13,outline:"none",fontFamily:"inherit",
     boxSizing:"border-box",marginBottom:8};
 
   return (
@@ -3239,7 +3239,7 @@ function AdminView({ nickname, onLogout, showToast }) {
       </div>
 
       {/* 탭 */}
-      <div style={{display:"flex",background:"rgba(255,255,255,0.08)",borderBottom:"2px solid #f2f2f0"}}>
+      <div style={{display:"flex",background:"#fff",borderBottom:"2px solid #f2f2f0"}}>
         {[{k:"users",l:"👥 회원 관리"},{k:"notices",l:"📢 공지사항"}].map(t=>(
           <button key={t.k} onClick={()=>{setTab(t.k);setSelUser(null);}} style={{
             flex:1,padding:"13px",border:"none",fontFamily:"inherit",fontSize:13,fontWeight:700,
@@ -3259,9 +3259,9 @@ function AdminView({ nickname, onLogout, showToast }) {
         {tab==="users" && !selUser && (
           <div>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-              <div style={{fontWeight:800,fontSize:16,color:"#fff"}}>전체 회원</div>
+              <div style={{fontWeight:800,fontSize:16,color:"#111"}}>전체 회원</div>
               <button onClick={loadUsers} style={{padding:"6px 12px",borderRadius:14,border:"1.5px solid #e2e2e0",
-                background:"rgba(255,255,255,0.08)",fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer",color:"#555"}}>
+                background:"#fff",fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer",color:"#555"}}>
                 🔄 새로고침
               </button>
             </div>
@@ -3273,7 +3273,7 @@ function AdminView({ nickname, onLogout, showToast }) {
               <div style={{display:"flex",flexDirection:"column",gap:8}}>
                 {users.map(u=>(
                   <div key={u.id} onClick={()=>{setSelUser(u);loadUserEquip(u.nickname);}}
-                    style={{background:"rgba(255,255,255,0.08)",borderRadius:14,padding:"13px 16px",cursor:"pointer",
+                    style={{background:"#fff",borderRadius:14,padding:"13px 16px",cursor:"pointer",
                       display:"flex",alignItems:"center",gap:12,
                       boxShadow:"0 1px 6px rgba(0,0,0,0.06)",
                       border:u.is_admin?"2px solid #ff8c0044":"1.5px solid transparent"}}>
@@ -3285,7 +3285,7 @@ function AdminView({ nickname, onLogout, showToast }) {
                     </div>
                     <div style={{flex:1,minWidth:0}}>
                       <div style={{display:"flex",alignItems:"center",gap:6}}>
-                        <div style={{fontWeight:700,fontSize:14,color:"#fff"}}>{u.nickname}</div>
+                        <div style={{fontWeight:700,fontSize:14,color:"#111"}}>{u.nickname}</div>
                         {u.is_admin&&<span style={{fontSize:10,background:"#ff8c00",color:"#fff",
                           padding:"1px 6px",borderRadius:8,fontWeight:800}}>관리자</span>}
                       </div>
@@ -3309,7 +3309,7 @@ function AdminView({ nickname, onLogout, showToast }) {
         {/* 회원 상세 */}
         {tab==="users" && selUser && (
           <div>
-            <button onClick={()=>setSelUser(null)} style={{background:"rgba(255,255,255,0.08)",border:"1.5px solid #e2e2e0",
+            <button onClick={()=>setSelUser(null)} style={{background:"#fff",border:"1.5px solid #e2e2e0",
               color:"#2d2d3d",padding:"6px 14px",borderRadius:18,cursor:"pointer",
               fontWeight:700,fontSize:13,marginBottom:14,fontFamily:"inherit"}}>← 목록</button>
             <div style={{background:"linear-gradient(135deg,#1c1c1e,#333)",borderRadius:18,
@@ -3321,20 +3321,20 @@ function AdminView({ nickname, onLogout, showToast }) {
               </div>
               <div>
                 <div style={{display:"flex",alignItems:"center",gap:7}}>
-                  <div style={{fontSize:18,fontWeight:900,color:"rgba(255,255,255,0.95)"}}>{selUser.nickname}</div>
+                  <div style={{fontSize:18,fontWeight:900,color:"#fff"}}>{selUser.nickname}</div>
                   {selUser.is_admin&&<span style={{fontSize:11,background:"#ff8c00",color:"#fff",
                     padding:"2px 8px",borderRadius:10,fontWeight:800}}>관리자</span>}
                 </div>
                 <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",marginTop:2}}>
                   가입일 {new Date(selUser.created_at).toLocaleDateString("ko-KR")}
                 </div>
-                {selUser.real_name&&<div style={{fontSize:12,color:"rgba(0,212,255,0.6)",marginTop:1,fontWeight:600}}>{selUser.real_name}</div>}
+                {selUser.real_name&&<div style={{fontSize:12,color:"rgba(255,140,0,0.7)",marginTop:1,fontWeight:600}}>{selUser.real_name}</div>}
               </div>
             </div>
             {/* 개인정보 카드 */}
-            <div style={{background:"rgba(255,255,255,0.08)",borderRadius:16,padding:"16px",marginBottom:12,
+            <div style={{background:"#fff",borderRadius:16,padding:"16px",marginBottom:12,
               boxShadow:"0 1px 8px rgba(0,0,0,0.06)"}}>
-              <div style={{fontWeight:800,fontSize:14,color:"#fff",marginBottom:12}}>👤 회원 정보</div>
+              <div style={{fontWeight:800,fontSize:14,color:"#111",marginBottom:12}}>👤 회원 정보</div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
                 {[
                   {l:"성명", v:selUser.real_name||"-"},
@@ -3344,15 +3344,15 @@ function AdminView({ nickname, onLogout, showToast }) {
                 ].map(({l,v})=>(
                   <div key={l} style={{background:"#f7f7fc",borderRadius:10,padding:"10px 12px"}}>
                     <div style={{fontSize:10,color:"#aaa",fontWeight:700,letterSpacing:1,marginBottom:2}}>{l.toUpperCase()}</div>
-                    <div style={{fontSize:13,fontWeight:700,color:"#fff"}}>{v}</div>
+                    <div style={{fontSize:13,fontWeight:700,color:"#111"}}>{v}</div>
                   </div>
                 ))}
               </div>
             </div>
             {/* 장비 목록 */}
-            <div style={{background:"rgba(255,255,255,0.08)",borderRadius:16,padding:"16px",marginBottom:12,
+            <div style={{background:"#fff",borderRadius:16,padding:"16px",marginBottom:12,
               boxShadow:"0 1px 8px rgba(0,0,0,0.06)"}}>
-              <div style={{fontWeight:800,fontSize:14,color:"#fff",marginBottom:12}}>
+              <div style={{fontWeight:800,fontSize:14,color:"#111",marginBottom:12}}>
                 🎳 등록 장비 {equipLoading?"...":userEquip.length+"개"}
               </div>
               {equipLoading ? (
@@ -3363,7 +3363,7 @@ function AdminView({ nickname, onLogout, showToast }) {
                 <div style={{display:"flex",flexDirection:"column",gap:8}}>
                   {userEquip.map(e=>(
                     <div key={e.id} style={{background:"#f7f7fc",borderRadius:10,padding:"10px 13px"}}>
-                      <div style={{fontWeight:700,fontSize:13,color:"#fff"}}>{e.ball_name}</div>
+                      <div style={{fontWeight:700,fontSize:13,color:"#111"}}>{e.ball_name}</div>
                       <div style={{fontSize:11,color:"#888",marginTop:2}}>
                         {e.weight}lb · {e.grip||"세미팁"}
                         {e.purchase_price&&` · ${parseInt(e.purchase_price).toLocaleString()}원`}
@@ -3389,9 +3389,9 @@ function AdminView({ nickname, onLogout, showToast }) {
         {/* 공지사항 탭 */}
         {tab==="notices" && (
           <div>
-            <div style={{background:"rgba(255,255,255,0.08)",borderRadius:16,padding:"16px",marginBottom:16,
+            <div style={{background:"#fff",borderRadius:16,padding:"16px",marginBottom:16,
               boxShadow:"0 1px 8px rgba(0,0,0,0.06)"}}>
-              <div style={{fontWeight:800,fontSize:14,color:"#fff",marginBottom:12}}>📝 새 공지 작성</div>
+              <div style={{fontWeight:800,fontSize:14,color:"#111",marginBottom:12}}>📝 새 공지 작성</div>
               <input value={noticeForm.title} onChange={e=>setNoticeForm(f=>({...f,title:e.target.value}))}
                 placeholder="제목" style={inputStyle}/>
               <textarea value={noticeForm.content} onChange={e=>setNoticeForm(f=>({...f,content:e.target.value}))}
@@ -3404,7 +3404,7 @@ function AdminView({ nickname, onLogout, showToast }) {
                 {posting?"등록 중...":"📢 공지 등록"}
               </button>
             </div>
-            <div style={{fontWeight:800,fontSize:14,color:"#fff",marginBottom:10}}>공지 목록</div>
+            <div style={{fontWeight:800,fontSize:14,color:"#111",marginBottom:10}}>공지 목록</div>
             {loading ? (
               <div style={{textAlign:"center",padding:30,color:"#aaa"}}>불러오는 중...</div>
             ) : notices.length === 0 ? (
@@ -3412,7 +3412,7 @@ function AdminView({ nickname, onLogout, showToast }) {
             ) : (
               <div style={{display:"flex",flexDirection:"column",gap:8}}>
                 {notices.map(n=>(
-                  <div key={n.id} style={{background:"rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 16px",
+                  <div key={n.id} style={{background:"#fff",borderRadius:14,padding:"14px 16px",
                     boxShadow:"0 1px 6px rgba(0,0,0,0.06)",
                     border:n.is_active?"1.5px solid #ff8c0033":"1.5px solid #e2e2e0",
                     opacity:n.is_active?1:0.55}}>
@@ -3423,7 +3423,7 @@ function AdminView({ nickname, onLogout, showToast }) {
                       </span>
                       <span style={{fontSize:11,color:"#aaa"}}>{new Date(n.created_at).toLocaleDateString("ko-KR")}</span>
                     </div>
-                    <div style={{fontWeight:700,fontSize:14,color:"#fff"}}>{n.title}</div>
+                    <div style={{fontWeight:700,fontSize:14,color:"#111"}}>{n.title}</div>
                     <div style={{fontSize:12,color:"#777",marginTop:4,lineHeight:1.5}}>{n.content}</div>
                     <div style={{display:"flex",gap:6,marginTop:10}}>
                       <button onClick={()=>toggleNotice(n)} style={{flex:1,padding:"7px",borderRadius:8,
@@ -3456,7 +3456,7 @@ function DeleteModal({ onClose, onDelete }) {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const inputStyle = {width:"100%",background:"#f7f7fc",border:"1.5px solid #e2e2e0",borderRadius:10,
-    color:"rgba(255,255,255,0.85)",padding:"10px 13px",fontSize:13,outline:"none",fontFamily:"inherit",
+    color:"#333",padding:"10px 13px",fontSize:13,outline:"none",fontFamily:"inherit",
     boxSizing:"border-box",marginBottom:8};
 
   const handle = async () => {
@@ -3474,11 +3474,11 @@ function DeleteModal({ onClose, onDelete }) {
       display:"flex",alignItems:"flex-start",justifyContent:"center",
       padding:"60px 20px 20px",overflowY:"auto"}}
       onClick={onClose}>
-      <div onClick={e=>e.stopPropagation()} style={{background:"rgba(255,255,255,0.08)",borderRadius:22,
+      <div onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:22,
         padding:"22px 20px",width:"100%",maxWidth:360,
         boxShadow:"0 24px 60px rgba(0,0,0,0.2)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}>
-          <div style={{fontSize:17,fontWeight:800,color:"#fff"}}>🗑️ 계정 삭제</div>
+          <div style={{fontSize:17,fontWeight:800,color:"#111"}}>🗑️ 계정 삭제</div>
           <button onClick={onClose} style={{background:"none",border:"none",color:"#ccc",fontSize:22,cursor:"pointer"}}>✕</button>
         </div>
         <div style={{background:"#fff5f5",border:"1.5px solid #ffcdd2",borderRadius:10,
@@ -3525,7 +3525,7 @@ function PwChangeModal({ onClose, onSave }) {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const inputStyle = {width:"100%",background:"#f7f7fc",border:"1.5px solid #e2e2e0",borderRadius:10,
-    color:"rgba(255,255,255,0.85)",padding:"10px 13px",fontSize:13,outline:"none",fontFamily:"inherit",
+    color:"#333",padding:"10px 13px",fontSize:13,outline:"none",fontFamily:"inherit",
     boxSizing:"border-box",marginBottom:8};
 
   const handle = async () => {
@@ -3545,11 +3545,11 @@ function PwChangeModal({ onClose, onSave }) {
       display:"flex",alignItems:"flex-start",justifyContent:"center",
       padding:"60px 20px 20px",overflowY:"auto"}}
       onClick={()=>onClose(false)}>
-      <div onClick={e=>e.stopPropagation()} style={{background:"rgba(255,255,255,0.08)",borderRadius:22,
+      <div onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:22,
         padding:"22px 20px",width:"100%",maxWidth:360,
         boxShadow:"0 24px 60px rgba(0,0,0,0.2)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}>
-          <div style={{fontSize:17,fontWeight:800,color:"#fff"}}>🔑 비밀번호 변경</div>
+          <div style={{fontSize:17,fontWeight:800,color:"#111"}}>🔑 비밀번호 변경</div>
           <button onClick={()=>onClose(false)} style={{background:"none",border:"none",color:"#ccc",fontSize:22,cursor:"pointer"}}>✕</button>
         </div>
         <input type="password" placeholder="현재 비밀번호" value={oldPw}
@@ -3576,7 +3576,7 @@ function NickChangeModal({ nickname, onClose, onSave }) {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const inputStyle = {width:"100%",background:"#f7f7fc",border:"1.5px solid #e2e2e0",borderRadius:10,
-    color:"rgba(255,255,255,0.85)",padding:"10px 13px",fontSize:13,outline:"none",fontFamily:"inherit",
+    color:"#333",padding:"10px 13px",fontSize:13,outline:"none",fontFamily:"inherit",
     boxSizing:"border-box",marginBottom:8};
 
   const handle = async () => {
@@ -3595,11 +3595,11 @@ function NickChangeModal({ nickname, onClose, onSave }) {
       display:"flex",alignItems:"flex-start",justifyContent:"center",
       padding:"60px 20px 20px",overflowY:"auto"}}
       onClick={()=>onClose(false)}>
-      <div onClick={e=>e.stopPropagation()} style={{background:"rgba(255,255,255,0.08)",borderRadius:22,
+      <div onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:22,
         padding:"22px 20px",width:"100%",maxWidth:360,
         boxShadow:"0 24px 60px rgba(0,0,0,0.2)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}>
-          <div style={{fontSize:17,fontWeight:800,color:"#fff"}}>✏️ 닉네임 변경</div>
+          <div style={{fontSize:17,fontWeight:800,color:"#111"}}>✏️ 닉네임 변경</div>
           <button onClick={()=>onClose(false)} style={{background:"none",border:"none",color:"#ccc",fontSize:22,cursor:"pointer"}}>✕</button>
         </div>
         <div style={{fontSize:12,color:"#888",marginBottom:12,lineHeight:1.6}}>
@@ -3625,7 +3625,7 @@ function SettingsView({ nickname, arsenal, onPasswordChange, onNicknameChange, o
   const [section, setSection] = useState(null);
 
   const Card = ({children, style={}}) => (
-    <div style={{background:"rgba(255,255,255,0.06)",backdropFilter:"blur(10px)",borderRadius:16,overflow:"hidden",border:"1px solid rgba(255,255,255,0.08)",boxShadow:"0 2px 12px rgba(0,0,0,0.2)",...style}}>
+    <div style={{background:"#fff",borderRadius:16,overflow:"hidden",boxShadow:"0 1px 8px rgba(0,0,0,0.06)",...style}}>
       {children}
     </div>
   );
@@ -3645,17 +3645,15 @@ function SettingsView({ nickname, arsenal, onPasswordChange, onNicknameChange, o
   return (
     <div style={{animation:"fadeUp .3s ease both",paddingBottom:20}}>
       {/* 헤더 프로필 */}
-      <div style={{background:"rgba(0,212,255,0.06)",borderRadius:20,padding:"20px 18px",
-        marginBottom:16,display:"flex",alignItems:"center",gap:14,
-        border:"1px solid rgba(0,212,255,0.15)",backdropFilter:"blur(10px)"}}>
-        <div style={{width:52,height:52,borderRadius:"50%",
-          background:"linear-gradient(135deg,#ff8c00,#e65100)",
-          display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,fontWeight:900,color:"#fff",
-          boxShadow:"0 4px 16px rgba(255,140,0,0.45)"}}>
+      <div style={{background:"linear-gradient(135deg,#1c1c1e,#2d2014)",borderRadius:20,padding:"22px 20px",
+        marginBottom:20,display:"flex",alignItems:"center",gap:16,boxShadow:"0 4px 20px rgba(0,0,0,0.15)"}}>
+        <div style={{width:54,height:54,borderRadius:"50%",background:"#ff8c00",
+          display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,fontWeight:900,color:"#fff",
+          boxShadow:"0 4px 14px rgba(255,140,0,0.4)"}}>
           {nickname.charAt(0).toUpperCase()}
         </div>
         <div>
-          <div style={{fontSize:18,fontWeight:900,color:"rgba(255,255,255,0.95)"}}>{nickname}</div>
+          <div style={{fontSize:18,fontWeight:900,color:"#fff"}}>{nickname}</div>
           <div style={{fontSize:12,color:"rgba(255,255,255,0.45)",marginTop:2}}>
             볼링공 {arsenal.length}개 등록됨
           </div>
@@ -3663,7 +3661,7 @@ function SettingsView({ nickname, arsenal, onPasswordChange, onNicknameChange, o
       </div>
 
       {/* 계정 관리 */}
-      <div style={{fontSize:10,color:"rgba(0,212,255,0.6)",fontWeight:700,letterSpacing:1.5,marginBottom:6,paddingLeft:4}}>계정 관리</div>
+      <div style={{fontSize:11,color:"#aaa",fontWeight:700,letterSpacing:1.5,marginBottom:6,paddingLeft:4}}>계정 관리</div>
       <Card style={{marginBottom:16}}>
         <Row icon="🔑" label="비밀번호 변경" sub="현재 비밀번호 확인 후 변경" onClick={()=>setSection("pw")}/>
         <Row icon="✏️" label="닉네임 변경" sub="변경 시 장비 데이터도 이동" onClick={()=>setSection("nick")}/>
@@ -3672,7 +3670,7 @@ function SettingsView({ nickname, arsenal, onPasswordChange, onNicknameChange, o
       </Card>
 
       {/* 데이터 관리 */}
-      <div style={{fontSize:10,color:"rgba(0,212,255,0.6)",fontWeight:700,letterSpacing:1.5,marginBottom:6,paddingLeft:4}}>데이터 관리</div>
+      <div style={{fontSize:11,color:"#aaa",fontWeight:700,letterSpacing:1.5,marginBottom:6,paddingLeft:4}}>데이터 관리</div>
       <Card style={{marginBottom:16}}>
         <Row icon="📊" label="내 장비 현황" sub={`총 ${arsenal.length}개 · 클라우드 저장 중`}/>
         <Row icon="🗑️" label="계정 및 데이터 삭제" sub="탈퇴 시 모든 데이터가 삭제돼요"
@@ -3680,7 +3678,7 @@ function SettingsView({ nickname, arsenal, onPasswordChange, onNicknameChange, o
       </Card>
 
       {/* 앱 정보 */}
-      <div style={{fontSize:10,color:"rgba(0,212,255,0.6)",fontWeight:700,letterSpacing:1.5,marginBottom:6,paddingLeft:4}}>앱 정보</div>
+      <div style={{fontSize:11,color:"#aaa",fontWeight:700,letterSpacing:1.5,marginBottom:6,paddingLeft:4}}>앱 정보</div>
       <Card>
         <Row icon="🎳" label="ROLLMATE" sub="볼링 장비 관리 앱"/>
         <Row icon="🔢" label="버전" sub="v7.9"/>
@@ -3972,14 +3970,14 @@ function RegModal({ ball, existing, onSave, onClose }) {
   const removeLog = (id) => set("surface_logs", form.surface_logs.filter(l=>l.id!==id));
   const tabs = [{k:"basic",l:"기본"},{k:"drill",l:"드릴링"},{k:"purchase",l:"구매"},{k:"surface",l:"표면관리"}];
   const inputStyle = {width:"100%",background:"#f7f7fc",border:"1.5px solid #e2e2e0",borderRadius:10,
-    color:"rgba(255,255,255,0.85)",padding:"8px 12px",fontSize:13,outline:"none",fontFamily:"inherit",boxSizing:"border-box"};
+    color:"#333",padding:"8px 12px",fontSize:13,outline:"none",fontFamily:"inherit",boxSizing:"border-box"};
   const labelStyle = {fontSize:12,color:"#1c1c1e",fontWeight:700,letterSpacing:1.2,display:"block",marginBottom:4};
   return (
     <div onClick={onClose} style={{position:"fixed",inset:0,zIndex:2000,
       background:"rgba(10,10,30,0.6)",backdropFilter:"blur(14px)",
       display:"flex",alignItems:"center",justifyContent:"center",padding:16,overflowY:"auto"}}>
       <div onClick={e=>e.stopPropagation()} style={{
-        background:"rgba(255,255,255,0.08)",borderRadius:24,padding:"22px 20px",width:"100%",maxWidth:400,
+        background:"#ffffff",borderRadius:24,padding:"22px 20px",width:"100%",maxWidth:400,
         boxShadow:"0 32px 80px rgba(0,0,0,0.25)",animation:"modalIn .28s cubic-bezier(.34,1.56,.64,1)",
         maxHeight:"90vh",overflowY:"auto"}}>
         <style>{`@keyframes modalIn{from{transform:scale(.88) translateY(20px);opacity:0}to{transform:scale(1);opacity:1}}`}</style>
@@ -3987,7 +3985,7 @@ function RegModal({ ball, existing, onSave, onClose }) {
           <BallImg ball={ball} size={48}/>
           <div style={{flex:1}}>
             <div style={{fontSize:12,color:"#6b6b7e",fontWeight:700,letterSpacing:1.5}}>{ball.brand.toUpperCase()}</div>
-            <div style={{fontSize:17,fontWeight:800,color:"#fff",lineHeight:1.1}}>{ball.name}</div>
+            <div style={{fontSize:17,fontWeight:800,color:"#111",lineHeight:1.1}}>{ball.name}</div>
           </div>
           <button onClick={onClose} style={{background:"none",border:"none",color:"#ddd",fontSize:20,cursor:"pointer"}}>✕</button>
         </div>
@@ -4075,7 +4073,7 @@ function RegModal({ ball, existing, onSave, onClose }) {
         )}
         {tab==="surface" && (
           <div style={{display:"flex",flexDirection:"column",gap:12}}>
-            <div style={{fontWeight:700,fontSize:13,color:"#fff"}}>관리 이력</div>
+            <div style={{fontWeight:700,fontSize:13,color:"#111"}}>관리 이력</div>
             {form.surface_logs.length === 0 && (
               <div style={{textAlign:"center",padding:"20px",color:"#ccc",fontSize:13}}>아직 기록이 없어요</div>
             )}
@@ -4084,12 +4082,12 @@ function RegModal({ ball, existing, onSave, onClose }) {
                 <button onClick={()=>removeLog(log.id)} style={{position:"absolute",top:8,right:8,background:"none",
                   border:"none",color:"#ccc",fontSize:14,cursor:"pointer"}}>✕</button>
                 <div style={{fontSize:12,fontWeight:700,color:"#ff8c00"}}>{log.date}</div>
-                <div style={{fontSize:13,fontWeight:700,color:"#fff"}}>{log.method}{log.grit&&` (${log.grit})`}</div>
+                <div style={{fontSize:13,fontWeight:700,color:"#111"}}>{log.method}{log.grit&&` (${log.grit})`}</div>
                 {log.note&&<div style={{fontSize:12,color:"#666",marginTop:2}}>{log.note}</div>}
               </div>
             ))}
-            <div style={{background:"rgba(255,255,255,0.08)",border:"1.5px dashed #e2e2e0",borderRadius:12,padding:"12px"}}>
-              <div style={{fontSize:12,fontWeight:700,color:"#fff",marginBottom:8}}>+ 새 기록 추가</div>
+            <div style={{background:"#fff",border:"1.5px dashed #e2e2e0",borderRadius:12,padding:"12px"}}>
+              <div style={{fontSize:12,fontWeight:700,color:"#111",marginBottom:8}}>+ 새 기록 추가</div>
               <div style={{display:"flex",flexDirection:"column",gap:6}}>
                 <input type="date" value={newLog.date} onChange={e=>setNewLog(l=>({...l,date:e.target.value}))} style={inputStyle}/>
                 <div style={{display:"flex",gap:4}}>
@@ -4153,7 +4151,7 @@ function MyCard({ entry, ball, onRemove, onEdit }) {
                 <div style={{fontSize:10,color:"#999",fontWeight:700,letterSpacing:1.5,marginBottom:1}}>
                   {ball.brand.toUpperCase()}
                 </div>
-                <div style={{fontWeight:800,fontSize:14,color:"#fff",lineHeight:1.25,marginBottom:4}}>
+                <div style={{fontWeight:800,fontSize:14,color:"#111",lineHeight:1.25,marginBottom:4}}>
                   {ball.name}
                 </div>
                 {entry.nickname&&(
@@ -4258,12 +4256,12 @@ function Detail({ ball, onBack, inArsenal, onReg }) {
   const inA = inArsenal(ball.id);
   return (
     <div style={{animation:"fadeUp .3s ease both"}}>
-      <button onClick={onBack} style={{background:"rgba(255,255,255,0.08)",border:"1.5px solid #e2e2e0",color:"#2d2d3d",
+      <button onClick={onBack} style={{background:"#ffffff",border:"1.5px solid #e2e2e0",color:"#2d2d3d",
         padding:"6px 14px",borderRadius:18,cursor:"pointer",fontWeight:700,fontSize:13,marginBottom:13,
         boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>← 목록</button>
 
       {/* 헤더 카드 */}
-      <div style={{background:"rgba(255,255,255,0.08)",borderRadius:22,overflow:"hidden",
+      <div style={{background:"#ffffff",borderRadius:22,overflow:"hidden",
         boxShadow:"0 2px 16px rgba(0,0,0,0.09)",marginBottom:11}}>
         <div style={{height:5,background:`linear-gradient(90deg,${ball.accent},${ball.accent}66)`}}/>
         <div style={{padding:"18px 16px"}}>
@@ -4275,7 +4273,7 @@ function Detail({ ball, onBack, inArsenal, onReg }) {
             </div>
             <div style={{flex:1,minWidth:0}}>
               <div style={{fontSize:13,color:"#1c1c1e",fontWeight:700,letterSpacing:2,marginBottom:2}}>{ball.brand.toUpperCase()}</div>
-              <div style={{fontWeight:700,fontSize:22,color:"#fff",lineHeight:1.2,marginBottom:4}}>{ball.name}</div>
+              <div style={{fontWeight:700,fontSize:22,color:"#111",lineHeight:1.2,marginBottom:4}}>{ball.name}</div>
               <div style={{fontSize:13,color:"#1c1c1e",marginBottom:7}}>
                 {ball.releaseDate}{ball.fragrance?` · 🍒 ${ball.fragrance}`:""}
               </div>
@@ -4315,7 +4313,7 @@ function Detail({ ball, onBack, inArsenal, onReg }) {
 
       {/* 스펙 탭 */}
       {tab==="specs"&&(
-        <div style={{background:"rgba(255,255,255,0.08)",borderRadius:18,padding:"16px",
+        <div style={{background:"#ffffff",borderRadius:18,padding:"16px",
           boxShadow:"0 2px 12px rgba(0,0,0,0.07)",animation:"fadeUp .22s ease both"}}>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:7,marginBottom:14}}>
             {[{l:"커버스탁",v:ball.cover},{l:"코어 타입",v:ball.coreType},
@@ -4323,7 +4321,7 @@ function Detail({ ball, onBack, inArsenal, onReg }) {
               {l:"오일 조건",v:ball.condition},{l:"출시일",v:ball.releaseDate}].map(s=>(
               <div key={s.l} style={{background:"#f8f8fc",borderRadius:11,padding:"9px 12px"}}>
                 <div style={{fontSize:12,color:"#4a4a5a",fontWeight:700,letterSpacing:1.5,marginBottom:4}}>{s.l.toUpperCase()}</div>
-                <div style={{fontSize:15,color:"rgba(255,255,255,0.92)",fontWeight:800,fontFamily:"'Inter',sans-serif"}}>{s.v}</div>
+                <div style={{fontSize:15,color:"#1a1a2e",fontWeight:800,fontFamily:"'Inter',sans-serif"}}>{s.v}</div>
               </div>
             ))}
           </div>
@@ -4349,7 +4347,7 @@ function Detail({ ball, onBack, inArsenal, onReg }) {
 
       {/* 파운드별 탭 */}
       {tab==="weights"&&(
-        <div style={{background:"rgba(255,255,255,0.08)",borderRadius:18,padding:"16px",
+        <div style={{background:"#ffffff",borderRadius:18,padding:"16px",
           boxShadow:"0 2px 12px rgba(0,0,0,0.07)",animation:"fadeUp .22s ease both"}}>
           <div style={{fontSize:13,color:"#2d2d3d",fontWeight:700,letterSpacing:2,marginBottom:14,fontFamily:"'Inter',sans-serif"}}>파운드별 코어 데이터</div>
           <WeightTable ball={ball} sel={selW} onSel={setSelW}/>
@@ -4358,7 +4356,7 @@ function Detail({ ball, onBack, inArsenal, onReg }) {
 
       {/* 코어 탭 — 실제 코어 이미지 */}
       {tab==="core"&&(
-        <div style={{background:"rgba(255,255,255,0.08)",borderRadius:18,padding:"16px",
+        <div style={{background:"#ffffff",borderRadius:18,padding:"16px",
           boxShadow:"0 2px 12px rgba(0,0,0,0.07)",animation:"fadeUp .22s ease both"}}>
           <div style={{fontSize:13,color:"#2d2d3d",fontWeight:700,letterSpacing:2,marginBottom:12,fontFamily:"'Inter',sans-serif"}}>
             {ball.coreName.toUpperCase()} CORE
@@ -4395,11 +4393,11 @@ function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
   return (
     <div style={{animation:"fadeUp .3s ease both"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:2}}>
-        <div style={{fontWeight:800,fontSize:22,color:"#fff"}}>볼링공 비교</div>
+        <div style={{fontWeight:800,fontSize:22,color:"#111"}}>볼링공 비교</div>
         {cmpList.length>0&&(
           <button onClick={()=>setCmpList([])} style={{
             padding:"6px 14px",borderRadius:18,border:"1.5px solid #ef5350",
-            background:"rgba(255,255,255,0.08)",color:"#ef5350",fontFamily:"inherit",
+            background:"#fff",color:"#ef5350",fontFamily:"inherit",
             fontSize:12,fontWeight:700,cursor:"pointer"}}>
             🗑️ 초기화
           </button>
@@ -4410,9 +4408,9 @@ function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
       </p>
 
       {cmpList.length===0?(
-        <div style={{textAlign:"center",padding:"50px 20px",background:"rgba(255,255,255,0.03)",border:"2px dashed rgba(255,255,255,0.12)",borderRadius:18}}>
+        <div style={{textAlign:"center",padding:"50px 20px",background:"#ffffff",border:"2px dashed #e2e2e0",borderRadius:18}}>
           <div style={{fontSize:40,marginBottom:10,opacity:.22}}>⚖️</div>
-          <div style={{fontWeight:800,fontSize:17,color:"rgba(255,255,255,0.3)"}}>선택된 볼 없음</div>
+          <div style={{fontWeight:800,fontSize:17,color:"#ddd"}}>선택된 볼 없음</div>
           <button onClick={()=>setView("home")} style={{marginTop:13,padding:"8px 20px",background:"#1c1c1e",
             border:"none",color:"#fff",borderRadius:18,cursor:"pointer",fontWeight:700,fontSize:13,fontFamily:"inherit",
             boxShadow:"0 3px 10px rgba(15,37,87,.28)"}}>홈으로</button>
@@ -4420,7 +4418,7 @@ function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
       ):(
         <>
           {/* 파운드 선택 */}
-          <div style={{background:"rgba(255,255,255,0.08)",borderRadius:14,padding:"12px 14px",
+          <div style={{background:"#fff",borderRadius:14,padding:"12px 14px",
             boxShadow:"0 1px 8px rgba(0,0,0,.06)",marginBottom:11}}>
             <div style={{fontSize:12,color:"#1c1c1e",fontWeight:700,letterSpacing:1.5,marginBottom:8}}>파운드 선택</div>
             <div style={{display:"flex",gap:6}}>
@@ -4442,7 +4440,7 @@ function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
             {cmpList.map(ball=>{
               const d = ball.weightData[selW] || ball.weightData[16];
               return (
-                <div key={ball.id} style={{background:"rgba(255,255,255,0.08)",borderRadius:16,overflow:"hidden",
+                <div key={ball.id} style={{background:"#ffffff",borderRadius:16,overflow:"hidden",
                   boxShadow:"0 2px 12px rgba(0,0,0,.07)"}}>
                   <div style={{height:4,background:ball.accent}}/>
                   <div style={{padding:"7px 6px 6px",textAlign:"center",borderBottom:"1px solid #f5f5f8"}}>
@@ -4453,7 +4451,7 @@ function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
                       </div>
                     </div>
                     <div style={{fontSize:9,color:"#4a4a5a",fontWeight:700,letterSpacing:1}}>{ball.brand.toUpperCase()}</div>
-                    <div style={{fontWeight:800,fontSize:10,color:"#fff",lineHeight:1.2,marginBottom:3,
+                    <div style={{fontWeight:800,fontSize:10,color:"#111",lineHeight:1.2,marginBottom:3,
                       overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:"100%"}}>{ball.name}</div>
                     <button onClick={()=>toggleCmp(ball)} style={{padding:"1px 7px",
                       background:"#f3f4f6",border:"none",color:"#1c1c1e",borderRadius:5,cursor:"pointer",
@@ -4476,7 +4474,7 @@ function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
                       <div key={r.k} style={{display:"flex",justifyContent:"space-between",padding:"2px 0",
                         borderBottom:"1px solid #f8f8fc",fontSize:10}}>
                         <span style={{color:"#6b6b7e",fontWeight:700}}>{r.k}</span>
-                        <span style={{color:"rgba(255,255,255,0.95)",fontWeight:700,textAlign:"right",
+                        <span style={{color:"#111",fontWeight:700,textAlign:"right",
                           maxWidth:"60%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.v}</span>
                       </div>
                     ))}
@@ -4488,7 +4486,7 @@ function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
 
           {/* 수치 비교 바 */}
           {cmpList.length>1&&(
-            <div style={{marginTop:11,background:"rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 16px",
+            <div style={{marginTop:11,background:"#ffffff",borderRadius:14,padding:"14px 16px",
               boxShadow:"0 1px 8px rgba(0,0,0,.06)"}}>
               <div style={{fontSize:13,color:"#1c1c1e",fontWeight:700,letterSpacing:2,marginBottom:10}}>
                 수치 비교 ({selW}lb)
@@ -4688,7 +4686,7 @@ function BallScanner({ balls }) {
 
   return (
     <div style={{animation:"fadeUp .3s ease both"}}>
-      <div style={{fontWeight:800,fontSize:22,color:"#fff",marginBottom:4}}>📷 볼링공 스캔</div>
+      <div style={{fontWeight:800,fontSize:22,color:"#111",marginBottom:4}}>📷 볼링공 스캔</div>
       <p style={{fontSize:13,color:"#666",marginBottom:16,lineHeight:1.6}}>
         볼링공 사진을 찍거나 업로드하면<br/>AI가 브랜드·제품명을 인식해서 DB와 매칭해드려요
       </p>
@@ -4697,12 +4695,12 @@ function BallScanner({ balls }) {
         <div style={{display:"flex",flexDirection:"column",gap:10}}>
           {/* 업로드 */}
           <div onClick={()=>fileRef.current?.click()} style={{
-            background:"rgba(255,255,255,0.03)",border:"2px dashed rgba(255,255,255,0.12)",borderRadius:20,
+            background:"#fff",border:"2px dashed #e2e2e0",borderRadius:20,
             padding:"40px 20px",textAlign:"center",cursor:"pointer",transition:"border-color .2s"}}
             onMouseEnter={e=>e.currentTarget.style.borderColor="#ff8c00"}
             onMouseLeave={e=>e.currentTarget.style.borderColor="#e2e2e0"}>
             <div style={{fontSize:48,marginBottom:10}}>🎳</div>
-            <div style={{fontWeight:700,fontSize:15,color:"rgba(255,255,255,0.85)",marginBottom:4}}>사진 업로드</div>
+            <div style={{fontWeight:700,fontSize:15,color:"#333",marginBottom:4}}>사진 업로드</div>
             <div style={{fontSize:12,color:"#aaa"}}>탭해서 갤러리에서 선택</div>
             <input ref={fileRef} type="file" accept="image/*" style={{display:"none"}}
               onChange={e=>handleFile(e.target.files[0])}/>
@@ -4752,11 +4750,11 @@ function BallScanner({ balls }) {
 
           {/* 분석 중 */}
           {(step==="analyzing"||step==="matching") && (
-            <div style={{background:"rgba(255,255,255,0.08)",borderRadius:16,padding:"24px 20px",
+            <div style={{background:"#fff",borderRadius:16,padding:"24px 20px",
               textAlign:"center",boxShadow:"0 2px 12px rgba(0,0,0,0.06)"}}>
               <div style={{fontSize:36,marginBottom:12,display:"inline-block",
                 animation:"spin 1s linear infinite"}}>⚙️</div>
-              <div style={{fontWeight:700,fontSize:14,color:"rgba(255,255,255,0.85)",marginBottom:4}}>
+              <div style={{fontWeight:700,fontSize:14,color:"#333",marginBottom:4}}>
                 {step==="analyzing"?"AI 이미지 분석 중...":"DB 매칭 중..."}
               </div>
               <div style={{fontSize:12,color:"#aaa"}}>
@@ -4773,7 +4771,7 @@ function BallScanner({ balls }) {
               <div style={{display:"flex",gap:6,flexWrap:"wrap",alignItems:"center",marginBottom:6}}>
                 <span style={{fontSize:10,color:"#aaa",fontWeight:700,letterSpacing:1}}>AI 인식</span>
                 {analysis.brand && (
-                  <span style={{fontSize:11,fontWeight:700,background:"rgba(255,140,0,0.15)",color:"#ff8c00",
+                  <span style={{fontSize:11,fontWeight:700,background:"#1c1c1e",color:"#fff",
                     padding:"2px 8px",borderRadius:8}}>{analysis.brand}</span>
                 )}
                 {analysis.name && (
@@ -4830,7 +4828,7 @@ function BallScanner({ balls }) {
                   const oilColor = COND_C[ball.condition]||"#aaa";
                   return (
                     <div key={ball.id} style={{
-                      background:"rgba(255,255,255,0.08)",borderRadius:16,overflow:"hidden",
+                      background:"#fff",borderRadius:16,overflow:"hidden",
                       boxShadow:"0 2px 12px rgba(0,0,0,0.07)",
                       border:`1.5px solid ${idx===0?ball.accent+"55":"#e2e2e0"}`}}>
                       {idx===0&&<div style={{height:3,background:ball.accent}}/>}
@@ -4854,7 +4852,7 @@ function BallScanner({ balls }) {
                         <div style={{flex:1,minWidth:0}}>
                           <div style={{fontSize:10,color:"#888",fontWeight:700,
                             letterSpacing:1.2,marginBottom:2}}>{ball.brand.toUpperCase()}</div>
-                          <div style={{fontSize:15,fontWeight:800,color:"#fff",
+                          <div style={{fontSize:15,fontWeight:800,color:"#111",
                             overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",
                             marginBottom:4}}>{ball.name}</div>
                           <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
@@ -4944,8 +4942,7 @@ export default function RollmateApp() {
   const [dbLoading,setDbLoading] = useState(false);
   const [showLoginModal,setShowLoginModal] = useState(false);
   const [showCmpToast,setShowCmpToast]   = useState(false);
-  const [arsenalFilter,setArsenalFilter] = useState(null);
-  const [oilFilter,setOilFilter] = useState(null); // null|'Heavy'|'Medium'|'Light' // null | 'Heavy' | 'Medium' | 'Light'
+  const [arsenalFilter,setArsenalFilter] = useState(null); // null | 'Heavy' | 'Medium' | 'Light'
   const [notices,setNotices]   = useState([]);
   const scrollPos            = useRef(0);
 
@@ -5189,31 +5186,23 @@ export default function RollmateApp() {
 
 
   return (
-    <div style={{fontFamily:"'Exo 2','Inter',sans-serif",background:"linear-gradient(135deg,#06060e 0%,#0d0d1a 50%,#080d18 100%)",minHeight:"100vh",overflowX:"hidden",maxWidth:"100vw",width:"100%",color:"#fff"}}>
+    <div style={{fontFamily:"'Inter',sans-serif",background:"#f2f2f0",minHeight:"100vh",overflowX:"hidden",maxWidth:"100vw",width:"100%"}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800;900&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
-        html,body,#root{overflow-x:hidden;max-width:100vw;width:100%;background:#06060e}
-        ::-webkit-scrollbar{width:0;height:0}
+        html,body,#root{overflow-x:hidden;max-width:100vw;width:100%}
+        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#b0b0ae;border-radius:2px}
         @keyframes fadeUp{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
         @keyframes toastIn{from{transform:translateX(-50%) translateY(8px);opacity:0}to{transform:translateX(-50%);opacity:1}}
         @keyframes shimmer{0%,100%{opacity:.5}50%{opacity:1}}
-        @keyframes pulse{0%,100%{opacity:0.5}50%{opacity:1}}
-        @keyframes glow{0%,100%{opacity:0.4}50%{opacity:0.7}}
-        body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-          background:radial-gradient(ellipse at 20% 20%,rgba(0,212,255,0.05) 0%,transparent 60%),
-            radial-gradient(ellipse at 80% 80%,rgba(100,100,255,0.03) 0%,transparent 60%);
-        }
-        .bcard{background:rgba(255,255,255,0.04);backdrop-filter:blur(10px);border-radius:18px;padding:13px;cursor:pointer;
+        .bcard{background:#fff;border-radius:18px;padding:13px;cursor:pointer;
           transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden;
-          border:1px solid rgba(255,140,0,0.12)}
-        .bcard:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,140,0,0.15)}
+          box-shadow:0 1px 8px rgba(28,28,30,.06);border:1.5px solid rgba(15,37,87,.06)}
+        .bcard:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(28,28,30,.12)}
         .tag{font-size:8px;font-weight:700;letter-spacing:.8px;padding:2px 6px;border-radius:4px;text-transform:uppercase}
-        .sbar{height:5px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden}
-        .nav-btn{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 0;
-          border:none;background:transparent;cursor:pointer;position:relative;flex:1;transition:all .2s}
+        .sbar{height:5px;background:#e2e2e0;border-radius:3px;overflow:hidden}
+        .nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;
+          border:none;background:transparent;cursor:pointer;position:relative}
         .nav-lbl{font-size:9px;font-weight:700;letter-spacing:.8px;color:#888886;transition:.18s}
         .nav-btn.act .nav-lbl{color:#1c1c1e;font-weight:800}
         .chip{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:11px;cursor:pointer;
@@ -5238,7 +5227,7 @@ export default function RollmateApp() {
         }
       `}</style>
 
-      {toast&&<div style={{position:"fixed",bottom:84,left:"50%",background:"rgba(255,255,255,0.08)",
+      {toast&&<div style={{position:"fixed",bottom:84,left:"50%",background:"#ffffff",
         border:`1.5px solid ${toast.color}44`,color:toast.color,padding:"10px 18px",borderRadius:12,
         zIndex:9999,fontWeight:700,fontSize:12,boxShadow:`0 4px 20px ${toast.color}22`,
         animation:"toastIn .22s ease both",transform:"translateX(-50%)",whiteSpace:"nowrap"}}>{toast.msg}</div>}
@@ -5264,24 +5253,25 @@ export default function RollmateApp() {
       )}
 
       {/* TOP BAR */}
-      <div style={{background:"rgba(4,6,16,0.97)",backdropFilter:"blur(24px)",
-        borderBottom:"1px solid rgba(0,212,255,0.15)",padding:"0 14px",position:"sticky",top:0,zIndex:100,width:"100%",boxSizing:"border-box"}}>
-        <div style={{width:"100%",display:"flex",alignItems:"center",height:52,gap:8}}>
+      <div style={{background:"rgba(28,28,30,.97)",backdropFilter:"blur(16px)",
+        borderBottom:"1px solid rgba(255,140,0,.2)",padding:"0 10px",position:"sticky",top:0,zIndex:100,overflow:"hidden",width:"100%",boxSizing:"border-box"}}>
+        <div style={{width:"100%",display:"flex",alignItems:"center",height:50,gap:6}}>
           {/* 로고 */}
           <div onClick={()=>{setSel(null);setView("home");setBrand("전체");setSearch("");}}
-            style={{display:"flex",alignItems:"center",gap:6,flexShrink:0,cursor:"pointer"}}>
-            <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:26,letterSpacing:6,
-              color:"#fff",lineHeight:1,textShadow:"0 0 18px rgba(255,140,0,0.3)"}}>
-              ROLL<span style={{color:"#00d4ff",textShadow:"0 0 14px rgba(0,212,255,0.7)"}}>MATE</span>
+            style={{display:"flex",alignItems:"center",gap:5,flexShrink:0,cursor:"pointer"}}>
+            <span style={{fontSize:20}}>🎳</span>
+            <span style={{fontFamily:"'Exo 2','Inter',sans-serif",fontWeight:900,
+              fontSize:22,color:"#fff",letterSpacing:"0.01em",lineHeight:1,
+              textTransform:"uppercase"}}>
+              ROLL<span style={{color:"#ff8c00",textShadow:"0 0 12px rgba(255,140,0,0.6)"}}>MATE</span>
             </span>
           </div>
           {/* 검색창 */}
           <div style={{position:"relative",flex:1,minWidth:0}}>
-            <span style={{position:"absolute",left:9,top:"50%",transform:"translateY(-50%)",fontSize:12,color:"rgba(0,212,255,0.6)"}}>🔍</span>
+            <span style={{position:"absolute",left:8,top:"50%",transform:"translateY(-50%)",fontSize:12,color:"#ff8c00"}}>🔍</span>
             <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="볼 검색..."
-              style={{background:"rgba(255,255,255,0.06)",border:"1px solid rgba(0,212,255,0.15)",
-                borderRadius:20,color:"#fff",padding:"6px 10px 6px 26px",fontSize:12,fontWeight:600,
-                outline:"none",width:"100%",boxSizing:"border-box",fontFamily:"inherit"}}/>
+              style={{background:"rgba(255,255,255,.08)",border:"1.5px solid rgba(255,140,0,.25)",borderRadius:18,color:"#fff",
+                padding:"5px 10px 5px 24px",fontSize:12,fontWeight:600,outline:"none",width:"100%",boxSizing:"border-box",fontFamily:"inherit"}}/>
           </div>
         </div>
       </div>
@@ -5296,16 +5286,15 @@ export default function RollmateApp() {
               <div style={{marginBottom:16}}>
                 {notices.map(n=>(
                   <div key={n.id} style={{
-                    background:"rgba(0,212,255,0.04)",backdropFilter:"blur(10px)",
+                    background:"linear-gradient(135deg,#18181b 0%,#1c1917 100%)",
                     borderRadius:16,marginBottom:8,overflow:"hidden",
-                    border:"1px solid rgba(0,212,255,0.12)",
-                    boxShadow:"0 2px 16px rgba(0,0,0,0.3)"}}>
+                    boxShadow:"0 2px 16px rgba(0,0,0,0.18)"}}>
                     {/* 상단 오렌지 라인 */}
                     <div style={{height:2,background:"linear-gradient(90deg,#ff8c00,#ff6b00,transparent)"}}/>
                     <div style={{padding:"12px 16px",display:"flex",alignItems:"flex-start",gap:12}}>
                       {/* 아이콘 뱃지 */}
                       <div style={{flexShrink:0,width:32,height:32,borderRadius:8,
-                        background:"rgba(255,140,0,0.12)",border:"1px solid rgba(0,212,255,0.15)",
+                        background:"rgba(255,140,0,0.12)",border:"1px solid rgba(255,140,0,0.2)",
                         display:"flex",alignItems:"center",justifyContent:"center",fontSize:15}}>📢</div>
                       <div style={{flex:1,minWidth:0}}>
                         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
@@ -5382,7 +5371,7 @@ export default function RollmateApp() {
 
             {(brand!=="전체"||search)&&(
               <div style={{fontSize:13,color:"#4a4a5a",fontWeight:600,marginBottom:9}}>
-                {brand!=="전체"&&<span style={{background:"rgba(255,140,0,0.15)",color:"#ff8c00",padding:"2px 7px",
+                {brand!=="전체"&&<span style={{background:"#1c1c1e",color:"#fff",padding:"2px 7px",
                   borderRadius:4,marginRight:5,fontSize:12}}>{brand}</span>}
                 {search&&<span>"{search}" · </span>}
                 <span style={{color:"#1c1c1e",fontWeight:800}}>{filtered.length}개</span>
@@ -5424,10 +5413,10 @@ export default function RollmateApp() {
                     color:sortBy==="rg"?"#ff8c00":"#6b6b7e",
                     outline:"none",whiteSpace:"nowrap",
                   }}>
-                  <option value="__none__" style={{background:"rgba(255,255,255,0.08)",color:"#aaa"}}>RG</option>
-                  <option value="rg_asc" style={{background:"rgba(255,255,255,0.08)",color:"rgba(255,255,255,0.85)"}}>낮은순</option>
-                  <option value="rg_desc" style={{background:"rgba(255,255,255,0.08)",color:"rgba(255,255,255,0.85)"}}>높은순</option>
-                  {sortBy==="rg"&&<option value="__none__" style={{background:"rgba(255,255,255,0.08)",color:"#ef5350"}}>✕ 해제</option>}
+                  <option value="__none__" style={{background:"#fff",color:"#aaa"}}>RG</option>
+                  <option value="rg_asc" style={{background:"#fff",color:"#333"}}>낮은순</option>
+                  <option value="rg_desc" style={{background:"#fff",color:"#333"}}>높은순</option>
+                  {sortBy==="rg"&&<option value="__none__" style={{background:"#fff",color:"#ef5350"}}>✕ 해제</option>}
                 </select>
                 <span style={{position:"absolute",right:7,top:"50%",transform:"translateY(-50%)",
                   fontSize:8,color:sortBy==="rg"?"#ff8c00":"#bbb",pointerEvents:"none"}}>▼</span>
@@ -5448,10 +5437,10 @@ export default function RollmateApp() {
                     color:sortBy==="diff"?"#ff8c00":"#6b6b7e",
                     outline:"none",whiteSpace:"nowrap",
                   }}>
-                  <option value="__none__" style={{background:"rgba(255,255,255,0.08)",color:"#aaa"}}>DIFF</option>
-                  <option value="diff_desc" style={{background:"rgba(255,255,255,0.08)",color:"rgba(255,255,255,0.85)"}}>높은순</option>
-                  <option value="diff_asc" style={{background:"rgba(255,255,255,0.08)",color:"rgba(255,255,255,0.85)"}}>낮은순</option>
-                  {sortBy==="diff"&&<option value="__none__" style={{background:"rgba(255,255,255,0.08)",color:"#ef5350"}}>✕ 해제</option>}
+                  <option value="__none__" style={{background:"#fff",color:"#aaa"}}>DIFF</option>
+                  <option value="diff_desc" style={{background:"#fff",color:"#333"}}>높은순</option>
+                  <option value="diff_asc" style={{background:"#fff",color:"#333"}}>낮은순</option>
+                  {sortBy==="diff"&&<option value="__none__" style={{background:"#fff",color:"#ef5350"}}>✕ 해제</option>}
                 </select>
                 <span style={{position:"absolute",right:7,top:"50%",transform:"translateY(-50%)",
                   fontSize:8,color:sortBy==="diff"?"#ff8c00":"#bbb",pointerEvents:"none"}}>▼</span>
@@ -5508,7 +5497,7 @@ export default function RollmateApp() {
                           <div key={s.l}>
                             <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}>
                               <span style={{fontSize:12,color:"#4a4a5a",fontWeight:700}}>{s.l}</span>
-                              <span style={{fontSize:12,color:"rgba(255,255,255,0.85)",fontWeight:800}}>{s.v}</span>
+                              <span style={{fontSize:12,color:"#333",fontWeight:800}}>{s.v}</span>
                             </div>
                             <div className="sbar">
                               <div style={{height:"100%",borderRadius:3,
@@ -5538,46 +5527,6 @@ export default function RollmateApp() {
                 <div style={{fontWeight:800,fontSize:16,color:"#6b6b7e"}}>검색 결과 없음</div>
               </div>
             )}
-
-            {/* ── POPULAR TOP 5 ── */}
-            <div style={{padding:"14px 14px 4px"}}>
-              <div style={{fontSize:10,color:"rgba(0,212,255,0.7)",fontWeight:700,letterSpacing:1.5,marginBottom:10}}>🔥 POPULAR</div>
-              <div style={{display:"flex",flexDirection:"column",gap:6}}>
-                {[...ALL_BALLS].sort((a,b)=>(POPULARITY[b.name]||0)-(POPULARITY[a.name]||0))
-                  .slice(0,5).map((ball,i)=>{
-                  const d = ball.weightData?.[15]||ball.weightData?.[16];
-                  const oilColor = COND_COLOR[ball.condition]||"#aaa";
-                  return (
-                    <div key={ball.id} onClick={()=>{setSel(ball);setView("detail");}}
-                      style={{display:"flex",alignItems:"center",gap:10,padding:"9px 12px",
-                        background:"rgba(255,255,255,0.035)",backdropFilter:"blur(8px)",
-                        borderRadius:14,cursor:"pointer",
-                        border:`1px solid ${ball.accent}15`,transition:"all .15s"}}>
-                      <div style={{width:26,height:26,borderRadius:"50%",flexShrink:0,
-                        background:`linear-gradient(135deg,${ball.accent}44,${ball.accent}22)`,
-                        display:"flex",alignItems:"center",justifyContent:"center",
-                        fontSize:11,fontWeight:900,color:ball.accent,
-                        border:`1px solid ${ball.accent}33`}}>{i+1}</div>
-                      <div style={{width:38,height:38,borderRadius:"50%",overflow:"hidden",flexShrink:0,
-                        boxShadow:`0 2px 10px ${ball.accent}44`,border:`1.5px solid ${ball.accent}28`}}>
-                        <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={38} radius="50%"/>
-                      </div>
-                      <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontSize:9,color:"rgba(255,255,255,0.4)",fontWeight:700,letterSpacing:1}}>
-                          {ball.brand.toUpperCase()}
-                        </div>
-                        <div style={{fontSize:13,fontWeight:800,color:"rgba(255,255,255,0.92)",
-                          overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ball.name}</div>
-                      </div>
-                      <div style={{textAlign:"right",flexShrink:0}}>
-                        <div style={{fontSize:9,color:oilColor,fontWeight:700}}>{ball.condition?.replace(" Oil","")}</div>
-                        {d&&<div style={{fontSize:12,fontWeight:900,color:ball.accent}}>RG {d.rg}</div>}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
           </div>
         )}
 
@@ -5594,11 +5543,11 @@ export default function RollmateApp() {
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
                 <div>
                   <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:2}}>
-                    <div style={{fontFamily:"'Exo 2','Inter',sans-serif",fontWeight:900,fontSize:20,color:"#fff",letterSpacing:"-0.02em"}}>내 장비함</div>
+                    <div style={{fontFamily:"'Exo 2','Inter',sans-serif",fontWeight:900,fontSize:20,color:"#111",letterSpacing:"-0.02em"}}>내 장비함</div>
                     <div style={{background:"#ff8c00",color:"#fff",fontSize:10,fontWeight:800,
                       padding:"2px 8px",borderRadius:20,letterSpacing:0.5}}>@{nickname}</div>
                   </div>
-                  <div style={{fontSize:12,color:"rgba(255,255,255,0.45)",fontWeight:600}}>
+                  <div style={{fontSize:12,color:"#aaa",fontWeight:600}}>
                     {dbLoading ? "☁️ 불러오는 중..." : arsenalFilter
                       ? `${arsenalFilter} Oil 필터 중 · 탭하면 해제`
                       : arsenal.length>0?`${arsenal.length}개 등록 · 카드를 탭하면 뒤집혀요`:"아직 등록된 볼링공이 없어요"}
@@ -5606,7 +5555,7 @@ export default function RollmateApp() {
                 </div>
                 <div style={{display:"flex",gap:6}}>
                   <button onClick={()=>setView("home")} style={{padding:"8px 14px",borderRadius:20,border:"none",
-                    background:"rgba(255,140,0,0.15)",color:"#ff8c00",cursor:"pointer",fontWeight:700,fontSize:12,fontFamily:"inherit",
+                    background:"#1c1c1e",color:"#fff",cursor:"pointer",fontWeight:700,fontSize:12,fontFamily:"inherit",
                     boxShadow:"0 3px 10px rgba(0,0,0,.2)"}}>+ 추가</button>
                   <button onClick={()=>{
                     if(window.confirm("로그아웃 하시겠어요?\n(데이터는 클라우드에 저장되어 있어요)")){
@@ -5617,14 +5566,14 @@ export default function RollmateApp() {
                       setView("home");
                     }
                   }} style={{padding:"8px 12px",borderRadius:20,border:"1.5px solid #e2e2e0",
-                    background:"rgba(255,255,255,0.08)",color:"#888",cursor:"pointer",fontWeight:700,fontSize:12,fontFamily:"inherit"}}>로그아웃</button>
+                    background:"#fff",color:"#888",cursor:"pointer",fontWeight:700,fontSize:12,fontFamily:"inherit"}}>로그아웃</button>
                 </div>
               </div>
             </div>
             {arsenal.length===0?(
-              <div style={{textAlign:"center",padding:"55px 20px",background:"rgba(255,255,255,0.03)",border:"2px dashed rgba(255,255,255,0.12)",borderRadius:18}}>
+              <div style={{textAlign:"center",padding:"55px 20px",background:"#ffffff",border:"2px dashed #e2e2e0",borderRadius:18}}>
                 <div style={{fontSize:48,marginBottom:10,opacity:.22}}>🎳</div>
-                <div style={{fontWeight:800,fontSize:17,color:"rgba(255,255,255,0.3)"}}>장비함이 비어있어요</div>
+                <div style={{fontWeight:800,fontSize:17,color:"#ddd"}}>장비함이 비어있어요</div>
                 <button onClick={()=>setView("home")} style={{marginTop:16,padding:"9px 22px",borderRadius:18,
                   background:"#1c1c1e",border:"none",color:"#fff",cursor:"pointer",fontWeight:800,fontSize:12,fontFamily:"inherit",
                   boxShadow:"0 4px 14px rgba(15,37,87,.28)"}}>홈으로</button>
@@ -5775,34 +5724,25 @@ export default function RollmateApp() {
 
       {/* BOTTOM NAV */}
       <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:100,
-        background:"rgba(3,5,14,0.97)",backdropFilter:"blur(24px)",
-        borderTop:"1px solid rgba(0,212,255,0.15)",padding:"6px 0 max(10px,env(safe-area-inset-bottom))",
-        boxShadow:"0 -4px 20px rgba(0,0,0,0.4)"}}>
-        <div style={{display:"flex",justifyContent:"center",gap:0,maxWidth:480,margin:"0 auto",width:"100%"}}>
-          {NAV.map(n=>{
-            const isActive = view===n.k;
-            return (
-            <button key={n.k} className={`nav-btn ${isActive?"act":""}`}
+        background:"rgba(28,28,30,.97)",backdropFilter:"blur(20px)",
+        borderTop:"1px solid rgba(255,140,0,.2)",padding:"7px 0 11px",
+        boxShadow:"0 -4px 20px rgba(28,28,30,.2)"}}>
+        <div style={{display:"flex",justifyContent:"center",gap:4,maxWidth:820,margin:"0 auto"}}>
+          {NAV.map(n=>(
+            <button key={n.k} className={`nav-btn ${view===n.k?"act":""}`}
               onClick={()=>{
                 if(!nickname && n.k!=="home"){
                   setShowLoginModal(true); return;
                 }
                 setView(n.k);setSel(null);
               }}>
-              <span style={{fontSize:22,lineHeight:1,
-                filter:isActive?"drop-shadow(0 0 6px rgba(0,212,255,0.7))":"none",
-                opacity:isActive?1:0.45,transition:"all .2s"}}>{n.i}</span>
-              <span className="nav-lbl" style={{color:isActive?"#00d4ff":"rgba(255,255,255,0.5)",
-                fontSize:9,fontWeight:700,letterSpacing:0.5,marginTop:2}}>{n.l}</span>
-              {isActive&&<div style={{position:"absolute",top:0,left:"50%",transform:"translateX(-50%)",
-                width:20,height:2,borderRadius:1,background:"#00d4ff",
-                boxShadow:"0 0 8px rgba(0,212,255,0.8)"}}/>}
+              <span style={{fontSize:20}}>{n.i}</span>
+              <span className="nav-lbl" style={{color:view===n.k?"#ff8c00":"rgba(255,255,255,.5)"}}>{n.l}</span>
               {n.badge&&<span style={{position:"absolute",top:2,right:10,width:14,height:14,
-                borderRadius:"50%",background:"#00d4ff",color:"#06060e",fontSize:13,fontWeight:800,
+                borderRadius:"50%",background:"#ff8c00",color:"#1c1c1e",fontSize:13,fontWeight:800,
                 display:"flex",alignItems:"center",justifyContent:"center"}}>{n.badge}</span>}
             </button>
-            );
-          })}
+          ))}
         </div>
       </div>
     </div>
