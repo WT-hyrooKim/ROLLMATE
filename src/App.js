@@ -6150,23 +6150,23 @@ export default function RollmateApp() {
             </div>
             {/* 볼 그리드 */}
             <div className="rm-ball-grid" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:9}}>
-              {filtered.map(ball=>(
-                <div key={ball.id} className="bcard" onClick={()=>{setSel(ball);setView("detail");}}>
-                  <div style={{position:"absolute",top:0,left:0,right:0,height:3,
-                    background:`linear-gradient(90deg,${ball.accent},${ball.accent}44)`,borderRadius:"18px 18px 0 0"}}/>
-                  {/* 볼 이미지 */}
-                  <div style={{display:"flex",justifyContent:"center",marginBottom:8,marginTop:4}}>
-                    <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={76} radius="50%"/>
-                  </div>
-                  {/* 브랜드 */}
-                  <div style={{fontSize:10,color:ball.accent,fontWeight:800,letterSpacing:1,
-                    textAlign:"center",marginBottom:3}}>{ball.brand.toUpperCase()}</div>
-                  {/* 제품명 */}
-                  <div style={{fontWeight:800,fontSize:12,color:"#111",textAlign:"center",
-                    lineHeight:1.35,overflow:"hidden",textOverflow:"ellipsis",
-                    display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",
-                    marginBottom:8}}>{ball.name}</div>
-                  {/* 비교 버튼 */}
+               {filtered.map(ball=>(
+                 <div key={ball.id} className="bcard"
+                   style={{display:"flex",flexDirection:"column",minHeight:195}}
+                   onClick={()=>{setSel(ball);setView("detail");}}
+                 >
+                   <div style={{position:"absolute",top:0,left:0,right:0,height:3,
+                     background:`linear-gradient(90deg,${ball.accent},${ball.accent}44)`,borderRadius:"18px 18px 0 0"}}/>
+                   <div style={{display:"flex",justifyContent:"center",marginBottom:7,marginTop:6}}>
+                     <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={72} radius="50%"/>
+                   </div>
+                   <div style={{fontSize:10,color:ball.accent,fontWeight:800,letterSpacing:1,
+                     textAlign:"center",marginBottom:3}}>{ball.brand.toUpperCase()}</div>
+                   <div style={{fontWeight:800,fontSize:12,color:"#111",textAlign:"center",
+                     lineHeight:1.35,height:32,overflow:"hidden",textOverflow:"ellipsis",
+                     display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",
+                     flexShrink:0,marginBottom:6}}>{ball.name}</div>
+                   <div style={{flex:1}}/>
                   {cmpList.find(b=>b.id===ball.id)?(
                     <button onClick={e=>{e.stopPropagation();toggleCmp(ball);}} style={{
                       width:"100%",padding:"6px 0",background:ball.accent,border:"none",
