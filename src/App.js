@@ -4404,16 +4404,16 @@ function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
         )}
       </div>
       <p style={{fontSize:13,color:"#1c1c1e",marginBottom:14}}>
-        {cmpList.length===0?"홈에서 + 버튼으로 최대 3개 선택":`${cmpList.length}개 비교 중`}
+        {cmpList.length===0?"볼링공 탭에서 + 비교 버튼으로 최대 3개 선택":`${cmpList.length}개 비교 중`}
       </p>
 
       {cmpList.length===0?(
         <div style={{textAlign:"center",padding:"50px 20px",background:"#ffffff",border:"2px dashed #e2e2e0",borderRadius:18}}>
           <div style={{fontSize:40,marginBottom:10,opacity:.22}}>⚖️</div>
           <div style={{fontWeight:800,fontSize:17,color:"#ddd"}}>선택된 볼 없음</div>
-          <button onClick={()=>setView("home")} style={{marginTop:13,padding:"8px 20px",background:"#1c1c1e",
+          <button onClick={()=>setView("balls")} style={{marginTop:13,padding:"8px 20px",background:"#1c1c1e",
             border:"none",color:"#fff",borderRadius:18,cursor:"pointer",fontWeight:700,fontSize:13,fontFamily:"inherit",
-            boxShadow:"0 3px 10px rgba(15,37,87,.28)"}}>홈으로</button>
+            boxShadow:"0 3px 10px rgba(15,37,87,.28)"}}>볼링공 리스트로 →</button>
         </div>
       ):(
         <>
@@ -4563,11 +4563,11 @@ function BoardPreview({ nickname, onLoginRequest }) {
 
 // ══ 볼링 영상 게시판 ════════════════════════════════════
 const BOWLING_VIDEOS = [
-  {id:"dQw4w9WgXcQ",title:"[PBA] 2024-25 시즌 하이라이트",channel:"KBA 한국볼링연맹",thumb:"https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg"},
-  {id:"9bZkp7q19f0",title:"볼링 스트라이크 비법 - 훅볼 마스터",channel:"볼링TV Korea",thumb:"https://img.youtube.com/vi/9bZkp7q19f0/mqdefault.jpg"},
-  {id:"M7lc1UVf-VE",title:"초보자를 위한 볼링 기초 강좌",channel:"볼링스쿨",thumb:"https://img.youtube.com/vi/M7lc1UVf-VE/mqdefault.jpg"},
-  {id:"kJQP7kiw5Fk",title:"Storm Phaze II 실전 리뷰",channel:"볼링매니아",thumb:"https://img.youtube.com/vi/kJQP7kiw5Fk/mqdefault.jpg"},
-  {id:"RgKAFK5djSk",title:"국내 볼링 리그 경기 풀영상",channel:"KBA 공식",thumb:"https://img.youtube.com/vi/RgKAFK5djSk/mqdefault.jpg"},
+  {id:"yEBK3jAHbeU",title:"[PBA 투어] Jason Belmonte 퍼펙트게임 300점",channel:"PBA Bowling",thumb:"https://img.youtube.com/vi/yEBK3jAHbeU/mqdefault.jpg"},
+  {id:"T7FBLxKBWpk",title:"볼링 스페어 처리 완벽 가이드 - 핀별 조준법",channel:"Bowling University",thumb:"https://img.youtube.com/vi/T7FBLxKBWpk/mqdefault.jpg"},
+  {id:"Fy1TDZlgcpQ",title:"Storm vs Motiv vs Hammer 볼 비교 리뷰",channel:"BowlersMart",thumb:"https://img.youtube.com/vi/Fy1TDZlgcpQ/mqdefault.jpg"},
+  {id:"HFoHRGlHric",title:"볼링 훅볼 마스터하기 - 릴리즈 완벽 분석",channel:"Radical Bowling",thumb:"https://img.youtube.com/vi/HFoHRGlHric/mqdefault.jpg"},
+  {id:"FCNX_j7BAsQ",title:"오일 패턴별 라인 공략법 - 하우스부터 스포츠샷",channel:"MOTIV Bowling",thumb:"https://img.youtube.com/vi/FCNX_j7BAsQ/mqdefault.jpg"},
 ];
 
 function VideoBoard() {
@@ -4678,7 +4678,7 @@ function BoardView({ nickname, onLoginRequest }) {
   return (
     <div style={{animation:"fadeUp .3s ease both"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
-        <div style={{fontWeight:800,fontSize:18,color:"#fff"}}>자유게시판</div>
+        <div style={{fontWeight:800,fontSize:18,color:"#1c1c1e"}}>자유게시판</div>
         <button onClick={()=>{ if(!nickname){onLoginRequest();return;} setShowWrite(w=>!w); }}
           style={{padding:"7px 14px",background:"#ff8c00",border:"none",borderRadius:20,
             color:"#fff",fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer"}}>
@@ -5850,7 +5850,7 @@ export default function RollmateApp() {
         .tag{font-size:8px;font-weight:700;letter-spacing:.8px;padding:2px 6px;border-radius:4px;text-transform:uppercase}
         .sbar{height:5px;background:#e2e2e0;border-radius:3px;overflow:hidden}
         .nav-btn{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 0;
-          border:none;background:transparent;cursor:pointer;position:relative;flex:1;transition:all .2s}
+          border:none;background:transparent;cursor:pointer;position:relative;flex:1;transition:all .2s;color:#fff}
         .nav-lbl{font-size:9px;font-weight:700;letter-spacing:.8px;color:#888886;transition:.18s}
         .nav-btn.act .nav-lbl{color:#1c1c1e;font-weight:800}
         .chip{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:11px;cursor:pointer;
@@ -6013,7 +6013,7 @@ export default function RollmateApp() {
             {/* POPULAR */}
             <div style={{marginBottom:20}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
-                <div style={{fontSize:13,fontWeight:800,color:"#fff",display:"flex",alignItems:"center",gap:6}}>
+                <div style={{fontSize:13,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
                   🔥 <span>인기 볼링공</span>
                 </div>
               </div>
@@ -6025,9 +6025,9 @@ export default function RollmateApp() {
                   return (
                     <div key={ball.id} onClick={()=>{setSel(ball);setView("detail");}}
                       style={{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",
-                        background:"#fff",
-                        borderRadius:14,cursor:"pointer",border:`1px solid ${ball.accent}22`,
-                        boxShadow:"0 1px 6px rgba(0,0,0,0.07)"}}>
+                        background:"#fff",borderRadius:14,cursor:"pointer",
+                        border:`1px solid ${ball.accent}22`,
+                        boxShadow:"0 2px 8px rgba(0,0,0,0.07)"}}>
                       <div style={{width:24,height:24,borderRadius:"50%",flexShrink:0,
                         background:`linear-gradient(135deg,${ball.accent},${ball.accent}88)`,
                         display:"flex",alignItems:"center",justifyContent:"center",
@@ -6037,9 +6037,8 @@ export default function RollmateApp() {
                         <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={40} radius="50%"/>
                       </div>
                       <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontSize:9,color:"#999",fontWeight:700,letterSpacing:1}}>{ball.brand.toUpperCase()}</div>
-                        <div style={{fontSize:13,fontWeight:800,color:"#111",
-                          overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ball.name}</div>
+                        <div style={{fontSize:9,color:"#888",fontWeight:700,letterSpacing:1}}>{ball.brand.toUpperCase()}</div>
+                        <div style={{fontSize:13,fontWeight:700,color:"#222",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ball.name}</div>
                       </div>
                       <div style={{textAlign:"right",flexShrink:0}}>
                         <div style={{fontSize:9,color:oilColor,fontWeight:700}}>{ball.condition?.replace(" Oil","")}</div>
@@ -6054,11 +6053,10 @@ export default function RollmateApp() {
             {/* 자유게시판 */}
             <div style={{marginBottom:20}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
-                <div style={{fontSize:13,fontWeight:800,color:"#fff",display:"flex",alignItems:"center",gap:6}}>
+                <div style={{fontSize:13,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
                   💬 <span>자유게시판</span>
                 </div>
-                <button onClick={()=>setView("board")} style={{fontSize:11,color:"#ff8c00",
-                  background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:600}}>
+                <button onClick={()=>setView("board")} style={{fontSize:11,color:"#ff8c00",background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:700}}>
                   전체보기 →
                 </button>
               </div>
@@ -6068,7 +6066,7 @@ export default function RollmateApp() {
             {/* 볼링 영상 */}
             <div style={{marginBottom:20}}>
               <div style={{display:"flex",alignItems:"center",marginBottom:10}}>
-                <div style={{fontSize:13,fontWeight:800,color:"#fff",display:"flex",alignItems:"center",gap:6}}>
+                <div style={{fontSize:13,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
                   🎬 <span>볼링 영상</span>
                 </div>
               </div>
@@ -6156,21 +6154,35 @@ export default function RollmateApp() {
                 <div key={ball.id} className="bcard" onClick={()=>{setSel(ball);setView("detail");}}>
                   <div style={{position:"absolute",top:0,left:0,right:0,height:3,
                     background:`linear-gradient(90deg,${ball.accent},${ball.accent}44)`,borderRadius:"18px 18px 0 0"}}/>
-                  <div style={{display:"flex",justifyContent:"center",marginBottom:7,marginTop:4}}>
-                    <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={72} radius="50%"/>
+                  {/* 볼 이미지 */}
+                  <div style={{display:"flex",justifyContent:"center",marginBottom:8,marginTop:4}}>
+                    <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={76} radius="50%"/>
                   </div>
-                  <div style={{fontSize:9,color:"#888",fontWeight:700,letterSpacing:1,
-                    textAlign:"center",marginBottom:1}}>{ball.brand.toUpperCase()}</div>
-                  <div style={{fontWeight:700,fontSize:11,color:"#111",textAlign:"center",
-                    lineHeight:1.3,overflow:"hidden",textOverflow:"ellipsis",
+                  {/* 브랜드 */}
+                  <div style={{fontSize:10,color:ball.accent,fontWeight:800,letterSpacing:1,
+                    textAlign:"center",marginBottom:3}}>{ball.brand.toUpperCase()}</div>
+                  {/* 제품명 */}
+                  <div style={{fontWeight:800,fontSize:12,color:"#111",textAlign:"center",
+                    lineHeight:1.35,overflow:"hidden",textOverflow:"ellipsis",
                     display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",
-                    marginBottom:5}}>{ball.name}</div>
-                  {ball.weightData?.[15]&&(
-                    <div style={{display:"flex",justifyContent:"center",gap:6}}>
-                      <span style={{fontSize:10,fontWeight:800,color:ball.accent}}>
-                        RG {ball.weightData[15].rg}
-                      </span>
-                    </div>
+                    marginBottom:8}}>{ball.name}</div>
+                  {/* 비교 버튼 */}
+                  {cmpList.find(b=>b.id===ball.id)?(
+                    <button onClick={e=>{e.stopPropagation();toggleCmp(ball);}} style={{
+                      width:"100%",padding:"6px 0",background:ball.accent,border:"none",
+                      borderRadius:8,color:"#fff",fontFamily:"inherit",fontSize:11,fontWeight:800,
+                      cursor:"pointer",boxShadow:`0 2px 8px ${ball.accent}55`}}>
+                      ✓ 비교중
+                    </button>
+                  ):(
+                    <button onClick={e=>{e.stopPropagation();toggleCmp(ball);}} style={{
+                      width:"100%",padding:"6px 0",
+                      background:"linear-gradient(135deg,#1c1c1e,#2d2d3d)",
+                      border:`1.5px solid rgba(255,255,255,0.15)`,
+                      borderRadius:8,color:"#fff",fontFamily:"inherit",fontSize:11,fontWeight:700,
+                      cursor:"pointer",letterSpacing:0.5}}>
+                      + 비교
+                    </button>
                   )}
                   {inArsenal(ball.id)&&(
                     <div style={{position:"absolute",top:8,right:8,width:18,height:18,borderRadius:"50%",
@@ -6425,13 +6437,14 @@ export default function RollmateApp() {
                 setView(n.k);setSel(null);
               }}>
               <span style={{fontSize:22,lineHeight:1,fontWeight:400,
-                opacity:view===n.k?1:0.4,transition:"opacity .2s",
-                filter:view===n.k?"drop-shadow(0 0 4px rgba(255,140,0,0.6))":"none"}}>{n.i}</span>
+                color:"#fff",
+                opacity:view===n.k?1:0.45,transition:"all .2s",
+                filter:view===n.k?"drop-shadow(0 0 5px rgba(255,140,0,0.7))":"none"}}>{n.i}</span>
               {view===n.k&&<div style={{position:"absolute",top:0,left:"50%",transform:"translateX(-50%)",
                 width:20,height:2,borderRadius:1,background:"#ff8c00",
                 boxShadow:"0 0 6px rgba(255,140,0,0.6)"}}/>}
               <span className="nav-lbl" style={{fontSize:9,fontWeight:700,letterSpacing:0.3,
-                color:view===n.k?"#ff8c00":"rgba(255,255,255,.4)"}}>{n.l}</span>
+                color:view===n.k?"#ff8c00":"rgba(255,255,255,.55)"}}>{n.l}</span>
               {n.badge>0&&<span style={{position:"absolute",top:2,right:10,width:14,height:14,
                 borderRadius:"50%",background:"#ff8c00",color:"#1c1c1e",fontSize:13,fontWeight:800,
                 display:"flex",alignItems:"center",justifyContent:"center"}}>{n.badge}</span>}
