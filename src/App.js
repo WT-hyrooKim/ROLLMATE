@@ -4535,21 +4535,22 @@ function BoardPreview({ nickname, onLoginRequest }) {
   if(loading) return <div style={{textAlign:"center",padding:"16px",color:"rgba(255,255,255,0.3)",fontSize:12}}>불러오는 중...</div>;
   if(!posts.length) return (
     <div style={{background:"rgba(255,255,255,0.04)",borderRadius:14,padding:"16px",textAlign:"center"}}>
-      <div style={{color:"rgba(255,255,255,0.3)",fontSize:12,marginBottom:8}}>아직 게시물이 없어요</div>
+      <div style={{color:"#aaa",fontSize:12,marginBottom:8}}>아직 게시물이 없어요</div>
     </div>
   );
 
   return (
     <div style={{display:"flex",flexDirection:"column",gap:6}}>
       {posts.map(p=>(
-        <div key={p.id} style={{background:"rgba(255,255,255,0.05)",borderRadius:12,
-          padding:"10px 14px",border:"1px solid rgba(255,255,255,0.07)"}}>
-          <div style={{fontSize:13,fontWeight:700,color:"#fff",marginBottom:3,
+        <div key={p.id} style={{background:"#fff",borderRadius:12,
+          padding:"10px 14px",border:"1px solid #e8e8e8",
+          boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
+          <div style={{fontSize:13,fontWeight:700,color:"#111",marginBottom:3,
             overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.title}</div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
-            <span style={{fontSize:10,color:"rgba(255,255,255,0.35)"}}>{p.nickname}</span>
-            <span style={{fontSize:10,color:"rgba(255,255,255,0.2)"}}>·</span>
-            <span style={{fontSize:10,color:"rgba(255,255,255,0.35)"}}>
+            <span style={{fontSize:10,color:"#999"}}>{p.nickname}</span>
+            <span style={{fontSize:10,color:"#ccc"}}>·</span>
+            <span style={{fontSize:10,color:"#999"}}>
               {new Date(p.created_at).toLocaleDateString("ko-KR",{month:"short",day:"numeric"})}
             </span>
             {p.likes>0&&<span style={{fontSize:10,color:"#ff8c00",marginLeft:"auto"}}>❤️ {p.likes}</span>}
@@ -4589,8 +4590,9 @@ function VideoBoard() {
         {BOWLING_VIDEOS.map(v=>(
           <div key={v.id} onClick={()=>setPlaying(v.id)}
             style={{display:"flex",gap:10,alignItems:"center",cursor:"pointer",
-              background:"rgba(255,255,255,0.04)",borderRadius:12,overflow:"hidden",
-              border:`1px solid ${playing===v.id?"rgba(255,140,0,0.4)":"rgba(255,255,255,0.07)"}`}}>
+              background:"#fff",borderRadius:12,overflow:"hidden",
+              border:`1px solid ${playing===v.id?"rgba(255,140,0,0.6)":"#e8e8e8"}`,
+              boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
             <div style={{position:"relative",width:90,height:56,flexShrink:0}}>
               <img src={v.thumb} alt={v.title} style={{width:"100%",height:"100%",objectFit:"cover"}}
                 onError={e=>e.target.style.display="none"}/>
@@ -4601,10 +4603,10 @@ function VideoBoard() {
               </div>
             </div>
             <div style={{flex:1,minWidth:0,padding:"6px 8px 6px 0"}}>
-              <div style={{fontSize:12,fontWeight:700,color:"#fff",lineHeight:1.3,marginBottom:3,
+              <div style={{fontSize:12,fontWeight:700,color:"#111",lineHeight:1.3,marginBottom:3,
                 overflow:"hidden",textOverflow:"ellipsis",display:"-webkit-box",
                 WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{v.title}</div>
-              <div style={{fontSize:10,color:"rgba(255,255,255,0.4)"}}>{v.channel}</div>
+              <div style={{fontSize:10,color:"#999"}}>{v.channel}</div>
             </div>
           </div>
         ))}
@@ -6021,8 +6023,9 @@ export default function RollmateApp() {
                   return (
                     <div key={ball.id} onClick={()=>{setSel(ball);setView("detail");}}
                       style={{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",
-                        background:"linear-gradient(135deg,#1c1c1e,#2a1a0a)",
-                        borderRadius:14,cursor:"pointer",border:`1px solid ${ball.accent}22`}}>
+                        background:"#fff",
+                        borderRadius:14,cursor:"pointer",border:`1px solid ${ball.accent}22`,
+                        boxShadow:"0 1px 6px rgba(0,0,0,0.07)"}}>
                       <div style={{width:24,height:24,borderRadius:"50%",flexShrink:0,
                         background:`linear-gradient(135deg,${ball.accent},${ball.accent}88)`,
                         display:"flex",alignItems:"center",justifyContent:"center",
@@ -6032,8 +6035,8 @@ export default function RollmateApp() {
                         <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={40} radius="50%"/>
                       </div>
                       <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontSize:9,color:"rgba(255,255,255,0.4)",fontWeight:700,letterSpacing:1}}>{ball.brand.toUpperCase()}</div>
-                        <div style={{fontSize:13,fontWeight:800,color:"#fff",
+                        <div style={{fontSize:9,color:"#999",fontWeight:700,letterSpacing:1}}>{ball.brand.toUpperCase()}</div>
+                        <div style={{fontSize:13,fontWeight:800,color:"#111",
                           overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ball.name}</div>
                       </div>
                       <div style={{textAlign:"right",flexShrink:0}}>
