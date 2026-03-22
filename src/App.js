@@ -4571,45 +4571,56 @@ const BOWLING_VIDEOS = [
 ];
 
 function VideoBoard() {
-  const [playing, setPlaying] = useState(null);
+  const openVideo = (id) => {
+    window.open(`https://www.youtube.com/watch?v=${id}`, "_blank");
+  };
+
   return (
-    <div>
-      {playing&&(
-        <div style={{marginBottom:10}}>
-          <div style={{position:"relative",paddingBottom:"56.25%",borderRadius:14,overflow:"hidden"}}>
-            <iframe style={{position:"absolute",inset:0,width:"100%",height:"100%",border:"none"}}
-              src={`https://www.youtube.com/embed/${playing}?autoplay=1`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen/>
-          </div>
-          <button onClick={()=>setPlaying(null)} style={{marginTop:6,fontSize:11,color:"rgba(255,255,255,0.4)",
-            background:"none",border:"none",cursor:"pointer",fontFamily:"inherit"}}>▼ 목록으로</button>
-        </div>
-      )}
-      <div style={{display:"flex",flexDirection:"column",gap:8}}>
-        {BOWLING_VIDEOS.map(v=>(
-          <div key={v.id} onClick={()=>setPlaying(v.id)}
-            style={{display:"flex",gap:10,alignItems:"center",cursor:"pointer",
-              background:"#fff",borderRadius:12,overflow:"hidden",
-              border:`1px solid ${playing===v.id?"rgba(255,140,0,0.6)":"#e8e8e8"}`,
-              boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
-            <div style={{position:"relative",width:90,height:56,flexShrink:0}}>
-              <img src={v.thumb} alt={v.title} style={{width:"100%",height:"100%",objectFit:"cover"}}
-                onError={e=>e.target.style.display="none"}/>
-              <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",
-                justifyContent:"center",background:"rgba(0,0,0,0.3)"}}>
-                <div style={{width:24,height:24,borderRadius:"50%",background:"rgba(255,0,0,0.85)",
-                  display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,color:"#fff"}}>▶</div>
+    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+      {BOWLING_VIDEOS.map(v=>(
+        <div key={v.id} onClick={()=>openVideo(v.id)}
+          style={{display:"flex",gap:10,alignItems:"center",cursor:"pointer",
+            background:"#fff",borderRadius:12,overflow:"hidden",
+            border:"1px solid #e8e8e8",boxShadow:"0 1px 4px rgba(0,0,0,0.06)",
+            transition:"box-shadow .15s"}}
+          onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 14px rgba(0,0,0,0.12)"}
+          onMouseLeave={e=>e.currentTarget.style.boxShadow="0 1px 4px rgba(0,0,0,0.06)"}>
+          {/* 썸네일 */}
+          <div style={{position:"relative",width:96,height:60,flexShrink:0,background:"#000"}}>
+            <img
+              src={`https://img.youtube.com/vi/${v.id}/mqdefault.jpg`}
+              alt={v.title}
+              style={{width:"100%",height:"100%",objectFit:"cover",opacity:0.9}}
+              onError={e=>{e.target.style.display="none";}}
+            />
+            {/* 재생 버튼 오버레이 */}
+            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",
+              justifyContent:"center"}}>
+              <div style={{width:28,height:28,borderRadius:"50%",
+                background:"rgba(255,0,0,0.85)",
+                display:"flex",alignItems:"center",justifyContent:"center",
+                boxShadow:"0 2px 8px rgba(0,0,0,0.3)"}}>
+                <div style={{width:0,height:0,borderTop:"6px solid transparent",
+                  borderBottom:"6px solid transparent",
+                  borderLeft:"10px solid #fff",marginLeft:2}}/>
               </div>
             </div>
-            <div style={{flex:1,minWidth:0,padding:"6px 8px 6px 0"}}>
-              <div style={{fontSize:12,fontWeight:700,color:"#111",lineHeight:1.3,marginBottom:3,
-                overflow:"hidden",textOverflow:"ellipsis",display:"-webkit-box",
-                WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{v.title}</div>
-              <div style={{fontSize:10,color:"#999"}}>{v.channel}</div>
+          </div>
+          {/* 정보 */}
+          <div style={{flex:1,minWidth:0,padding:"8px 10px 8px 0"}}>
+            <div style={{fontSize:12,fontWeight:700,color:"#111",lineHeight:1.35,
+              marginBottom:4,overflow:"hidden",textOverflow:"ellipsis",
+              display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{v.title}</div>
+            <div style={{display:"flex",alignItems:"center",gap:6}}>
+              <span style={{fontSize:10,color:"#999"}}>{v.channel}</span>
+              <span style={{fontSize:9,color:"#ff8c00",fontWeight:700,
+                background:"rgba(255,140,0,0.1)",padding:"1px 5px",borderRadius:4}}>YouTube ↗</span>
             </div>
           </div>
-        ))}
+        </div>
+      ))}
+      <div style={{fontSize:11,color:"#aaa",textAlign:"center",marginTop:4}}>
+        탭하면 유튜브에서 재생돼요
       </div>
     </div>
   );
