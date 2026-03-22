@@ -4571,56 +4571,111 @@ const BOWLING_VIDEOS = [
 ];
 
 function VideoBoard() {
-  const openVideo = (id) => {
-    window.open(`https://www.youtube.com/watch?v=${id}`, "_blank");
-  };
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [playing, setPlaying] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(()=>{
+    // 세션 캐시 (API 할당량 절약)
+    const cached = sessionStorage.getItem("bowling_videos");
+    if (cached) {
+      setVideos(JSON.parse(cached));
+      setLoading(false);
+      return;
+    }
+    fetch("/api/youtube")
+      .then(r=>r.json())
+      .then(d=>{
+        if (d.success && d.videos?.length) {
+          setVideos(d.videos);
+          sessionStorage.setItem("bowling_videos", JSON.stringify(d.videos));
+        } else {
+          setError(d.error || "영상을 불러올 수 없어요");
+        }
+      })
+      .catch(()=>setError("네트워크 오류"))
+      .finally(()=>setLoading(false));
+  },[]);
+
+  if (loading) return (
+    <div style={{textAlign:"center",padding:"20px",color:"#aaa",fontSize:12}}>
+      영상 불러오는 중...
+    </div>
+  );
+
+  if (error) return (
+    <div style={{background:"#fff3e0",borderRadius:12,padding:"12px 14px",
+      fontSize:12,color:"#e65100",border:"1px solid #ffcc80"}}>
+      ⚠️ {error}
+    </div>
+  );
 
   return (
-    <div style={{display:"flex",flexDirection:"column",gap:8}}>
-      {BOWLING_VIDEOS.map(v=>(
-        <div key={v.id} onClick={()=>openVideo(v.id)}
-          style={{display:"flex",gap:10,alignItems:"center",cursor:"pointer",
-            background:"#fff",borderRadius:12,overflow:"hidden",
-            border:"1px solid #e8e8e8",boxShadow:"0 1px 4px rgba(0,0,0,0.06)",
-            transition:"box-shadow .15s"}}
-          onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 14px rgba(0,0,0,0.12)"}
-          onMouseLeave={e=>e.currentTarget.style.boxShadow="0 1px 4px rgba(0,0,0,0.06)"}>
-          {/* 썸네일 */}
-          <div style={{position:"relative",width:96,height:60,flexShrink:0,background:"#000"}}>
-            <img
-              src={`https://img.youtube.com/vi/${v.id}/mqdefault.jpg`}
-              alt={v.title}
-              style={{width:"100%",height:"100%",objectFit:"cover",opacity:0.9}}
-              onError={e=>{e.target.style.display="none";}}
+    <div>
+      {/* 재생 중인 영상 */}
+      {playing && (
+        <div style={{marginBottom:10}}>
+          <div style={{position:"relative",paddingBottom:"56.25%",borderRadius:14,
+            overflow:"hidden",background:"#000"}}>
+            <iframe
+              style={{position:"absolute",inset:0,width:"100%",height:"100%",border:"none"}}
+              src={`https://www.youtube.com/embed/${playing}?autoplay=1&rel=0&modestbranding=1`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
             />
-            {/* 재생 버튼 오버레이 */}
-            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",
-              justifyContent:"center"}}>
-              <div style={{width:28,height:28,borderRadius:"50%",
-                background:"rgba(255,0,0,0.85)",
-                display:"flex",alignItems:"center",justifyContent:"center",
-                boxShadow:"0 2px 8px rgba(0,0,0,0.3)"}}>
-                <div style={{width:0,height:0,borderTop:"6px solid transparent",
-                  borderBottom:"6px solid transparent",
-                  borderLeft:"10px solid #fff",marginLeft:2}}/>
+          </div>
+          <button onClick={()=>setPlaying(null)} style={{
+            marginTop:6,fontSize:11,color:"#aaa",background:"none",
+            border:"none",cursor:"pointer",fontFamily:"inherit"}}>
+            ▼ 목록으로
+          </button>
+        </div>
+      )}
+
+      {/* 영상 목록 */}
+      <div style={{display:"flex",flexDirection:"column",gap:8}}>
+        {videos.map(v=>(
+          <div key={v.id} onClick={()=>setPlaying(v.id===playing?null:v.id)}
+            style={{display:"flex",gap:10,alignItems:"center",cursor:"pointer",
+              background:playing===v.id?"#fff8f0":"#fff",borderRadius:12,overflow:"hidden",
+              border:`1px solid ${playing===v.id?"rgba(255,140,0,0.4)":"#e8e8e8"}`,
+              boxShadow:"0 1px 4px rgba(0,0,0,0.06)",transition:"all .15s"}}>
+            {/* 썸네일 */}
+            <div style={{position:"relative",width:96,height:60,flexShrink:0,background:"#111"}}>
+              <img src={v.thumb} alt={v.title}
+                style={{width:"100%",height:"100%",objectFit:"cover"}}
+                onError={e=>e.target.style.display="none"}/>
+              <div style={{position:"absolute",inset:0,display:"flex",
+                alignItems:"center",justifyContent:"center",
+                background:playing===v.id?"rgba(255,140,0,0.3)":"rgba(0,0,0,0.2)"}}>
+                {playing===v.id?(
+                  <div style={{width:24,height:24,borderRadius:"50%",
+                    background:"rgba(255,140,0,0.9)",display:"flex",
+                    alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff"}}>■</div>
+                ):(
+                  <div style={{width:26,height:26,borderRadius:"50%",
+                    background:"rgba(255,0,0,0.85)",display:"flex",
+                    alignItems:"center",justifyContent:"center"}}>
+                    <div style={{width:0,height:0,
+                      borderTop:"6px solid transparent",
+                      borderBottom:"6px solid transparent",
+                      borderLeft:"10px solid #fff",marginLeft:2}}/>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-          {/* 정보 */}
-          <div style={{flex:1,minWidth:0,padding:"8px 10px 8px 0"}}>
-            <div style={{fontSize:12,fontWeight:700,color:"#111",lineHeight:1.35,
-              marginBottom:4,overflow:"hidden",textOverflow:"ellipsis",
-              display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{v.title}</div>
-            <div style={{display:"flex",alignItems:"center",gap:6}}>
-              <span style={{fontSize:10,color:"#999"}}>{v.channel}</span>
-              <span style={{fontSize:9,color:"#ff8c00",fontWeight:700,
-                background:"rgba(255,140,0,0.1)",padding:"1px 5px",borderRadius:4}}>YouTube ↗</span>
+            {/* 정보 */}
+            <div style={{flex:1,minWidth:0,padding:"8px 10px 8px 0"}}>
+              <div style={{fontSize:12,fontWeight:700,color:"#111",lineHeight:1.35,
+                marginBottom:3,overflow:"hidden",textOverflow:"ellipsis",
+                display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>
+                {v.title}
+              </div>
+              <div style={{fontSize:10,color:"#999"}}>{v.channel}</div>
             </div>
           </div>
-        </div>
-      ))}
-      <div style={{fontSize:11,color:"#aaa",textAlign:"center",marginTop:4}}>
-        탭하면 유튜브에서 재생돼요
+        ))}
       </div>
     </div>
   );
@@ -5301,7 +5356,7 @@ function BallScanner({ balls }) {
 
     try {
       // Vercel Serverless Function 호출
-      const res = await fetch("/api/scan", {
+      const res = await fetch("/api/vision", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imageBase64: imgB64, mimeType }),
