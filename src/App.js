@@ -3133,6 +3133,11 @@ function AdminView({ nickname, onLogout, showToast }) {
   const [tab, setTab] = useState("users");
   const [users, setUsers] = useState([]);
   const [notices, setNotices] = useState([]);
+  const [ytChannels, setYtChannels] = useState([]);
+  const [newChName, setNewChName] = useState("");
+  const [newChId, setNewChId] = useState("");
+  const [newChUrl, setNewChUrl] = useState("");
+  const [ytSaving, setYtSaving] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selUser, setSelUser] = useState(null);
   const [userEquip, setUserEquip] = useState([]);
@@ -3240,8 +3245,14 @@ function AdminView({ nickname, onLogout, showToast }) {
 
       {/* 탭 */}
       <div style={{display:"flex",background:"#fff",borderBottom:"2px solid #f2f2f0"}}>
-        {[{k:"users",l:"👥 회원 관리"},{k:"notices",l:"📢 공지사항"}].map(t=>(
-          <button key={t.k} onClick={()=>{setTab(t.k);setSelUser(null);}} style={{
+        {[{k:"users",l:"👥 회원 관리"},{k:"notices",l:"📢 공지사항"},{k:"youtube",l:"🎬 유튜브 채널"}].map(t=>(
+          <button key={t.k} onClick={()=>{
+              setTab(t.k);setSelUser(null);
+              if(t.k==="youtube" && ytChannels.length===0){
+                sbGet("youtube_channels","order=created_at.desc")
+                  .then(d=>setYtChannels(d||[])).catch(()=>{});
+              }
+            }} style={{
             flex:1,padding:"13px",border:"none",fontFamily:"inherit",fontSize:13,fontWeight:700,
             cursor:"pointer",background:"transparent",
             color:tab===t.k?"#ff8c00":"#999",
@@ -4514,6 +4525,100 @@ function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
               ))}
             </div>
           )}
+
+          {/* 유튜브 채널 관리 탭 */}
+          {tab==="youtube"&&(
+            <div style={{padding:"16px"}}>
+              <div style={{fontWeight:700,fontSize:15,color:"#111",marginBottom:14}}>🎬 유튜브 채널 관리</div>
+
+              {/* 채널 추가 폼 */}
+              <div style={{background:"#f7f7fc",borderRadius:14,padding:"14px",marginBottom:16,
+                border:"1px solid #e2e2e0"}}>
+                <div style={{fontSize:12,fontWeight:700,color:"#555",marginBottom:10}}>+ 채널 추가</div>
+                <input value={newChName} onChange={e=>setNewChName(e.target.value)}
+                  placeholder="채널 이름 (예: 볼링매니아)"
+                  style={{width:"100%",padding:"8px 10px",borderRadius:8,border:"1px solid #e2e2e0",
+                    fontFamily:"inherit",fontSize:13,marginBottom:8,boxSizing:"border-box",outline:"none"}}/>
+                <input value={newChId} onChange={e=>setNewChId(e.target.value)}
+                  placeholder="채널 ID (예: UCm5mJBhOCFAH5aSbC56w6AQ)"
+                  style={{width:"100%",padding:"8px 10px",borderRadius:8,border:"1px solid #e2e2e0",
+                    fontFamily:"inherit",fontSize:13,marginBottom:8,boxSizing:"border-box",outline:"none"}}/>
+                <input value={newChUrl} onChange={e=>setNewChUrl(e.target.value)}
+                  placeholder="채널 URL (예: https://www.youtube.com/@BOWLINGMANIA)"
+                  style={{width:"100%",padding:"8px 10px",borderRadius:8,border:"1px solid #e2e2e0",
+                    fontFamily:"inherit",fontSize:13,marginBottom:10,boxSizing:"border-box",outline:"none"}}/>
+                <button disabled={ytSaving||!newChName||!newChId} onClick={async()=>{
+                  setYtSaving(true);
+                  try {
+                    await sbInsert("youtube_channels",{
+                      name:newChName.trim(),
+                      channel_id:newChId.trim(),
+                      channel_url:newChUrl.trim(),
+                      is_active:true
+                    });
+                    const d = await sbGet("youtube_channels","order=created_at.desc");
+                    setYtChannels(d||[]);
+                    setNewChName(""); setNewChId(""); setNewChUrl("");
+                    showToast("채널 추가 완료!");
+                    sessionStorage.removeItem("bowling_videos");
+                  } catch(e){ showToast("오류 발생","#ef5350"); }
+                  setYtSaving(false);
+                }} style={{width:"100%",padding:"9px",background:ytSaving?"#aaa":"#ff8c00",
+                  border:"none",borderRadius:10,color:"#fff",fontFamily:"inherit",
+                  fontSize:13,fontWeight:700,cursor:"pointer"}}>
+                  {ytSaving?"저장 중...":"채널 추가"}
+                </button>
+              </div>
+
+              {/* 채널 목록 */}
+              <div style={{fontSize:11,color:"#aaa",fontWeight:700,letterSpacing:1,marginBottom:8}}>등록된 채널</div>
+              {ytChannels.length===0?(
+                <div style={{textAlign:"center",padding:"20px",color:"#ccc",fontSize:13}}>
+                  로딩 중...
+                </div>
+              ):ytChannels.map(ch=>(
+                <div key={ch.id} style={{background:"#fff",borderRadius:12,padding:"12px 14px",
+                  marginBottom:8,border:"1px solid #e8e8e8",display:"flex",alignItems:"center",gap:10}}>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:13,fontWeight:700,color:"#111",marginBottom:2}}>{ch.name}</div>
+                    <div style={{fontSize:10,color:"#aaa",overflow:"hidden",textOverflow:"ellipsis",
+                      whiteSpace:"nowrap"}}>{ch.channel_id}</div>
+                  </div>
+                  <div style={{display:"flex",gap:6,flexShrink:0}}>
+                    <button onClick={async()=>{
+                      try {
+                        await sbFetch(`/youtube_channels?id=eq.${ch.id}`,
+                          {method:"PATCH",body:JSON.stringify({is_active:!ch.is_active}),prefer:"return=representation"});
+                        const d = await sbGet("youtube_channels","order=created_at.desc");
+                        setYtChannels(d||[]);
+                        sessionStorage.removeItem("bowling_videos");
+                        showToast(ch.is_active?"비활성화 완료":"활성화 완료");
+                      } catch(e){ showToast("오류","#ef5350"); }
+                    }} style={{padding:"4px 10px",borderRadius:8,border:"none",cursor:"pointer",
+                      fontFamily:"inherit",fontSize:11,fontWeight:700,
+                      background:ch.is_active?"rgba(67,160,71,0.12)":"rgba(0,0,0,0.06)",
+                      color:ch.is_active?"#43a047":"#999"}}>
+                      {ch.is_active?"ON":"OFF"}
+                    </button>
+                    <button onClick={async()=>{
+                      if(!window.confirm(`"${ch.name}" 채널을 삭제할까요?`)) return;
+                      try {
+                        await sbFetch(`/youtube_channels?id=eq.${ch.id}`,{method:"DELETE"});
+                        const d = await sbGet("youtube_channels","order=created_at.desc");
+                        setYtChannels(d||[]);
+                        sessionStorage.removeItem("bowling_videos");
+                        showToast("삭제 완료");
+                      } catch(e){ showToast("오류","#ef5350"); }
+                    }} style={{padding:"4px 10px",borderRadius:8,border:"none",cursor:"pointer",
+                      fontFamily:"inherit",fontSize:11,fontWeight:700,
+                      background:"rgba(239,83,80,0.1)",color:"#ef5350"}}>
+                      삭제
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>
@@ -4574,29 +4679,50 @@ function VideoBoard() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [playing, setPlaying] = useState(null);
+  const [playingTitle, setPlayingTitle] = useState("");
   const [error, setError] = useState(null);
 
-  useEffect(()=>{
-    // 세션 캐시 (API 할당량 절약)
-    const cached = sessionStorage.getItem("bowling_videos");
-    if (cached) {
-      setVideos(JSON.parse(cached));
-      setLoading(false);
-      return;
+  const loadVideos = (force=false) => {
+    if (!force) {
+      const cached = sessionStorage.getItem("bowling_videos");
+      const cachedTime = sessionStorage.getItem("bowling_videos_time");
+      // 1시간 캐시
+      if (cached && cachedTime && Date.now() - Number(cachedTime) < 3600000) {
+        setVideos(JSON.parse(cached));
+        setLoading(false);
+        return;
+      }
     }
+    setLoading(true);
     fetch("/api/youtube")
       .then(r=>r.json())
       .then(d=>{
         if (d.success && d.videos?.length) {
           setVideos(d.videos);
           sessionStorage.setItem("bowling_videos", JSON.stringify(d.videos));
+          sessionStorage.setItem("bowling_videos_time", String(Date.now()));
         } else {
           setError(d.error || "영상을 불러올 수 없어요");
         }
       })
       .catch(()=>setError("네트워크 오류"))
       .finally(()=>setLoading(false));
-  },[]);
+  };
+
+  useEffect(()=>{ loadVideos(); },[]);
+
+  const openVideo = (v) => {
+    setPlaying(v.id);
+    setPlayingTitle(v.title);
+    // 스크롤 막기
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeVideo = () => {
+    setPlaying(null);
+    setPlayingTitle("");
+    document.body.style.overflow = "";
+  };
 
   if (loading) return (
     <div style={{textAlign:"center",padding:"20px",color:"#aaa",fontSize:12}}>
@@ -4613,11 +4739,27 @@ function VideoBoard() {
 
   return (
     <div>
-      {/* 재생 중인 영상 */}
+      {/* 전체화면 영상 플레이어 */}
       {playing && (
-        <div style={{marginBottom:10}}>
-          <div style={{position:"relative",paddingBottom:"56.25%",borderRadius:14,
-            overflow:"hidden",background:"#000"}}>
+        <div style={{position:"fixed",inset:0,zIndex:9000,background:"#000",
+          display:"flex",flexDirection:"column"}}>
+          {/* 헤더 */}
+          <div style={{display:"flex",alignItems:"center",gap:10,
+            padding:"12px 14px",background:"rgba(0,0,0,0.9)",flexShrink:0}}>
+            <div style={{flex:1,fontSize:12,fontWeight:700,color:"#fff",
+              overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
+              {playingTitle}
+            </div>
+            <button onClick={closeVideo} style={{
+              width:36,height:36,borderRadius:"50%",border:"none",
+              background:"rgba(255,255,255,0.15)",color:"#fff",
+              fontSize:18,cursor:"pointer",flexShrink:0,
+              display:"flex",alignItems:"center",justifyContent:"center"}}>
+              ✕
+            </button>
+          </div>
+          {/* 영상 */}
+          <div style={{flex:1,position:"relative"}}>
             <iframe
               style={{position:"absolute",inset:0,width:"100%",height:"100%",border:"none"}}
               src={`https://www.youtube.com/embed/${playing}?autoplay=1&rel=0&modestbranding=1`}
@@ -4625,44 +4767,31 @@ function VideoBoard() {
               allowFullScreen
             />
           </div>
-          <button onClick={()=>setPlaying(null)} style={{
-            marginTop:6,fontSize:11,color:"#aaa",background:"none",
-            border:"none",cursor:"pointer",fontFamily:"inherit"}}>
-            ▼ 목록으로
-          </button>
         </div>
       )}
 
       {/* 영상 목록 */}
       <div style={{display:"flex",flexDirection:"column",gap:8}}>
         {videos.map(v=>(
-          <div key={v.id} onClick={()=>setPlaying(v.id===playing?null:v.id)}
+          <div key={v.id} onClick={()=>openVideo(v)}
             style={{display:"flex",gap:10,alignItems:"center",cursor:"pointer",
-              background:playing===v.id?"#fff8f0":"#fff",borderRadius:12,overflow:"hidden",
-              border:`1px solid ${playing===v.id?"rgba(255,140,0,0.4)":"#e8e8e8"}`,
-              boxShadow:"0 1px 4px rgba(0,0,0,0.06)",transition:"all .15s"}}>
+              background:"#fff",borderRadius:12,overflow:"hidden",
+              border:"1px solid #e8e8e8",boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
             {/* 썸네일 */}
             <div style={{position:"relative",width:96,height:60,flexShrink:0,background:"#111"}}>
               <img src={v.thumb} alt={v.title}
                 style={{width:"100%",height:"100%",objectFit:"cover"}}
                 onError={e=>e.target.style.display="none"}/>
               <div style={{position:"absolute",inset:0,display:"flex",
-                alignItems:"center",justifyContent:"center",
-                background:playing===v.id?"rgba(255,140,0,0.3)":"rgba(0,0,0,0.2)"}}>
-                {playing===v.id?(
-                  <div style={{width:24,height:24,borderRadius:"50%",
-                    background:"rgba(255,140,0,0.9)",display:"flex",
-                    alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff"}}>■</div>
-                ):(
-                  <div style={{width:26,height:26,borderRadius:"50%",
-                    background:"rgba(255,0,0,0.85)",display:"flex",
-                    alignItems:"center",justifyContent:"center"}}>
-                    <div style={{width:0,height:0,
-                      borderTop:"6px solid transparent",
-                      borderBottom:"6px solid transparent",
-                      borderLeft:"10px solid #fff",marginLeft:2}}/>
-                  </div>
-                )}
+                alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.2)"}}>
+                <div style={{width:26,height:26,borderRadius:"50%",
+                  background:"rgba(255,0,0,0.85)",display:"flex",
+                  alignItems:"center",justifyContent:"center"}}>
+                  <div style={{width:0,height:0,
+                    borderTop:"6px solid transparent",
+                    borderBottom:"6px solid transparent",
+                    borderLeft:"10px solid #fff",marginLeft:2}}/>
+                </div>
               </div>
             </div>
             {/* 정보 */}
@@ -4672,10 +4801,23 @@ function VideoBoard() {
                 display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>
                 {v.title}
               </div>
-              <div style={{fontSize:10,color:"#999"}}>{v.channel}</div>
+              <div style={{display:"flex",alignItems:"center",gap:5}}>
+                <span style={{fontSize:10,color:"#ff8c00",fontWeight:700,
+                  background:"rgba(255,140,0,0.1)",padding:"1px 6px",borderRadius:4}}>
+                  {v.channelName || v.channel}
+                </span>
+                <span style={{fontSize:10,color:"#bbb"}}>
+                  {new Date(v.publishedAt).toLocaleDateString("ko-KR",{month:"short",day:"numeric"})}
+                </span>
+              </div>
             </div>
           </div>
         ))}
+        {videos.length === 0 && (
+          <div style={{textAlign:"center",padding:"20px",color:"#aaa",fontSize:12}}>
+            등록된 채널의 영상이 없어요
+          </div>
+        )}
       </div>
     </div>
   );
