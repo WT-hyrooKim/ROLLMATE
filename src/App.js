@@ -3248,7 +3248,7 @@ function AdminView({ nickname, onLogout, showToast }) {
         {[{k:"users",l:"👥 회원 관리"},{k:"notices",l:"📢 공지사항"},{k:"youtube",l:"🎬 유튜브 채널"}].map(t=>(
           <button key={t.k} onClick={()=>{
               setTab(t.k);setSelUser(null);
-              if(t.k==="youtube" && ytChannels.length===0){
+              if(t.k==="youtube"){
                 sbGet("youtube_channels","order=created_at.desc")
                   .then(d=>setYtChannels(d||[])).catch(()=>{});
               }
@@ -6285,7 +6285,7 @@ export default function RollmateApp() {
 
         {/* DETAIL */}
         {view==="detail"&&sel&&(
-          <Detail ball={sel} onBack={()=>{setView("home");setSel(null);}}
+          <Detail ball={sel} onBack={()=>{setView("balls");setSel(null);}}
             inArsenal={inArsenal} onReg={(b)=>{setModal(b);setEditEnt(null);}}/>
         )}
 
@@ -6377,9 +6377,9 @@ export default function RollmateApp() {
                    <div style={{flex:1}}/>
                   {cmpList.find(b=>b.id===ball.id)?(
                     <button onClick={e=>{e.stopPropagation();toggleCmp(ball);}} style={{
-                      width:"100%",padding:"6px 0",background:ball.accent,border:"none",
+                      width:"100%",padding:"6px 0",background:"#ff8c00",border:"none",
                       borderRadius:8,color:"#fff",fontFamily:"inherit",fontSize:11,fontWeight:800,
-                      cursor:"pointer",boxShadow:`0 2px 8px ${ball.accent}55`}}>
+                      cursor:"pointer",boxShadow:"0 2px 8px rgba(255,140,0,0.45)"}}>
                       ✓ 비교중
                     </button>
                   ):(
@@ -6401,21 +6401,46 @@ export default function RollmateApp() {
               ))}
             </div>
             {/* 비교 토스트 */}
-            {cmpList.length>=2&&(
-              <div style={{position:"fixed",bottom:80,left:"50%",transform:"translateX(-50%)",
-                zIndex:3000,background:"rgba(28,28,30,0.97)",backdropFilter:"blur(12px)",
-                borderRadius:50,padding:"8px 8px 8px 14px",display:"flex",alignItems:"center",gap:8,
-                border:"1px solid rgba(255,140,0,0.3)",boxShadow:"0 8px 32px rgba(0,0,0,0.4)",
-                animation:"fadeUp .3s ease",whiteSpace:"nowrap"}}>
-                <span style={{fontSize:13,color:"#fff",fontWeight:700}}>{cmpList.length}개 선택</span>
-                <button onClick={()=>{setView("compare");setSel(null);}} style={{
-                  padding:"7px 16px",background:"#ff8c00",border:"none",borderRadius:50,
-                  color:"#fff",fontFamily:"inherit",fontSize:12,fontWeight:800,cursor:"pointer",
-                  boxShadow:"0 3px 12px rgba(255,140,0,0.4)"}}>비교하기 ⚖️</button>
-                <button onClick={()=>setCmpList([])} style={{
-                  width:28,height:28,background:"rgba(255,255,255,0.1)",border:"none",
-                  borderRadius:"50%",color:"rgba(255,255,255,0.5)",fontSize:14,cursor:"pointer",
-                  display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
+            {cmpList.length>=1&&(
+              <div style={{position:"fixed",bottom:72,left:0,right:0,
+                zIndex:3000,padding:"0 14px",animation:"fadeUp .25s ease"}}>
+                <div style={{background:"rgba(28,28,30,0.97)",backdropFilter:"blur(16px)",
+                  borderRadius:20,padding:"10px 14px",
+                  display:"flex",alignItems:"center",gap:10,
+                  border:"1px solid rgba(255,140,0,0.3)",
+                  boxShadow:"0 8px 32px rgba(0,0,0,0.35)"}}>
+                  {/* 선택된 볼 아바타 */}
+                  <div style={{display:"flex",alignItems:"center",gap:-4,flexShrink:0}}>
+                    {cmpList.map((b,i)=>(
+                      <div key={b.id} style={{width:32,height:32,borderRadius:"50%",
+                        overflow:"hidden",border:"2px solid #1c1c1e",
+                        marginLeft:i>0?-8:0,zIndex:cmpList.length-i}}>
+                        <BowwwlImg src={BOWWWL_BALL(b.ballSlug)} alt={b.name} size={32} radius="50%"/>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>
+                      {cmpList.length}개 선택됨
+                    </div>
+                    <div style={{fontSize:10,color:"rgba(255,255,255,0.4)"}}>
+                      {cmpList.length<2?"1개 더 선택하면 비교 가능":"비교 준비 완료!"}
+                    </div>
+                  </div>
+                  {cmpList.length>=2&&(
+                    <button onClick={()=>{setView("compare");setSel(null);}} style={{
+                      padding:"9px 18px",background:"#ff8c00",border:"none",borderRadius:14,
+                      color:"#fff",fontFamily:"inherit",fontSize:13,fontWeight:800,
+                      cursor:"pointer",flexShrink:0,
+                      boxShadow:"0 4px 14px rgba(255,140,0,0.45)"}}>
+                      비교하기 ⚖️
+                    </button>
+                  )}
+                  <button onClick={()=>setCmpList([])} style={{
+                    width:28,height:28,background:"rgba(255,255,255,0.08)",border:"none",
+                    borderRadius:"50%",color:"rgba(255,255,255,0.4)",fontSize:13,cursor:"pointer",
+                    display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✕</button>
+                </div>
               </div>
             )}
           </div>
@@ -6639,7 +6664,7 @@ export default function RollmateApp() {
           {NAV.map(n=>(
             <button key={n.k} className={`nav-btn ${view===n.k?"act":""}`}
               onClick={()=>{
-                if(!nickname && (n.k==="mybowling")){
+                if(!nickname && ["compare","scan","mybowling"].includes(n.k)){
                   setShowLoginModal(true); return;
                 }
                 setView(n.k);setSel(null);
