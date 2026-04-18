@@ -4679,132 +4679,131 @@ function VideoBoard() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [playing, setPlaying] = useState(null);
-  const [playingTitle, setPlayingTitle] = useState("");
   const [error, setError] = useState(null);
 
-  const loadVideos = (force=false) => {
-    if (!force) {
-      const cached = sessionStorage.getItem("bowling_videos");
-      const cachedTime = sessionStorage.getItem("bowling_videos_time");
-      // 1시간 캐시
-      if (cached && cachedTime && Date.now() - Number(cachedTime) < 3600000) {
-        setVideos(JSON.parse(cached));
-        setLoading(false);
-        return;
-      }
+  useEffect(()=>{
+    const cached = sessionStorage.getItem("bowling_videos");
+    const cachedTime = sessionStorage.getItem("bowling_videos_time");
+    if(cached && cachedTime && Date.now()-Number(cachedTime)<3600000){
+      setVideos(JSON.parse(cached).slice(0,5));
+      setLoading(false);
+      return;
     }
-    setLoading(true);
     fetch("/api/youtube")
       .then(r=>r.json())
       .then(d=>{
-        if (d.success && d.videos?.length) {
-          setVideos(d.videos);
-          sessionStorage.setItem("bowling_videos", JSON.stringify(d.videos));
+        if(d.success && d.videos?.length){
+          const v = d.videos.slice(0,5);
+          setVideos(v);
+          sessionStorage.setItem("bowling_videos", JSON.stringify(v));
           sessionStorage.setItem("bowling_videos_time", String(Date.now()));
         } else {
-          setError(d.error || "영상을 불러올 수 없어요");
+          setError(d.error||"영상을 불러올 수 없어요");
         }
       })
       .catch(()=>setError("네트워크 오류"))
       .finally(()=>setLoading(false));
+  },[]);
+
+  const openVideo = (v)=>{
+    setPlaying(v);
+    document.body.style.overflow="hidden";
   };
-
-  useEffect(()=>{ loadVideos(); },[]);
-
-  const openVideo = (v) => {
-    setPlaying(v.id);
-    setPlayingTitle(v.title);
-    // 스크롤 막기
-    document.body.style.overflow = "hidden";
-  };
-
-  const closeVideo = () => {
+  const closeVideo = ()=>{
     setPlaying(null);
-    setPlayingTitle("");
-    document.body.style.overflow = "";
+    document.body.style.overflow="";
   };
 
-  if (loading) return (
-    <div style={{textAlign:"center",padding:"20px",color:"#aaa",fontSize:12}}>
-      영상 불러오는 중...
-    </div>
+  if(loading) return (
+    <div style={{textAlign:"center",padding:"16px",color:"#aaa",fontSize:12}}>영상 불러오는 중...</div>
   );
-
-  if (error) return (
+  if(error) return (
     <div style={{background:"#fff3e0",borderRadius:12,padding:"12px 14px",
-      fontSize:12,color:"#e65100",border:"1px solid #ffcc80"}}>
-      ⚠️ {error}
-    </div>
+      fontSize:12,color:"#e65100",border:"1px solid #ffcc80"}}>⚠️ {error}</div>
   );
 
   return (
     <div>
-      {/* 전체화면 영상 플레이어 */}
-      {playing && (
-        <div style={{position:"fixed",inset:0,zIndex:9000,background:"#000",
+      {/* 전체화면 플레이어 */}
+      {playing&&(
+        <div style={{position:"fixed",inset:0,zIndex:9999,background:"#000",
           display:"flex",flexDirection:"column"}}>
           {/* 헤더 */}
           <div style={{display:"flex",alignItems:"center",gap:10,
-            padding:"12px 14px",background:"rgba(0,0,0,0.9)",flexShrink:0}}>
-            <div style={{flex:1,fontSize:12,fontWeight:700,color:"#fff",
-              overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
-              {playingTitle}
-            </div>
+            padding:"env(safe-area-inset-top,14px) 14px 12px",
+            paddingTop:"max(14px,env(safe-area-inset-top))",
+            background:"rgba(0,0,0,0.95)",flexShrink:0}}>
             <button onClick={closeVideo} style={{
               width:36,height:36,borderRadius:"50%",border:"none",
-              background:"rgba(255,255,255,0.15)",color:"#fff",
-              fontSize:18,cursor:"pointer",flexShrink:0,
-              display:"flex",alignItems:"center",justifyContent:"center"}}>
-              ✕
-            </button>
+              background:"rgba(255,255,255,0.15)",color:"#fff",fontSize:20,
+              cursor:"pointer",flexShrink:0,display:"flex",
+              alignItems:"center",justifyContent:"center",fontWeight:300}}>✕</button>
+            <div style={{flex:1,fontSize:12,fontWeight:600,
+              color:"rgba(255,255,255,0.9)",
+              overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
+              {playing.title}
+            </div>
           </div>
-          {/* 영상 */}
-          <div style={{flex:1,position:"relative"}}>
-            <iframe
-              style={{position:"absolute",inset:0,width:"100%",height:"100%",border:"none"}}
-              src={`https://www.youtube.com/embed/${playing}?autoplay=1&rel=0&modestbranding=1`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+          {/* 16:9 영상 영역 */}
+          <div style={{flex:1,display:"flex",alignItems:"center",background:"#000"}}>
+            <div style={{width:"100%",aspectRatio:"16/9",position:"relative"}}>
+              <iframe
+                style={{position:"absolute",inset:0,width:"100%",height:"100%",border:"none"}}
+                src={`https://www.youtube.com/embed/${playing.id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </div>
+          </div>
+          {/* 하단 채널 정보 */}
+          <div style={{padding:"12px 14px",
+            paddingBottom:"max(12px,env(safe-area-inset-bottom))",
+            background:"rgba(0,0,0,0.95)",flexShrink:0}}>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.5)"}}>
+              {playing.channelName||playing.channel}
+            </div>
           </div>
         </div>
       )}
 
-      {/* 영상 목록 */}
+      {/* 영상 목록 5개 */}
       <div style={{display:"flex",flexDirection:"column",gap:8}}>
         {videos.map(v=>(
           <div key={v.id} onClick={()=>openVideo(v)}
-            style={{display:"flex",gap:10,alignItems:"center",cursor:"pointer",
+            style={{display:"flex",gap:0,alignItems:"stretch",cursor:"pointer",
               background:"#fff",borderRadius:12,overflow:"hidden",
               border:"1px solid #e8e8e8",boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
             {/* 썸네일 */}
-            <div style={{position:"relative",width:96,height:60,flexShrink:0,background:"#111"}}>
+            <div style={{position:"relative",width:110,flexShrink:0,background:"#111"}}>
               <img src={v.thumb} alt={v.title}
-                style={{width:"100%",height:"100%",objectFit:"cover"}}
-                onError={e=>e.target.style.display="none"}/>
+                style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}
+                onError={e=>{e.target.style.display="none";}}/>
               <div style={{position:"absolute",inset:0,display:"flex",
-                alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.2)"}}>
-                <div style={{width:26,height:26,borderRadius:"50%",
-                  background:"rgba(255,0,0,0.85)",display:"flex",
-                  alignItems:"center",justifyContent:"center"}}>
-                  <div style={{width:0,height:0,
-                    borderTop:"6px solid transparent",
-                    borderBottom:"6px solid transparent",
-                    borderLeft:"10px solid #fff",marginLeft:2}}/>
+                alignItems:"center",justifyContent:"center",
+                background:"rgba(0,0,0,0.15)"}}>
+                <div style={{width:30,height:30,borderRadius:"50%",
+                  background:"rgba(220,0,0,0.88)",display:"flex",
+                  alignItems:"center",justifyContent:"center",
+                  boxShadow:"0 2px 8px rgba(0,0,0,0.4)"}}>
+                  <div style={{width:0,height:0,marginLeft:3,
+                    borderTop:"7px solid transparent",
+                    borderBottom:"7px solid transparent",
+                    borderLeft:"12px solid #fff"}}/>
                 </div>
               </div>
             </div>
-            {/* 정보 */}
-            <div style={{flex:1,minWidth:0,padding:"8px 10px 8px 0"}}>
-              <div style={{fontSize:12,fontWeight:700,color:"#111",lineHeight:1.35,
-                marginBottom:3,overflow:"hidden",textOverflow:"ellipsis",
+            {/* 텍스트 */}
+            <div style={{flex:1,minWidth:0,padding:"10px 12px",
+              display:"flex",flexDirection:"column",justifyContent:"center",gap:4}}>
+              <div style={{fontSize:12,fontWeight:700,color:"#111",
+                lineHeight:1.4,overflow:"hidden",textOverflow:"ellipsis",
                 display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>
                 {v.title}
               </div>
-              <div style={{display:"flex",alignItems:"center",gap:5}}>
-                <span style={{fontSize:10,color:"#ff8c00",fontWeight:700,
-                  background:"rgba(255,140,0,0.1)",padding:"1px 6px",borderRadius:4}}>
-                  {v.channelName || v.channel}
+              <div style={{display:"flex",alignItems:"center",gap:5,flexWrap:"wrap"}}>
+                <span style={{fontSize:10,fontWeight:700,color:"#ff8c00",
+                  background:"rgba(255,140,0,0.1)",padding:"1px 7px",borderRadius:4}}>
+                  {v.channelName||v.channel}
                 </span>
                 <span style={{fontSize:10,color:"#bbb"}}>
                   {new Date(v.publishedAt).toLocaleDateString("ko-KR",{month:"short",day:"numeric"})}
@@ -4813,7 +4812,7 @@ function VideoBoard() {
             </div>
           </div>
         ))}
-        {videos.length === 0 && (
+        {videos.length===0&&(
           <div style={{textAlign:"center",padding:"20px",color:"#aaa",fontSize:12}}>
             등록된 채널의 영상이 없어요
           </div>
@@ -5861,13 +5860,22 @@ export default function RollmateApp() {
     return ()=>clearInterval(timer);
   },[nickname, isAdmin]);
 
-  // 홈 복귀 시 이전 스크롤 위치 복원
+  // 뷰 전환 시 스크롤 저장/복원
+  const prevView = useRef("home");
   useEffect(()=>{
-    if(view==="home"){
-      const saved=scrollPos.current;
-      requestAnimationFrame(()=>window.scrollTo({top:saved,behavior:"instant"}));
+    // detail 진입 시 현재 스크롤 저장
+    if(sel){
+      scrollPos.current = window.scrollY;
     }
-  },[view]);
+    // detail → 이전 뷰 복귀 시 스크롤 복원
+    if(!sel && (view==="balls"||view==="home")){
+      const saved = scrollPos.current;
+      requestAnimationFrame(()=>{
+        window.scrollTo({top:saved,behavior:"instant"});
+      });
+    }
+    prevView.current = view;
+  },[view, sel]);
 
   const showToast = (msg,color="#43a047")=>{
     setToast({msg,color}); setTimeout(()=>setToast(null),2300);
