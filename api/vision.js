@@ -29,12 +29,12 @@ export default async function handler(req, res) {
   "confidence": "high/medium/low"
 }`;
 
-  // 여러 모델 순서대로 시도
+  // 2025~2026 사용 가능한 모델 순서대로 시도
   const models = [
     "gemini-2.0-flash",
     "gemini-2.0-flash-lite",
     "gemini-1.5-flash",
-    "gemini-1.5-flash-8b",
+    "gemini-1.5-pro",
   ];
 
   let lastError = null;
@@ -58,11 +58,14 @@ export default async function handler(req, res) {
 
       const data = await response.json();
 
-      if (response.status === 429 || response.status === 404) {
-        lastError = `${model}: ${data.error?.message || "quota/not found"}`;
+      if (response.status === 429) {
+        lastError = `${model}: quota exceeded`;
         continue;
       }
-
+      if (response.status === 404) {
+        lastError = `${model}: model not found`;
+        continue;
+      }
       if (!response.ok) {
         lastError = `${model}: ${data.error?.message || "unknown error"}`;
         continue;
@@ -70,13 +73,13 @@ export default async function handler(req, res) {
 
       const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
       if (!text) {
-        lastError = `${model}: empty response`;
+        lastError = `${model}: empty response (finishReason: ${data.candidates?.[0]?.finishReason})`;
         continue;
       }
 
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
-        lastError = `${model}: parse failed`;
+        lastError = `${model}: parse failed - ${text.slice(0,100)}`;
         continue;
       }
 
