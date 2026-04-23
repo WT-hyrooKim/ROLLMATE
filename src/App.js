@@ -5399,27 +5399,28 @@ function BallScanner({ balls }) {
   const normalize = (s) => (s||"").toLowerCase()
     .replace(/[^a-z0-9가-힣\s]/g,"").replace(/\s+/g," ").trim();
 
-  // 색상→볼이름 키워드 맵
+  // 색상 키워드 맵
   const COLOR_MAP = {
-    purple:["purple","violet","amethyst"],
-    black:["black","dark","shadow","night","midnight"],
-    red:["red","crimson","scarlet","ruby","blood"],
-    blue:["blue","sapphire","cobalt","navy","azure","sky"],
-    green:["green","emerald","lime","jade","forest"],
-    orange:["orange","amber","fire","flame","blaze"],
-    gold:["gold","golden","maxx","silver"],
-    pearl:["pearl","pearlescent"],
-    white:["white","ivory","ghost","ice","frost"],
-    gray:["gray","grey","silver","slate"],
-    pink:["pink","rose","magenta"],
+    purple:["purple","violet","amethyst","plum"],
+    black:["black","dark","shadow","night","midnight","noir"],
+    red:["red","crimson","scarlet","ruby","blood","cherry"],
+    blue:["blue","sapphire","cobalt","navy","azure","ocean"],
+    green:["green","emerald","lime","jade","forest","mint"],
+    orange:["orange","amber","fire","flame","blaze","copper"],
+    gold:["gold","golden","maxx","bronze","honey"],
+    pearl:["pearl","pearlescent","lustre"],
+    white:["white","ivory","ghost","ice","frost","snow"],
+    gray:["gray","grey","silver","slate","ash"],
+    pink:["pink","rose","magenta","coral"],
     teal:["teal","cyan","aqua","turquoise"],
+    silver:["silver","chrome","metallic"],
   };
 
-  // 패턴→볼이름 키워드 맵
+  // 패턴 키워드 맵
   const PATTERN_MAP = {
-    marble:["marble","stone","vein"],
-    swirl:["swirl","twist","spiral","vortex"],
-    solid:["solid","pure"],
+    marble:["marble","stone"],
+    swirl:["swirl","twist","vortex","spiral"],
+    solid:["solid"],
     pearl:["pearl"],
     hybrid:["hybrid"],
     reactive:["reactive"],
@@ -5430,36 +5431,41 @@ function BallScanner({ balls }) {
     const nb = normalize(brand||"");
     const nn = normalize(name||"");
 
-    const scored = balls.map(ball => {
+    const scored = ALL_BALLS.map(ball => {
       let score = 0;
       const ballBrand = normalize(ball.brand);
       const ballName  = normalize(ball.name);
-      const ballCover = (ball.cover||"").toLowerCase();
+      const ballCover = normalize(ball.cover||"");
 
-      // ① 브랜드 매칭 (25%)
+      // ① 브랜드 매칭 (25%) - Gemini가 정확하게 추출하므로 신뢰도 높음
       if (nb) {
-        if (ballBrand.includes(nb) || nb.includes(ballBrand)) score += 0.25;
-        else if (ballBrand.split(" ").some(w=>nb.includes(w)&&w.length>2)) score += 0.12;
+        if (ballBrand === nb) score += 0.25;
+        else if (ballBrand.includes(nb) || nb.includes(ballBrand)) score += 0.20;
+        else if (ballBrand.split(" ").some(w=>nb.includes(w)&&w.length>2)) score += 0.10;
       }
 
-      // ② 제품명 단어 매칭 (50%)
+      // ② 제품명 매칭 (50%) - 단어 단위 유사도
       if (nn) {
         const nameWords = ballName.split(" ").filter(w=>w.length>1);
         const queryWords = nn.split(" ").filter(w=>w.length>1);
-        const hits = nameWords.filter(w=>
-          queryWords.some(q=>q===w||q.includes(w)||w.includes(q))
-        ).length;
-        if (nameWords.length > 0) score += (hits / nameWords.length) * 0.50;
-        // 완전 포함 보너스
-        if (ballName.includes(nn)||nn.includes(ballName)) score += 0.10;
+
+        // 완전 일치 보너스
+        if (ballName === nn) score += 0.60;
+        else if (ballName.includes(nn) || nn.includes(ballName)) score += 0.45;
+        else {
+          // 단어 단위 부분 매칭
+          const hits = nameWords.filter(w=>
+            queryWords.some(q=> q===w || q.includes(w) || w.includes(q))
+          ).length;
+          if (nameWords.length > 0) score += (hits / nameWords.length) * 0.50;
+        }
       }
 
-      // ③ 색상 매칭 (15%)
+      // ③ 색상 매칭 (15%) - 볼 이름/커버에 색상 키워드 포함 여부
       if (colors.length > 0) {
         let colorScore = 0;
         colors.forEach(c => {
-          const cl = c.toLowerCase();
-          const keywords = COLOR_MAP[cl] || [cl];
+          const keywords = COLOR_MAP[c.toLowerCase()] || [c.toLowerCase()];
           if (keywords.some(k => ballName.includes(k) || ballCover.includes(k))) {
             colorScore += 0.05;
           }
@@ -5469,15 +5475,11 @@ function BallScanner({ balls }) {
 
       // ④ 패턴 매칭 (10%)
       if (pattern) {
-        const pl = pattern.toLowerCase();
-        const keywords = PATTERN_MAP[pl] || [pl];
-        if (keywords.some(k => ballName.includes(k) || ballCover.includes(k))) {
-          score += 0.10;
-        }
-        // cover 타입과 패턴 비교
-        if (pl==="solid" && ballCover.includes("solid")) score += 0.05;
-        if (pl==="pearl" && ballCover.includes("pearl")) score += 0.05;
-        if (pl==="hybrid" && ballCover.includes("hybrid")) score += 0.05;
+        const keywords = PATTERN_MAP[pattern.toLowerCase()] || [pattern.toLowerCase()];
+        if (keywords.some(k => ballName.includes(k) || ballCover.includes(k))) score += 0.10;
+        if (pattern==="solid" && ballCover.includes("solid")) score += 0.05;
+        if (pattern==="pearl" && ballCover.includes("pearl")) score += 0.05;
+        if (pattern==="hybrid" && ballCover.includes("hybrid")) score += 0.05;
       }
 
       return { ball, score };
@@ -5485,7 +5487,7 @@ function BallScanner({ balls }) {
 
     return scored
       .sort((a,b) => b.score - a.score)
-      .filter(x => x.score > 0.12)
+      .filter(x => x.score > 0.10)
       .slice(0, 3)
       .map(x => ({ ...x.ball, matchScore: Math.round(x.score * 100) }));
   };
