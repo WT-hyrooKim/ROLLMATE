@@ -2522,35 +2522,28 @@ function BrandLogo({ brand, size=28, active=false }) {
 
 // 인기/판매 순위 데이터 (BowlersMart·Bowling.com·PBA 투어 사용률 종합, 2024~2025)
 const POPULARITY = {
-  // Hammer — 판매 1위 브랜드
-  "Black Widow Mania":99,      // 2025 연간 #1 판매
-  "Black Widow 3.0":97,        // 2024 연간 #1 판매
-  "Black Widow 3.0 Dynasty":95,// 2026 출시 즉시 top5
-  "Black Widow Tour V1":90,    // 2025 투어 인기
-  "Maximum Effect":85,
-  "Effect Tour":83,
-  "Special Effect":78,
-  "Hammerhead":75,
-  "Hammerhead Pearl":73,
-  "Zero Mercy Solid":70,
-  "Zero Mercy Pearl":68,
-  "Anger":65,
-  "NU 2.0":60,
-  "NU Blue Hammer":55,
-  "Black Widow 2.0 Hybrid":50,
+  // ── 2025~2026 실제 판매 TOP 순위 반영 ──────────────────
   // Storm
-  "Phaze II Pearl":96,         // 2024 연간 top3
-  "Ion Max Pearl":94,          // 2025 출시 즉시 #1
-  "Ion Max":90,
-  "Equinox Solid":89,
-  "EquinoX":87,
-  "Bionic":88,
-  "Code Honor":85,
-  "PhysiX Grandeur":84,
-  "Absolute Reign":82,
-  "Marvel Scale":80,
-  "Concept":79,
-  "Lock-On":77,
+  "Bionic":99,                  // 2026 전체 #1, PBA 투어 다수 우승
+  "Phaze II":98,                // 역대 최고 베스트셀러
+  "Ion Max":97,                 // 2025 출시 즉시 #1
+  "Ion Max Pearl":95,
+  "Equinox Solid":94,           // 2025 top5
+  "EquinoX":92,
+  "Code Honor":90,
+  "PhysiX Grandeur":88,
+  "Absolute Reign":86,
+  "Marvel Scale":84,
+  "Concept":82,
+  "Lock-On":80,
+  "Phaze II Pearl":96,
+  "Phaze III":88,
+  "Hy-Road":97,
+  "Hy-Road Pearl":93,
+  "IQ Tour":91,
+  "IQ Tour Pearl":87,
+  "Marvel Pearl":95,
+  "Code Red":86,
   "PhysiX Raze":76,
   "Virtual Gravity Destino":75,
   "Star Road":74,
@@ -2569,9 +2562,26 @@ const POPULARITY = {
   "Motor Rev":48,
   "PhysiX Solid":46,
   "!Q Tour A.I.":44,
+  // Hammer
+  "Black Widow Mania":99,       // 2025 연간 #1 판매
+  "Black Widow 3.0":97,         // 2025 top3
+  "Black Widow 3.0 Dynasty":96, // 2026 출시 즉시 top5
+  "Black Widow Tour V1":90,
+  "Maximum Effect":85,
+  "Effect Tour":83,
+  "Special Effect":78,
+  "Hammerhead":75,
+  "Hammerhead Pearl":73,
+  "Zero Mercy Solid":70,
+  "Zero Mercy Pearl":68,
+  "Black Widow 2.0":94,
+  "Black Widow 2.0 Hybrid":50,
+  "Anger":65,
+  "NU 2.0":60,
+  "NU Blue Hammer":55,
   // Motiv
-  "Jackal Onyx":92,            // 2025 #3 전체 판매
-  "Evoke Hysteria":88,         // 2025 투어 인기 급상승
+  "Jackal Onyx":96,             // 2025 전체 판매 #3
+  "Evoke Hysteria":88,
   "Evoke Mayhem":86,
   "Evoke":80,
   "Steel Forge":78,
@@ -2693,16 +2703,7 @@ const POPULARITY = {
   "Assassin Pearl":50,
   "APEX Solid":48,
   "Unreal":42,
-  // 역대 클래식 베스트셀러
-  "Hy-Road":98,
-  "Hy-Road Pearl":93,
-  "Phaze II":96,
-  "Phaze III":88,
-  "IQ Tour":91,
-  "IQ Tour Pearl":87,
-  "Code Red":86,
-  "Marvel Pearl":95,
-  "Black Widow 2.0":94,
+  // 역대 클래식
   "Purple Pearl Urethane":92,
   "Vibe":89,
   "Bubblegum Vibe":83,
@@ -2717,6 +2718,7 @@ const POPULARITY = {
   "Pitbull Bite":82,
   "Thug":77,
 };
+
 
 // bowwwl.com 이미지 컴포넌트 — 실제 제품 이미지 로드
 function BowwwlImg({ src, alt, size, radius="50%", style={} }) {
