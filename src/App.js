@@ -5372,7 +5372,7 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
 }
 
 // ══ 볼 스캔 컴포넌트 (Gemini Vision + Vercel Serverless) ══
-function BallScanner({ balls }) {
+function BallScanner({ balls, onSelectBall }) {
   const [img, setImg] = useState(null);
   const [imgB64, setImgB64] = useState(null);
   const [mimeType, setMimeType] = useState("image/jpeg");
@@ -5438,41 +5438,41 @@ function BallScanner({ balls }) {
       const ballBrand = normalize(ball.brand);
       const ballName  = normalize(ball.name);
       const ballCover = normalize(ball.cover||"");
+      const ballColor = normalize(ball.color||""); // 볼 색상 필드
 
-      // ① 브랜드 매칭 (25%) - Gemini가 정확하게 추출하므로 신뢰도 높음
+      // ① 브랜드 매칭 (25%)
       if (nb) {
         if (ballBrand === nb) score += 0.25;
         else if (ballBrand.includes(nb) || nb.includes(ballBrand)) score += 0.20;
         else if (ballBrand.split(" ").some(w=>nb.includes(w)&&w.length>2)) score += 0.10;
       }
 
-      // ② 제품명 매칭 (50%) - 단어 단위 유사도
+      // ② 제품명 매칭 (45%)
       if (nn) {
         const nameWords = ballName.split(" ").filter(w=>w.length>1);
         const queryWords = nn.split(" ").filter(w=>w.length>1);
-
-        // 완전 일치 보너스
-        if (ballName === nn) score += 0.60;
-        else if (ballName.includes(nn) || nn.includes(ballName)) score += 0.45;
+        if (ballName === nn) score += 0.55;
+        else if (ballName.includes(nn) || nn.includes(ballName)) score += 0.40;
         else {
-          // 단어 단위 부분 매칭
           const hits = nameWords.filter(w=>
             queryWords.some(q=> q===w || q.includes(w) || w.includes(q))
           ).length;
-          if (nameWords.length > 0) score += (hits / nameWords.length) * 0.50;
+          if (nameWords.length > 0) score += (hits / nameWords.length) * 0.45;
         }
       }
 
-      // ③ 색상 매칭 (15%) - 볼 이름/커버에 색상 키워드 포함 여부
+      // ③ 색상 매칭 강화 (20%) - 볼 이름+커버+색상 필드 모두 체크
       if (colors.length > 0) {
         let colorScore = 0;
         colors.forEach(c => {
-          const keywords = COLOR_MAP[c.toLowerCase()] || [c.toLowerCase()];
-          if (keywords.some(k => ballName.includes(k) || ballCover.includes(k))) {
-            colorScore += 0.05;
-          }
+          const cl = c.toLowerCase();
+          const keywords = COLOR_MAP[cl] || [cl];
+          // 볼 이름에 색상 키워드 포함
+          if (keywords.some(k => ballName.includes(k))) colorScore += 0.08;
+          // 커버스탁/색상 필드에 포함
+          else if (keywords.some(k => ballCover.includes(k) || ballColor.includes(k))) colorScore += 0.05;
         });
-        score += Math.min(colorScore, 0.15);
+        score += Math.min(colorScore, 0.20);
       }
 
       // ④ 패턴 매칭 (10%)
@@ -5680,9 +5680,12 @@ function BallScanner({ balls }) {
                   const d = ball.weightData?.[15]||ball.weightData?.[16];
                   const oilColor = COND_C[ball.condition]||"#aaa";
                   return (
-                    <div key={ball.id} style={{
+                    <div key={ball.id}
+                      onClick={()=>onSelectBall&&onSelectBall(ball)}
+                      style={{
                       background:"#fff",borderRadius:16,overflow:"hidden",
                       boxShadow:"0 2px 12px rgba(0,0,0,0.07)",
+                      cursor:"pointer",
                       border:`1.5px solid ${idx===0?ball.accent+"55":"#e2e2e0"}`}}>
                       {idx===0&&<div style={{height:3,background:ball.accent}}/>}
                       <div style={{padding:"12px 14px",display:"flex",gap:12,alignItems:"center"}}>
@@ -5724,6 +5727,9 @@ function BallScanner({ balls }) {
                             {ball.matchScore}%
                           </div>
                           <div style={{fontSize:9,color:"#aaa",fontWeight:600}}>매칭률</div>
+                          <div style={{fontSize:9,color:ball.accent,fontWeight:700,marginTop:2}}>
+                            스펙보기 →
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -6614,7 +6620,7 @@ export default function RollmateApp() {
         {/* SCAN - AI 볼 인식 */}
         {view==="scan"&&(
           <div style={{animation:"fadeUp .3s ease both"}}>
-            <BallScanner balls={ALL_BALLS}/>
+            <BallScanner balls={ALL_BALLS} onSelectBall={(ball)=>{setSel(ball);setView("detail");}}/>
           </div>
         )}
 
