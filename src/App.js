@@ -4677,7 +4677,7 @@ const BOWLING_VIDEOS = [
   {id:"FCNX_j7BAsQ",title:"오일 패턴별 라인 공략법 - 하우스부터 스포츠샷",channel:"MOTIV Bowling",thumb:"https://img.youtube.com/vi/FCNX_j7BAsQ/mqdefault.jpg"},
 ];
 
-function VideoBoard() {
+function VideoBoard({ preview=false }) {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [playing, setPlaying] = useState(null);
@@ -4768,9 +4768,9 @@ function VideoBoard() {
         </div>
       )}
 
-      {/* 영상 목록 5개 */}
+      {/* 영상 목록 */}
       <div style={{display:"flex",flexDirection:"column",gap:8}}>
-        {videos.map(v=>(
+        {(preview ? videos.slice(0,3) : videos).map(v=>(
           <div key={v.id} onClick={()=>openVideo(v)}
             style={{display:"flex",gap:0,alignItems:"stretch",cursor:"pointer",
               background:"#fff",borderRadius:12,overflow:"hidden",
@@ -6233,7 +6233,7 @@ export default function RollmateApp() {
             {/* POPULAR */}
             <div style={{marginBottom:20}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
-                <div style={{fontSize:13,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
+                <div style={{fontSize:15,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
                   🔥 <span>인기 볼링공</span>
                 </div>
               </div>
@@ -6273,7 +6273,7 @@ export default function RollmateApp() {
             {/* 자유게시판 */}
             <div style={{marginBottom:20}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
-                <div style={{fontSize:13,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
+                <div style={{fontSize:15,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
                   💬 <span>자유게시판</span>
                 </div>
                 <button onClick={()=>setView("board")} style={{fontSize:11,color:"#ff8c00",background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:700}}>
@@ -6285,12 +6285,16 @@ export default function RollmateApp() {
 
             {/* 볼링 영상 */}
             <div style={{marginBottom:20}}>
-              <div style={{display:"flex",alignItems:"center",marginBottom:10}}>
-                <div style={{fontSize:13,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+                <div style={{fontSize:15,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
                   🎬 <span>볼링 영상</span>
                 </div>
+                <button onClick={()=>setView("videos")} style={{fontSize:12,color:"#ff8c00",
+                  background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:700}}>
+                  전체보기 →
+                </button>
               </div>
-              <VideoBoard/>
+              <VideoBoard preview={true}/>
             </div>
           </div>
         )}
@@ -6461,6 +6465,20 @@ export default function RollmateApp() {
         {/* BOARD - 자유게시판 */}
         {view==="board"&&(
           <BoardView nickname={nickname} onLoginRequest={()=>setShowLoginModal(true)}/>
+        )}
+
+        {/* VIDEOS - 볼링영상 전체보기 */}
+        {view==="videos"&&(
+          <div style={{animation:"fadeUp .3s ease both"}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+              <button onClick={()=>setView("home")} style={{background:"none",border:"none",
+                color:"#aaa",cursor:"pointer",fontSize:13,fontFamily:"inherit",padding:0}}>
+                ← 홈
+              </button>
+              <div style={{fontWeight:800,fontSize:18,color:"#1c1c1e"}}>🎬 볼링 영상</div>
+            </div>
+            <VideoBoard preview={false}/>
+          </div>
         )}
 
         {/* MYBOWLING - 마이볼링 */}
