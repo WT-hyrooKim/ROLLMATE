@@ -47,6 +47,7 @@ const ALL_BALLS = [
       14:{rg:2.480,diff:0.047}, 13:{rg:2.580,diff:0.047}, 12:{rg:2.640,diff:0.037}
     },
     releaseDate:"Feb 2026", fragrance:"Cherry Cobbler",
+    colors:["red","black","white"],
     description:"The ultimate symmetrical solution — an all-encompassing ball capable of handling virtually any lane condition."
   },
   {
@@ -59,6 +60,7 @@ const ALL_BALLS = [
       14:{rg:2.490,diff:0.050}, 13:{rg:2.580,diff:0.045}, 12:{rg:2.640,diff:0.038}
     },
     releaseDate:"Jan 2026", fragrance:"Blue Ice",
+    colors:["blue","silver","pearl"],
     description:"Pearl asymmetric powerhouse built on the proven Element Max A.I. core for explosive backend motion."
   },
   // Brunswick
@@ -72,6 +74,7 @@ const ALL_BALLS = [
       14:{rg:2.513,diff:0.051,moi:0.019}, 13:{rg:2.597,diff:0.041,moi:0.014}, 12:{rg:2.593,diff:0.041,moi:0.014}
     },
     releaseDate:"Feb 2026",
+    colors:["red","black","silver"],
     description:"Tactical evolution for midlane dominance. Alpha Premier Hybrid cover + Rampart core."
   },
   {
@@ -84,6 +87,7 @@ const ALL_BALLS = [
       14:{rg:2.555,diff:0.040}, 13:{rg:2.635,diff:0.036}, 12:{rg:2.695,diff:0.030}
     },
     releaseDate:"Jan 2026",
+    colors:["blue","pearl","silver"],
     description:"Pearl symmetric delivering clean length with powerful backend reaction for medium conditions."
   },
   // Roto Grip
@@ -97,6 +101,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.030}, 13:{rg:2.585,diff:0.026}, 12:{rg:2.645,diff:0.022}
     },
     releaseDate:"Feb 2026",
+    colors:["green","black"],
     description:"Tour-level asymmetric hybrid for the most demanding lane conditions professionals face."
   },
   {
@@ -109,6 +114,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.046}, 13:{rg:2.615,diff:0.041}, 12:{rg:2.675,diff:0.034}
     },
     releaseDate:"Jan 2026",
+    colors:["silver","black"],
     description:"Transforms any heavy oil environment into a scoring opportunity."
   },
   // Motiv
@@ -122,6 +128,7 @@ const ALL_BALLS = [
       14:{rg:2.570,diff:0.038}, 13:{rg:2.650,diff:0.034}, 12:{rg:2.710,diff:0.028}
     },
     releaseDate:"Feb 2026",
+    colors:["blue","silver"],
     description:"Sport performance solid symmetric — the ultimate control ball for medium to light oil."
   },
   {
@@ -134,6 +141,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.045}, 13:{rg:2.590,diff:0.040}, 12:{rg:2.650,diff:0.033}
     },
     releaseDate:"Jan 2026",
+    colors:["blue","black"],
     description:"Evoke your inner power with Turbulent V2 core and Infusion-MX solid coverstock."
   },
   // Hammer
@@ -147,6 +155,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.053}, 13:{rg:2.605,diff:0.048}, 12:{rg:2.665,diff:0.041}
     },
     releaseDate:"Feb 2026",
+    colors:["black","gold","purple"],
     description:"The Dynasty of the most iconic bowling ball line. Gas Mask core + maximum asymmetric power."
   },
   {
@@ -159,6 +168,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.043}, 13:{rg:2.585,diff:0.038}, 12:{rg:2.645,diff:0.032}
     },
     releaseDate:"Jan 2026",
+    colors:["red","pearl","black"],
     description:"Sharpen your attack — Hammerhead symmetric pearl for clean length and explosive backend."
   },
   // 900 Global
@@ -172,6 +182,7 @@ const ALL_BALLS = [
       14:{rg:2.490,diff:0.050}, 13:{rg:2.580,diff:0.045}, 12:{rg:2.640,diff:0.038}
     },
     releaseDate:"Jan 2026",
+    colors:["red","black"],
     description:"Vengeance is coming. Heavy oil solid symmetric for maximum pin carry and continuation."
   },
   {
@@ -184,6 +195,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.051}, 13:{rg:2.590,diff:0.046}, 12:{rg:2.650,diff:0.039}
     },
     releaseDate:"Nov 2025",
+    colors:["purple","silver","black"],
     description:"Ghost-like asymmetric pearl gliding through the fronts and erupting on the backend."
   },
   // DV8
@@ -197,6 +209,7 @@ const ALL_BALLS = [
       14:{rg:2.503,diff:0.035}, 13:{rg:2.577,diff:0.043}, 12:{rg:2.599,diff:0.043}
     },
     releaseDate:"Jan 2026",
+    colors:["black","purple"],
     description:"Join the dark side — symmetric solid for controlled, predictable medium oil performance."
   },
   {
@@ -209,6 +222,7 @@ const ALL_BALLS = [
       14:{rg:2.524,diff:0.046}, 13:{rg:2.609,diff:0.041}, 12:{rg:2.669,diff:0.034}
     },
     releaseDate:"Nov 2025",
+    colors:["orange","black"],
     description:"Heckle the competition with serious midlane dominance and powerful backend motion."
   },
   // Ebonite
@@ -222,6 +236,7 @@ const ALL_BALLS = [
       14:{rg:2.493,diff:0.048}, 13:{rg:2.578,diff:0.043}, 12:{rg:2.638,diff:0.036}
     },
     releaseDate:"Feb 2026",
+    colors:["red","black","silver"],
     description:"Spartan discipline meets modern coverstock — heavy oil asymmetric supremacy."
   },
   {
@@ -234,6 +249,7 @@ const ALL_BALLS = [
       14:{rg:2.486,diff:0.051}, 13:{rg:2.571,diff:0.046}, 12:{rg:2.631,diff:0.039}
     },
     releaseDate:"Sep 2025",
+    colors:["purple","pearl"],
     description:"Give a standing ovation to the most iconic name in bowling — boldly reimagined."
   },
   // Columbia 300
@@ -247,6 +263,7 @@ const ALL_BALLS = [
       14:{rg:2.574,diff:0.038}, 13:{rg:2.654,diff:0.034}, 12:{rg:2.714,diff:0.028}
     },
     releaseDate:"Feb 2026",
+    colors:["green","black"],
     description:"The Piranha bites hard — solid symmetric cover for aggressive medium oil performance."
   },
   {
@@ -259,6 +276,7 @@ const ALL_BALLS = [
       14:{rg:2.498,diff:0.045}, 13:{rg:2.583,diff:0.040}, 12:{rg:2.643,diff:0.033}
     },
     releaseDate:"Dec 2025",
+    colors:["red","black","silver"],
     description:"Rally on any condition — asymmetric pearl for explosive backend motion."
   },
   // SWAG
@@ -272,6 +290,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.043}, 13:{rg:2.615,diff:0.038}, 12:{rg:2.675,diff:0.031}
     },
     releaseDate:"Feb 2026",
+    colors:["green","black"],
     description:"Strike like a serpent — asymmetric hybrid with calculated, deadly motion through the oil."
   },
   {
@@ -284,6 +303,7 @@ const ALL_BALLS = [
       14:{rg:2.540,diff:0.043}, 13:{rg:2.625,diff:0.038}, 12:{rg:2.685,diff:0.031}
     },
     releaseDate:"Jan 2026",
+    colors:["black","silver","pearl"],
     description:"Silently precise — pearl symmetric assassin for clean, angular medium oil performance."
   },
   // Radical
@@ -297,6 +317,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.047}, 13:{rg:2.585,diff:0.042}, 12:{rg:2.645,diff:0.035}
     },
     releaseDate:"Feb 2026",
+    colors:["blue","black"],
     description:"Make a deep impact on the heaviest oil with the Astrophysics asymmetric core."
   },
   {
@@ -309,6 +330,7 @@ const ALL_BALLS = [
       14:{rg:2.519,diff:0.046}, 13:{rg:2.604,diff:0.041}, 12:{rg:2.664,diff:0.034}
     },
     releaseDate:"Jan 2026",
+    colors:["black","silver"],
     description:"Push beyond the outer limits — the Black Hole swallows anything in its path."
   },
   // Track
@@ -322,6 +344,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.048}, 13:{rg:2.585,diff:0.043}, 12:{rg:2.645,diff:0.036}
     },
     releaseDate:"Feb 2026",
+    colors:["purple","black"],
     description:"The synthesis of everything Track does best in one powerful asymmetric solid."
   },
   {
@@ -334,6 +357,7 @@ const ALL_BALLS = [
       14:{rg:2.502,diff:0.051}, 13:{rg:2.587,diff:0.046}, 12:{rg:2.647,diff:0.039}
     },
     releaseDate:"Jan 2026",
+    colors:["black","silver"],
     description:"Operate in stealth mode — symmetric hybrid that strikes without warning."
   },
 
@@ -349,6 +373,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.036,moi:0.010}, 13:{rg:2.560,diff:0.034,moi:0.011}, 12:{rg:2.580,diff:0.031,moi:0.009}
     },
     releaseDate:"Jun 2024",
+    colors:["teal","black"],
     description:"Storm's first asymmetric benchmark ball — versatile, forgiving, built for every style."
   },
   {
@@ -361,6 +386,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.052}, 13:{rg:2.580,diff:0.047}, 12:{rg:2.640,diff:0.037}
     },
     releaseDate:"Oct 2024",
+    colors:["purple","black"],
     description:"Think Phaze II, but pearl — A.I. core technology meets TX-16 Pearl for explosive backend."
   },
   // Brunswick
@@ -374,6 +400,7 @@ const ALL_BALLS = [
       14:{rg:2.505,diff:0.053}, 13:{rg:2.510,diff:0.047}, 12:{rg:2.577,diff:0.045}
     },
     releaseDate:"Oct 2023",
+    colors:["blue","silver","pearl"],
     description:"Brunswick's ethos in ball form — HK22 pearl cover with sweeping backend motion."
   },
   {
@@ -386,6 +413,7 @@ const ALL_BALLS = [
       14:{rg:2.533,diff:0.056,moi:0.016}, 13:{rg:2.597,diff:0.041,moi:0.014}, 12:{rg:2.593,diff:0.041,moi:0.014}
     },
     releaseDate:"Aug 2024",
+    colors:["blue","purple","silver"],
     description:"HK22C-Evo Solid with the new Tri-Elliptic D.O.T. core — Brunswick's biggest hooking ball ever."
   },
   // Roto Grip
@@ -399,6 +427,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.046,moi:0.014}, 13:{rg:2.560,diff:0.034,moi:0.011}, 12:{rg:2.580,diff:0.031,moi:0.009}
     },
     releaseDate:"Feb 2024",
+    colors:["blue","silver","black"],
     description:"eTrax PLUS Pearl with the Momentous AV + A.I. core — a ball motion unlike anything on earth."
   },
   {
@@ -411,6 +440,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.054}, 13:{rg:2.580,diff:0.047}, 12:{rg:2.640,diff:0.037}
     },
     releaseDate:"Mar 2024",
+    colors:["purple","pearl"],
     description:"MicroTrax Solid particle cover with the Ikon + A.I. core — a cheat code for any lane condition."
   },
   // Motiv
@@ -424,6 +454,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.044,moi:0.011}, 13:{rg:2.560,diff:0.040,moi:0.009}, 12:{rg:2.620,diff:0.034,moi:0.008}
     },
     releaseDate:"Jan 2025",
+    colors:["black","orange"],
     description:"Leverage HXC Solid with Duramax tech and the Predator V2 core — maximum hook, relentless traction."
   },
   {
@@ -436,6 +467,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.052}, 13:{rg:2.560,diff:0.046}, 12:{rg:2.620,diff:0.039}
     },
     releaseDate:"May 2024",
+    colors:["orange","black"],
     description:"Propulsion HVP Pearl with the Detonator symmetric core — electrifying length and explosive backend motion."
   },
   // Hammer
@@ -449,6 +481,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.056,moi:0.016}, 13:{rg:2.589,diff:0.043,moi:0.011}, 12:{rg:2.612,diff:0.043,moi:0.011}
     },
     releaseDate:"Jan 2024",
+    colors:["black","red","orange"],
     description:"HK22 Aggression Solid with the legendary Gas Mask core — the Black Widow line's most powerful solid yet."
   },
   {
@@ -461,6 +494,7 @@ const ALL_BALLS = [
       14:{rg:2.472,diff:0.036,moi:0.012}, 13:{rg:2.597,diff:0.041,moi:0.011}, 12:{rg:2.612,diff:0.041,moi:0.011}
     },
     releaseDate:"Nov 2024",
+    colors:["blue","black","silver"],
     description:"TourV3 Solid with the low-diff Huntsman Tour core — smooth, predictable, precision motion for demanding patterns."
   },
   // 900 Global
@@ -474,6 +508,7 @@ const ALL_BALLS = [
       14:{rg:2.490,diff:0.051}, 13:{rg:2.560,diff:0.046}, 12:{rg:2.580,diff:0.039}
     },
     releaseDate:"Jan 2025",
+    colors:["blue","teal","black"],
     description:"RB 83 Pearl with the Meditate A.I. symmetric core — Zen's 25th anniversary, pushed to new heights."
   },
   {
@@ -486,6 +521,7 @@ const ALL_BALLS = [
       14:{rg:2.490,diff:0.052,moi:0.014}, 13:{rg:2.560,diff:0.046,moi:0.011}, 12:{rg:2.580,diff:0.040,moi:0.009}
     },
     releaseDate:"Sep 2023",
+    colors:["purple","gold","black"],
     description:"Reserve Blend 901 Solid with the all-new Epoch Asymmetric core — heavy oil power with a cleaner motion."
   },
   // DV8
@@ -499,6 +535,7 @@ const ALL_BALLS = [
       14:{rg:2.526,diff:0.051,moi:0.010}, 13:{rg:2.597,diff:0.041,moi:0.014}, 12:{rg:2.593,diff:0.041,moi:0.014}
     },
     releaseDate:"Nov 2024",
+    colors:["orange","black"],
     description:"HK22C Maximum Havoc Solid with the asymmetric Unholy core — engineered for no-thumb dominance on heavy oil."
   },
   {
@@ -511,6 +548,7 @@ const ALL_BALLS = [
       14:{rg:2.556,diff:0.054,moi:0.024}, 13:{rg:2.597,diff:0.041,moi:0.014}, 12:{rg:2.593,diff:0.041,moi:0.014}
     },
     releaseDate:"Mar 2024",
+    colors:["red","black"],
     description:"HK22 Havoc Hybrid with the brand-new Hater core — a hook monster built for the heaviest conditions."
   },
   // Ebonite
@@ -524,6 +562,7 @@ const ALL_BALLS = [
       14:{rg:2.537,diff:0.054,moi:0.019}, 13:{rg:2.597,diff:0.041,moi:0.014}, 12:{rg:2.593,diff:0.041,moi:0.014}
     },
     releaseDate:"Jul 2023",
+    colors:["blue","black"],
     description:"HK22 Optimize Pearl with the new Emerge Asymmetric core — length, flippy backend, and serious continuation."
   },
   {
@@ -536,6 +575,7 @@ const ALL_BALLS = [
       14:{rg:2.537,diff:0.054,moi:0.019}, 13:{rg:2.597,diff:0.041,moi:0.014}, 12:{rg:2.593,diff:0.041,moi:0.014}
     },
     releaseDate:"Mar 2024",
+    colors:["blue","black"],
     description:"Emerge Hybrid cover brings more mid-lane read — same powerful Emerge core, stronger overall reaction."
   },
   // Columbia 300
@@ -549,6 +589,7 @@ const ALL_BALLS = [
       14:{rg:2.542,diff:0.054,moi:0.018}, 13:{rg:2.597,diff:0.041,moi:0.014}, 12:{rg:2.612,diff:0.041,moi:0.014}
     },
     releaseDate:"Jul 2023",
+    colors:["blue","black"],
     description:"Formula 1 Solid with the new asymmetric Atlas core — exceptional backend and pin drive on medium-heavy oil."
   },
   {
@@ -561,6 +602,7 @@ const ALL_BALLS = [
       14:{rg:2.542,diff:0.054,moi:0.018}, 13:{rg:2.597,diff:0.041,moi:0.014}, 12:{rg:2.612,diff:0.041,moi:0.014}
     },
     releaseDate:"Feb 2024",
+    colors:["blue","silver","black"],
     description:"HK22 Formula 1 Hybrid with the Atlas core — longer, cleaner complement to the Atlas Solid."
   },
   // SWAG
@@ -574,6 +616,7 @@ const ALL_BALLS = [
       14:{rg:2.560,diff:0.040}, 13:{rg:2.550,diff:0.048}, 12:{rg:2.610,diff:0.041}
     },
     releaseDate:"Jan 2025",
+    colors:["blue","silver"],
     description:"Never Quit coverstock on the symmetric Unreal core — SWAG's benchmark utility performance ball."
   },
   {
@@ -586,6 +629,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.038}, 13:{rg:2.590,diff:0.033}, 12:{rg:2.650,diff:0.028}
     },
     releaseDate:"Apr 2025",
+    colors:["blue","black"],
     description:"Apex Solid coverstock on the APX V1 symmetric core — smooth, predictable motion that reads oil early and finishes strong."
   },
   // Radical
@@ -599,6 +643,7 @@ const ALL_BALLS = [
       14:{rg:2.531,diff:0.042,moi:0.013}, 13:{rg:2.601,diff:0.037,moi:0.011}, 12:{rg:2.661,diff:0.030,moi:0.009}
     },
     releaseDate:"Dec 2023",
+    colors:["blue","orange","black"],
     description:"HK22 HyperKinetic Pearl with the new ZigZag asymmetric core — extended hook window, powerful continuation."
   },
   {
@@ -611,6 +656,7 @@ const ALL_BALLS = [
       14:{rg:2.487,diff:0.046,moi:0.017}, 13:{rg:2.597,diff:0.041,moi:0.014}, 12:{rg:2.593,diff:0.041,moi:0.014}
     },
     releaseDate:"Nov 2024",
+    colors:["blue","pearl","silver"],
     description:"HK22 Prime Response Pearl with the Theorem asymmetric core — sharper and more defined breakpoint than the original."
   },
   {
@@ -623,6 +669,7 @@ const ALL_BALLS = [
       14:{rg:2.487,diff:0.046,moi:0.017}, 13:{rg:2.597,diff:0.041,moi:0.014}, 12:{rg:2.593,diff:0.041,moi:0.014}
     },
     releaseDate:"Feb 2024",
+    colors:["blue","black"],
     description:"Prime Response Hybrid HK22 with the Theorem asymmetric core — big sweeping motion and strong continuation."
   },
 
@@ -641,6 +688,7 @@ const ALL_BALLS = [
       14:{rg:2.550,diff:0.045}, 13:{rg:2.620,diff:0.038}, 12:{rg:2.680,diff:0.031}
     },
     releaseDate:"Apr 2024",
+    colors:["blue","silver"],
     description:"The legendary Hy-Road reinvented — ReX Hybrid cover with Inverted Fe2 A.I. core for the modern game."
   },
   {
@@ -653,6 +701,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.042,moi:0.014}, 13:{rg:2.590,diff:0.038,moi:0.011}, 12:{rg:2.650,diff:0.031,moi:0.009}
     },
     releaseDate:"Jan 2024",
+    colors:["red","black"],
     description:"R2S Deep Solid on Storm's first single-density Sentinel core — powerful solid motion for heavy conditions."
   },
   {
@@ -665,6 +714,7 @@ const ALL_BALLS = [
       14:{rg:2.460,diff:0.056}, 13:{rg:2.590,diff:0.045}, 12:{rg:2.650,diff:0.035}
     },
     releaseDate:"Jan 2024",
+    colors:["blue","purple","black"],
     description:"TX-23 Pearl with the Centripetal HD A.I. core — unlike anything else in your bag, a clean yet powerful shape."
   },
   {
@@ -677,6 +727,7 @@ const ALL_BALLS = [
       14:{rg:2.460,diff:0.056}, 13:{rg:2.590,diff:0.045}, 12:{rg:2.650,diff:0.035}
     },
     releaseDate:"Aug 2024",
+    colors:["blue","teal","black"],
     description:"R2S Solid at 4000-grit — uniquely cleaner than typical solids while still commanding medium-heavy oil."
   },
   {
@@ -689,6 +740,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.053,moi:0.016}, 13:{rg:2.580,diff:0.047,moi:0.013}, 12:{rg:2.640,diff:0.040,moi:0.011}
     },
     releaseDate:"Oct 2023",
+    colors:["purple","silver","gold"],
     description:"R2S Solid with the powerful Atomic A.I. core — heavy oil dominance with the signature Storm backend snap."
   },
   {
@@ -701,6 +753,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.052}, 13:{rg:2.580,diff:0.047}, 12:{rg:2.640,diff:0.037}
     },
     releaseDate:"Mar 2025",
+    colors:["purple","black"],
     description:"TX-16 Solid wrapped around the Velocity A.I. core — the benchmark solid companion to the Phaze A.I. Pearl."
   },
 
@@ -715,6 +768,7 @@ const ALL_BALLS = [
       14:{rg:2.533,diff:0.056,moi:0.016}, 13:{rg:2.597,diff:0.041,moi:0.014}, 12:{rg:2.593,diff:0.041,moi:0.014}
     },
     releaseDate:"Feb 2025",
+    colors:["purple","teal","black"],
     description:"HK22C-Evo Hybrid with the Tri-Elliptic core — the perfect Mesmerize follow-up with controlled backend aggression."
   },
   {
@@ -727,6 +781,7 @@ const ALL_BALLS = [
       14:{rg:2.505,diff:0.053}, 13:{rg:2.510,diff:0.047}, 12:{rg:2.577,diff:0.045}
     },
     releaseDate:"Mar 2024",
+    colors:["blue","teal","black"],
     description:"HK22 Ethos Hybrid cover — larger, polished symmetric motion that surpasses previous Ethos models."
   },
   {
@@ -739,6 +794,7 @@ const ALL_BALLS = [
       14:{rg:2.533,diff:0.056,moi:0.016}, 13:{rg:2.597,diff:0.041,moi:0.014}, 12:{rg:2.593,diff:0.041,moi:0.014}
     },
     releaseDate:"Nov 2024",
+    colors:["green","black"],
     description:"HK22C-Evo Solid with the Tri-Elliptic core — the strongest option in the Mesmerize family for heavy oil."
   },
   {
@@ -751,6 +807,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.046,moi:0.014}, 13:{rg:2.560,diff:0.034,moi:0.011}, 12:{rg:2.580,diff:0.031,moi:0.009}
     },
     releaseDate:"Nov 2024",
+    colors:["purple","black"],
     description:"eTrax PLUS Hybrid with the Momentous AV + A.I. core — S2 brings midlane grip with the same monster backend."
   },
   {
@@ -763,6 +820,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.046}, 13:{rg:2.580,diff:0.047}, 12:{rg:2.640,diff:0.037}
     },
     releaseDate:"Feb 2025",
+    colors:["red","black"],
     description:"NanoStar Solid on the brand-new Rocker A.I. core — fills the gap between MicroTrax and eTrax for total versatility."
   },
   {
@@ -775,6 +833,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.054}, 13:{rg:2.580,diff:0.047}, 12:{rg:2.640,diff:0.037}
     },
     releaseDate:"Oct 2023",
+    colors:["teal","pearl","silver"],
     description:"MicroTrax Hybrid with the Defiant LRG core — enchanting arc motion for medium-heavy conditions."
   },
   {
@@ -787,6 +846,7 @@ const ALL_BALLS = [
       14:{rg:2.580,diff:0.033}, 13:{rg:2.640,diff:0.028}, 12:{rg:2.700,diff:0.023}
     },
     releaseDate:"Apr 2024",
+    colors:["blue","red","yellow"],
     description:"VTC Hybrid cover on the HP1 A.I. core — built for everyone, from casual leagues to competitive play on lighter oil."
   },
 
@@ -801,6 +861,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.034,moi:0.011}, 13:{rg:2.560,diff:0.030,moi:0.009}, 12:{rg:2.620,diff:0.025,moi:0.007}
     },
     releaseDate:"Oct 2024",
+    colors:["black","orange"],
     description:"Leverage MXC Solid with Duramax tech on the Gear APG core — the benchmark Venom, predictable and deadly."
   },
   {
@@ -813,6 +874,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.050,moi:0.016}, 13:{rg:2.565,diff:0.045,moi:0.013}, 12:{rg:2.625,diff:0.038,moi:0.011}
     },
     releaseDate:"Jun 2023",
+    colors:["purple","gold","black"],
     description:"Propulsion Pearl on the Overload core — new level of backend speed and angular response in the Pride line."
   },
   {
@@ -825,6 +887,7 @@ const ALL_BALLS = [
       14:{rg:2.590,diff:0.027}, 13:{rg:2.650,diff:0.022}, 12:{rg:2.710,diff:0.018}
     },
     releaseDate:"Jan 2024",
+    colors:["blue","black"],
     description:"Microcell Polymer cover with the Halogen V2 core — urethane-like control with reactive power for heavy oil."
   },
   {
@@ -837,6 +900,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.027}, 13:{rg:2.560,diff:0.023}, 12:{rg:2.620,diff:0.019}
     },
     releaseDate:"Mar 2024",
+    colors:["red","orange","black"],
     description:"Propulsion MXR Pearl on the proven Gear core — the most angular Venom ever, deadly on light-moderate volumes."
   },
 
@@ -851,6 +915,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.052,moi:0.015}, 13:{rg:2.580,diff:0.047,moi:0.012}, 12:{rg:2.640,diff:0.040,moi:0.010}
     },
     releaseDate:"Oct 2025",
+    colors:["blue","black"],
     description:"A2S Solid with the Solarion A.I. core — sharp, angular solid rare in its kind, stands toe-to-toe with the Ion Max."
   },
   {
@@ -863,6 +928,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.054,moi:0.016}, 13:{rg:2.580,diff:0.047,moi:0.013}, 12:{rg:2.640,diff:0.040,moi:0.011}
     },
     releaseDate:"Nov 2025",
+    colors:["purple","gold","black"],
     description:"R2S Solid with the Atomic A.I. core — overseas release bringing the PhysiX pedigree to heavy oil dominance."
   },
   {
@@ -875,6 +941,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.042,moi:0.014}, 13:{rg:2.590,diff:0.038,moi:0.011}, 12:{rg:2.650,diff:0.031,moi:0.009}
     },
     releaseDate:"Nov 2025",
+    colors:["blue","silver","black"],
     description:"NeX Pearl (Nano Extreme) — Storm's earliest-reading cover ever, paired with the Sentinel core for big midlane motion."
   },
   {
@@ -887,6 +954,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.050,moi:0.016}, 13:{rg:2.590,diff:0.044,moi:0.013}, 12:{rg:2.650,diff:0.037,moi:0.011}
     },
     releaseDate:"Dec 2025",
+    colors:["orange","black"],
     description:"RX Pro Pearl on Ignition A.I. — the modern revival of the legendary X-Factor skid-flip reaction."
   },
   {
@@ -899,6 +967,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.058,moi:0.018}, 13:{rg:2.590,diff:0.042,moi:0.014}, 12:{rg:2.610,diff:0.042,moi:0.014}
     },
     releaseDate:"Sep 2024",
+    colors:["red","black"],
     description:"QR-12 Solid cover with the Rampart asymmetric core — midlane-dominant heavy oil control."
   },
   {
@@ -911,6 +980,7 @@ const ALL_BALLS = [
       14:{rg:2.550,diff:0.048}, 13:{rg:2.610,diff:0.040}, 12:{rg:2.670,diff:0.033}
     },
     releaseDate:"Dec 2025",
+    colors:["red","black"],
     description:"A modern tribute to the 1996 classic — QR-12 Solid with the Twist core for today's lanes."
   },
   {
@@ -923,6 +993,7 @@ const ALL_BALLS = [
       14:{rg:2.560,diff:0.041}, 13:{rg:2.620,diff:0.034}, 12:{rg:2.680,diff:0.028}
     },
     releaseDate:"Dec 2025",
+    colors:["purple","black"],
     description:"USBC-approved 78-durometer urethane with the Crown core — more flare potential than traditional urethane."
   },
 
@@ -937,6 +1008,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.046}, 13:{rg:2.580,diff:0.047}, 12:{rg:2.640,diff:0.037}
     },
     releaseDate:"Oct 2025",
+    colors:["red","black","gold"],
     description:"NanoStar Pearl on Rocker A.I. — the Rockstar's angular sibling, delivering a roaring wall of backend sound."
   },
   {
@@ -949,6 +1021,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.046}, 13:{rg:2.560,diff:0.038}, 12:{rg:2.620,diff:0.030}
     },
     releaseDate:"Oct 2025",
+    colors:["purple","black"],
     description:"eTrax PLUS Solid on Ikon + A.I. — the Idol Helios reborn with A.I. tech for wider lane versatility."
   },
   {
@@ -961,6 +1034,7 @@ const ALL_BALLS = [
       14:{rg:2.600,diff:0.047,moi:0.016}, 13:{rg:2.660,diff:0.042,moi:0.013}, 12:{rg:2.720,diff:0.035,moi:0.011}
     },
     releaseDate:"Nov 2024",
+    colors:["red","black"],
     description:"Propulsion HVP Pearl on Impulse V2 — the legendary #redball reborn, explosive backend return of the Primal Rage."
   },
   {
@@ -973,6 +1047,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.050,moi:0.017}, 13:{rg:2.565,diff:0.045,moi:0.014}, 12:{rg:2.625,diff:0.038,moi:0.012}
     },
     releaseDate:"Aug 2025",
+    colors:["orange","black"],
     description:"Propulsion MXV Solid on the dual-density Apex Predator core — a new predator for the most demanding heavy oil."
   },
   {
@@ -985,6 +1060,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.046}, 13:{rg:2.560,diff:0.041}, 12:{rg:2.620,diff:0.034}
     },
     releaseDate:"Aug 2025",
+    colors:["silver","black"],
     description:"Propulsion MXV Pearl on the Detonator core — explosive down-lane reaction with the Evoke Hysteria's proven cover."
   },
   {
@@ -997,6 +1073,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.053,moi:0.016}, 13:{rg:2.600,diff:0.046,moi:0.013}, 12:{rg:2.660,diff:0.039,moi:0.011}
     },
     releaseDate:"Sep 2025",
+    colors:["red","black","silver"],
     description:"HK22 Solid on the Huntsman Tour core — the ultimate upgrade to the popular Effect with maximum power."
   },
   {
@@ -1009,6 +1086,7 @@ const ALL_BALLS = [
       14:{rg:2.600,diff:0.028}, 13:{rg:2.660,diff:0.023}, 12:{rg:2.720,diff:0.018}
     },
     releaseDate:"May 2023",
+    colors:["blue","silver","pearl"],
     description:"Pearl reactive on the Cruise symmetric core — smooth, predictable arc motion for lighter oil conditions."
   },
   {
@@ -1021,6 +1099,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.051,moi:0.016}, 13:{rg:2.570,diff:0.045,moi:0.013}, 12:{rg:2.630,diff:0.038,moi:0.011}
     },
     releaseDate:"Oct 2023",
+    colors:["black","silver"],
     description:"Quantum Solid on the Dark Matter asymmetric core — heavy oil workhorse with strong midlane continuation."
   },
   {
@@ -1033,6 +1112,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.048}, 13:{rg:2.570,diff:0.042}, 12:{rg:2.630,diff:0.035}
     },
     releaseDate:"Jun 2025",
+    colors:["blue","pearl","silver"],
     description:"Pearl reactive on Meditate A.I. — the Zen 25 pearl complement, adding length with the same smooth arc."
   },
 
@@ -1047,6 +1127,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.053,moi:0.016}, 13:{rg:2.590,diff:0.046,moi:0.013}, 12:{rg:2.650,diff:0.039,moi:0.011}
     },
     releaseDate:"Sep 2025",
+    colors:["blue","black"],
     description:"Strong solid cover on the Mantra asymmetric core — consistent hook and reliable control for heavy conditions."
   },
   {
@@ -1059,6 +1140,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.042}, 13:{rg:2.600,diff:0.035}, 12:{rg:2.660,diff:0.029}
     },
     releaseDate:"Jan 2023",
+    colors:["blue","silver"],
     description:"Pearl reactive on the Envision symmetric core — clean, angular backend response for medium conditions."
   },
   {
@@ -1071,6 +1153,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.053,moi:0.016}, 13:{rg:2.590,diff:0.047,moi:0.013}, 12:{rg:2.650,diff:0.040,moi:0.011}
     },
     releaseDate:"Aug 2024",
+    colors:["orange","black"],
     description:"Strong solid cover on the Choice asymmetric core — aggressive heavy-oil motion with high entry angle."
   },
 
@@ -1085,6 +1168,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.038}, 13:{rg:2.600,diff:0.032}
     },
     releaseDate:"Nov 2025",
+    colors:["purple","pearl","silver"],
     description:"SWAG Rage Pearl AP26 on the Craze symmetric core — clean, polished arc for medium oil league play."
   },
 
@@ -1099,6 +1183,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.045,moi:0.015}, 13:{rg:2.600,diff:0.039,moi:0.012}
     },
     releaseDate:"Sep 2024",
+    colors:["blue","black"],
     description:"Solid reactive on the ZigZag asymmetric core — powerful solid motion companion to the original ZigZag Pearl."
   },
   {
@@ -1111,6 +1196,7 @@ const ALL_BALLS = [
       14:{rg:2.540,diff:0.040}, 13:{rg:2.610,diff:0.033}
     },
     releaseDate:"Mar 2024",
+    colors:["pink","pearl","white"],
     description:"Pearl reactive on the Ridiculous symmetric core — smooth, arcing response for medium oil versatility."
   },
 
@@ -1125,6 +1211,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.052,moi:0.016}, 13:{rg:2.580,diff:0.047,moi:0.013}, 12:{rg:2.640,diff:0.040,moi:0.011}
     },
     releaseDate:"Sep 2024",
+    colors:["blue","silver"],
     description:"TX-16 Solid on Element Max A.I. — the benchmark heavy-oil asymmetric for the modern game, top-tier midlane."
   },
   {
@@ -1137,6 +1224,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.048,moi:0.016}, 13:{rg:2.590,diff:0.042,moi:0.013}, 12:{rg:2.650,diff:0.035,moi:0.011}
     },
     releaseDate:"Jun 2025",
+    colors:["teal","black"],
     description:"TX-16 Solid on Element Tour A.I. — the Ion Pro's solid sibling, stronger midlane with the same benchmark shape."
   },
   {
@@ -1149,6 +1237,7 @@ const ALL_BALLS = [
       14:{rg:2.460,diff:0.056}, 13:{rg:2.590,diff:0.045}, 12:{rg:2.650,diff:0.035}
     },
     releaseDate:"Nov 2024",
+    colors:["purple","pearl","silver"],
     description:"NRG Pearl on Centripetal HD A.I. — the Marvel series upgraded with A.I. tech for a straighter, smoother arc."
   },
   {
@@ -1161,6 +1250,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.054,moi:0.016}, 13:{rg:2.580,diff:0.047,moi:0.013}, 12:{rg:2.640,diff:0.040,moi:0.011}
     },
     releaseDate:"Oct 2024",
+    colors:["purple","black"],
     description:"EXO Solid on Atomic A.I. — overseas release bringing PhysiX solid power to heavy oil."
   },
   {
@@ -1173,6 +1263,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.048}, 13:{rg:2.580,diff:0.042}, 12:{rg:2.640,diff:0.035}
     },
     releaseDate:"Feb 2025",
+    colors:["blue","teal","silver"],
     description:"A1S Pearl on Solarion A.I. — purpose-built for 39-44ft league patterns with signature Storm backend motion."
   },
   {
@@ -1185,6 +1276,7 @@ const ALL_BALLS = [
       14:{rg:2.550,diff:0.045}, 13:{rg:2.620,diff:0.038}, 12:{rg:2.680,diff:0.031}
     },
     releaseDate:"Mar 2025",
+    colors:["blue","silver","pearl"],
     description:"R2S Solid on Inverted Fe2 A.I. — the legendary !Q Tour elevated with A.I. Core Technology for wider strike window."
   },
   {
@@ -1197,6 +1289,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.046}, 13:{rg:2.590,diff:0.040}, 12:{rg:2.650,diff:0.033}
     },
     releaseDate:"Jan 2025",
+    colors:["blue","black"],
     description:"RX Pro Pearl on Torque A.I. — the next evolution of the Motor line with explosive backend rev-up."
   },
   {
@@ -1209,6 +1302,7 @@ const ALL_BALLS = [
       14:{rg:2.550,diff:0.045}, 13:{rg:2.620,diff:0.038}, 12:{rg:2.680,diff:0.031}
     },
     releaseDate:"Feb 2025",
+    colors:["red","black"],
     description:"ReX Solid on Inverted Fe2 A.I. — overseas The Road companion, stronger midlane read on tougher conditions."
   },
   {
@@ -1221,6 +1315,7 @@ const ALL_BALLS = [
       14:{rg:2.460,diff:0.056}, 13:{rg:2.590,diff:0.045}, 12:{rg:2.650,diff:0.035}
     },
     releaseDate:"Apr 2025",
+    colors:["blue","teal","black"],
     description:"NRG Pearl on Centripetal HD A.I. — powerful precision for light-medium oil, builds momentum every rotation."
   },
   {
@@ -1233,6 +1328,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.054,moi:0.016}, 13:{rg:2.580,diff:0.047,moi:0.013}, 12:{rg:2.640,diff:0.040,moi:0.011}
     },
     releaseDate:"Jun 2025",
+    colors:["blue","purple","black"],
     description:"R2S Solid on Atomic A.I. — overseas PhysiX continuation, combining running and sharpness on heavy oil."
   },
   {
@@ -1245,6 +1341,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.046}, 13:{rg:2.590,diff:0.040}, 12:{rg:2.650,diff:0.033}
     },
     releaseDate:"Dec 2025",
+    colors:["red","black","silver"],
     description:"RX Pro Pearl on Torque A.I. — overseas Motor Rev, high-polish skid-flip motion for medium oil."
   },
 
@@ -1259,6 +1356,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.058,moi:0.018}, 13:{rg:2.590,diff:0.042,moi:0.014}, 12:{rg:2.610,diff:0.042,moi:0.014}
     },
     releaseDate:"Aug 2025",
+    colors:["red","black"],
     description:"HK22C Alpha Premier Pearl on Rampart — angular backend response with asymmetric midlane control."
   },
   {
@@ -1271,6 +1369,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.042}, 13:{rg:2.580,diff:0.036}, 12:{rg:2.640,diff:0.030}
     },
     releaseDate:"Oct 2025",
+    colors:["red","black"],
     description:"Low RG/low diff new series — Alert is your early warning system, first-release in the all-new Alert line."
   },
   {
@@ -1283,6 +1382,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.040}, 13:{rg:2.600,diff:0.034}, 12:{rg:2.660,diff:0.028}
     },
     releaseDate:"Oct 2025",
+    colors:["orange","black"],
     description:"Pearl cover on the Energize symmetric core — the -ize series newest entry for clean, angular medium oil motion."
   },
 
@@ -1297,6 +1397,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.049}, 13:{rg:2.570,diff:0.042}, 12:{rg:2.630,diff:0.035}
     },
     releaseDate:"Oct 2025",
+    colors:["purple","blue","black"],
     description:"Dark Matter Propulsion Pearl on Hadron dual-density core — Motiv's most angular coverstock ever, cosmic backend."
   },
   {
@@ -1309,6 +1410,7 @@ const ALL_BALLS = [
       14:{rg:2.600,diff:0.047,moi:0.016}, 13:{rg:2.660,diff:0.042,moi:0.013}, 12:{rg:2.720,diff:0.035,moi:0.011}
     },
     releaseDate:"Feb 2025",
+    colors:["green","black"],
     description:"Propulsion HVP Solid on Impulse V2 — dominant heavy oil raptor with high flare and strong continuous motion."
   },
 
@@ -1323,6 +1425,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.055,moi:0.016}, 13:{rg:2.600,diff:0.047,moi:0.013}, 12:{rg:2.660,diff:0.040,moi:0.011}
     },
     releaseDate:"Jan 2023",
+    colors:["black","red","silver"],
     description:"HK22 Hybrid cover on the Gas Mask core — more midlane read than the pearl BW2.0, built for heavy oil."
   },
   {
@@ -1335,6 +1438,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.038}, 13:{rg:2.600,diff:0.032}, 12:{rg:2.660,diff:0.026}
     },
     releaseDate:"Nov 2023",
+    colors:["blue","black"],
     description:"Aggression Solid HK22 on Spheroid — a modern reimagining of the iconic Blue Hammer for today's game."
   },
 
@@ -1349,6 +1453,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.046,moi:0.014}, 13:{rg:2.560,diff:0.034,moi:0.011}, 12:{rg:2.580,diff:0.031,moi:0.009}
     },
     releaseDate:"Jan 2026",
+    colors:["red","black"],
     description:"eTrax PLUS Solid on Momentous AV + A.I. — the Attention Star's solid big brother for heavier conditions."
   },
   {
@@ -1361,6 +1466,7 @@ const ALL_BALLS = [
       14:{rg:2.580,diff:0.033}, 13:{rg:2.640,diff:0.028}, 12:{rg:2.700,diff:0.023}
     },
     releaseDate:"Sep 2025",
+    colors:["blue","pearl","silver"],
     description:"VTC Pearl on HP1 A.I. — the RST Hyperdrive's cleaner sibling for arc motion on medium oil."
   },
 
@@ -1375,6 +1481,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.049,moi:0.015}, 13:{rg:2.580,diff:0.043,moi:0.012}, 12:{rg:2.640,diff:0.036,moi:0.010}
     },
     releaseDate:"Nov 2024",
+    colors:["black","silver"],
     description:"Quantum Pearl on the Wolverine asymmetric core — nighttime aggression with clean arc through the front."
   },
 
@@ -1389,6 +1496,7 @@ const ALL_BALLS = [
       14:{rg:2.515,diff:0.055,moi:0.017}, 13:{rg:2.585,diff:0.048,moi:0.014}, 12:{rg:2.645,diff:0.041,moi:0.012}
     },
     releaseDate:"Jun 2025",
+    colors:["green","black"],
     description:"Strong solid cover on the Intimidator asymmetric core — DV8's new flagship for maximum heavy-oil dominance."
   },
 
@@ -1403,6 +1511,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.040}, 13:{rg:2.590,diff:0.034}, 12:{rg:2.650,diff:0.028}
     },
     releaseDate:"Feb 2025",
+    colors:["orange","black"],
     description:"Strong solid cover on the Xtra Bonus symmetric core — versatile medium-heavy oil control ball."
   },
 
@@ -1417,6 +1526,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.048}, 13:{rg:2.580,diff:0.042}
     },
     releaseDate:"Aug 2024",
+    colors:["orange","black"],
     description:"QR-12 Solid HK22C on II-Core Gen4 — Track's dependable workhorse for medium-heavy oil consistency."
   },
 
@@ -1435,6 +1545,7 @@ const ALL_BALLS = [
       14:{rg:2.610,diff:0.028}, 13:{rg:2.670,diff:0.022}, 12:{rg:2.730,diff:0.018}
     },
     releaseDate:"Feb 2026",
+    colors:["blue","teal","black"],
     description:"ARC Pearl on Radius weight block — urethane-alternative motion for short patterns and demanding conditions."
   },
   {
@@ -1447,6 +1558,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.049,moi:0.016}, 13:{rg:2.580,diff:0.043,moi:0.013}, 12:{rg:2.640,diff:0.036,moi:0.011}
     },
     releaseDate:"Jan 2026",
+    colors:["purple","black"],
     description:"NeX Pearl on Sentinel — overseas Absolute series' most angular entry, sharp backend on medium-heavy oil."
   },
   {
@@ -1459,6 +1571,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.052,moi:0.016}, 13:{rg:2.580,diff:0.047,moi:0.013}, 12:{rg:2.640,diff:0.040,moi:0.011}
     },
     releaseDate:"Jan 2026",
+    colors:["green","gold","black"],
     description:"Overseas VG Destino — legendary Rock HD A.I. core with excellent rolling for heavy oil dominance."
   },
   {
@@ -1471,6 +1584,7 @@ const ALL_BALLS = [
       14:{rg:2.550,diff:0.045}, 13:{rg:2.620,diff:0.038}, 12:{rg:2.680,diff:0.031}
     },
     releaseDate:"Nov 2025",
+    colors:["blue","purple","pearl"],
     description:"R2S Pearl on Inverted Fe2 A.I. — the Phaze II Pearl bowlers worldwide asked for, classic shape perfected."
   },
   {
@@ -1483,6 +1597,7 @@ const ALL_BALLS = [
       14:{rg:2.550,diff:0.046}, 13:{rg:2.620,diff:0.040}, 12:{rg:2.680,diff:0.033}
     },
     releaseDate:"Nov 2025",
+    colors:["blue","silver"],
     description:"ReX Solid on C3 Centripetal — overseas Gate series Prime entry for medium-heavy oil control."
   },
   {
@@ -1495,6 +1610,7 @@ const ALL_BALLS = [
       14:{rg:2.550,diff:0.044}, 13:{rg:2.620,diff:0.038}, 12:{rg:2.680,diff:0.031}
     },
     releaseDate:"Oct 2025",
+    colors:["blue","silver","pearl"],
     description:"Overseas Star Road — enhanced High Road series with improved track stability for medium-heavy oil."
   },
   {
@@ -1507,6 +1623,7 @@ const ALL_BALLS = [
       14:{rg:2.460,diff:0.056}, 13:{rg:2.590,diff:0.045}, 12:{rg:2.650,diff:0.035}
     },
     releaseDate:"Oct 2025",
+    colors:["orange","gold","black"],
     description:"R2S Pearl on Centripetal HD A.I. — overseas Summit continuation, stable arc with strong large hook."
   },
   {
@@ -1519,6 +1636,7 @@ const ALL_BALLS = [
       14:{rg:2.460,diff:0.056}, 13:{rg:2.590,diff:0.045}, 12:{rg:2.650,diff:0.035}
     },
     releaseDate:"Sep 2025",
+    colors:["silver","white","pearl"],
     description:"Overseas Marvel Maxx Silver — stable arc motion, high adaptability across lane conditions."
   },
   {
@@ -1531,6 +1649,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.054,moi:0.016}, 13:{rg:2.580,diff:0.047,moi:0.013}, 12:{rg:2.640,diff:0.040,moi:0.011}
     },
     releaseDate:"Oct 2025",
+    colors:["red","orange","black"],
     description:"EXO Hybrid on Atomic A.I. — PhysiX Raze blends cover versatility with the powerful Atomic asymmetric engine."
   },
   {
@@ -1543,6 +1662,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.044}, 13:{rg:2.580,diff:0.038}, 12:{rg:2.640,diff:0.031}
     },
     releaseDate:"Sep 2025",
+    colors:["blue","black","silver"],
     description:"RX Pearl on RAD-X — overseas Lock-On, smooth skid with powerful hooking response from breakpoint."
   },
   {
@@ -1555,6 +1675,7 @@ const ALL_BALLS = [
       14:{rg:2.500,diff:0.048}, 13:{rg:2.570,diff:0.042}, 12:{rg:2.630,diff:0.035}
     },
     releaseDate:"Apr 2025",
+    colors:["red","orange","black"],
     description:"NRG Pearl on Torsion A.I. — overseas Blaze DNA with explosive downlane continuation."
   },
 
@@ -1569,6 +1690,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.046}, 13:{rg:2.580,diff:0.040}, 12:{rg:2.640,diff:0.033}
     },
     releaseDate:"Oct 2025",
+    colors:["purple","gold","pearl"],
     description:"eTrax PLUS Pearl on Ikon + A.I. — a nostalgic gem design with modern A.I. core performance."
   },
   {
@@ -1581,6 +1703,7 @@ const ALL_BALLS = [
       14:{rg:2.580,diff:0.028}, 13:{rg:2.640,diff:0.023}, 12:{rg:2.700,diff:0.018}
     },
     releaseDate:"Nov 2024",
+    colors:["orange","black"],
     description:"Solid cover on Hustle core — ETF (Electric Teal Fuchsia) colorway, reliable entry-level performance."
   },
   {
@@ -1593,6 +1716,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.046}, 13:{rg:2.580,diff:0.040}, 12:{rg:2.640,diff:0.033}
     },
     releaseDate:"Oct 2024",
+    colors:["blue","silver","pearl"],
     description:"eTrax PLUS Pearl on Ikon + A.I. — sapphire blue gem series with polished backend arc."
   },
   {
@@ -1605,6 +1729,7 @@ const ALL_BALLS = [
       14:{rg:2.580,diff:0.028}, 13:{rg:2.640,diff:0.023}, 12:{rg:2.700,diff:0.018}
     },
     releaseDate:"Jan 2026",
+    colors:["blue","purple","pearl"],
     description:"Pearl cover on Hustle — Black/Pink colorway, entry performance ball for light-medium conditions."
   },
 
@@ -1619,6 +1744,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.033,moi:0.013}, 13:{rg:2.600,diff:0.028,moi:0.010}, 12:{rg:2.660,diff:0.023,moi:0.008}
     },
     releaseDate:"Sep 2025",
+    colors:["black","orange","gold"],
     description:"HK22 Solid on Gas Mask Tour V1 — flip block removed, 20+ point lower diff for smoother controlled motion."
   },
   {
@@ -1631,6 +1757,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.055,moi:0.016}, 13:{rg:2.600,diff:0.047,moi:0.013}, 12:{rg:2.660,diff:0.040,moi:0.011}
     },
     releaseDate:"Nov 2024",
+    colors:["red","black"],
     description:"HK22 Cohesion Solid on Gas Mask — bold upgrade to the Hammer line with attitude and heavy-oil character."
   },
   {
@@ -1643,6 +1770,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.038}, 13:{rg:2.600,diff:0.032}, 12:{rg:2.660,diff:0.026}
     },
     releaseDate:"Apr 2025",
+    colors:["red","black"],
     description:"Aggression Solid HK22 on Spheroid — the original Hammerhead Solid released spring 2025."
   },
   {
@@ -1655,6 +1783,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.052,moi:0.016}, 13:{rg:2.590,diff:0.046,moi:0.013}, 12:{rg:2.650,diff:0.039,moi:0.011}
     },
     releaseDate:"Jan 2026",
+    colors:["black","silver"],
     description:"HK22 Solid on Super Offset asymmetric core — Zero Mercy solid entry for maximum heavy oil dominance."
   },
   {
@@ -1667,6 +1796,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.052,moi:0.016}, 13:{rg:2.590,diff:0.046,moi:0.013}, 12:{rg:2.650,diff:0.039,moi:0.011}
     },
     releaseDate:"Jan 2026",
+    colors:["black","silver","pearl"],
     description:"HK22 Pearl on Super Offset asymmetric core — the angularly sharp Zero Mercy companion."
   },
   {
@@ -1679,6 +1809,7 @@ const ALL_BALLS = [
       14:{rg:2.530,diff:0.038}, 13:{rg:2.600,diff:0.032}, 12:{rg:2.660,diff:0.026}
     },
     releaseDate:"Jan 2026",
+    colors:["blue","silver"],
     description:"Not Urethane (NuCoat) Grey matte cover on Spheroid — follow-up to NU Blue Hammer, MCP-style control."
   },
 
@@ -1693,6 +1824,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.049}, 13:{rg:2.570,diff:0.042}, 12:{rg:2.630,diff:0.035}
     },
     releaseDate:"Oct 2025",
+    colors:["black","silver"],
     description:"Frixion M7 Pearl MCP on Halogen V2 — smoothest, most controllable Tank with urethane-like predictability."
   },
   {
@@ -1705,6 +1837,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.049,moi:0.015}, 13:{rg:2.580,diff:0.043,moi:0.012}, 12:{rg:2.640,diff:0.036,moi:0.010}
     },
     releaseDate:"Nov 2024",
+    colors:["purple","black"],
     description:"Quantum Solid on Ellipse A.I. — dual precession weight block design for unparalleled hook and turbulence."
   },
   {
@@ -1717,6 +1850,7 @@ const ALL_BALLS = [
       14:{rg:2.520,diff:0.049,moi:0.015}, 13:{rg:2.580,diff:0.043,moi:0.012}, 12:{rg:2.640,diff:0.036,moi:0.010}
     },
     releaseDate:"Feb 2026",
+    colors:["blue","black"],
     description:"Quantum Hybrid on Viking asymmetric core — aggressive Nordic force for heavy oil conditions."
   },
 
@@ -1731,6 +1865,7 @@ const ALL_BALLS = [
       14:{rg:2.560,diff:0.040}, 13:{rg:2.620,diff:0.034}, 12:{rg:2.680,diff:0.028}
     },
     releaseDate:"Nov 2024",
+    colors:["orange","pearl"],
     description:"Pearl cover on Ricochet + Dynamicore — more explosive backend, sharp breakpoint for medium oil."
   },
   {
@@ -1743,6 +1878,7 @@ const ALL_BALLS = [
       14:{rg:2.560,diff:0.040}, 13:{rg:2.620,diff:0.034}, 12:{rg:2.680,diff:0.028}
     },
     releaseDate:"Feb 2026",
+    colors:["blue","pearl","silver"],
     description:"Pearl cover on Super Cuda PowerCOR — faster, flashier and fiercer return of the Super Cuda lineup."
   },
 
@@ -1757,6 +1893,7 @@ const ALL_BALLS = [
       14:{rg:2.540,diff:0.040}, 13:{rg:2.600,diff:0.034}, 12:{rg:2.660,diff:0.028}
     },
     releaseDate:"Nov 2024",
+    colors:["teal","black"],
     description:"HK22 GB13.7 Solid on Big Time core — sharp backend move on medium conditions, standout value."
   },
 
@@ -1771,6 +1908,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.050,moi:0.015}, 13:{rg:2.580,diff:0.044,moi:0.012}
     },
     releaseDate:"Feb 2026",
+    colors:["red","black"],
     description:"SWAG Slayer AP26 Hybrid on Judgement asymmetric — one of six new AP26 launch balls for Feb 2026."
   },
   {
@@ -1783,6 +1921,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.052,moi:0.015}, 13:{rg:2.580,diff:0.046,moi:0.012}
     },
     releaseDate:"Feb 2026",
+    colors:["blue","black"],
     description:"SWAG Never Quit AP26 Solid on Unreal asymmetric core — maximum heavy oil performance with AP26 tech."
   },
   {
@@ -1795,6 +1934,7 @@ const ALL_BALLS = [
       14:{rg:2.560,diff:0.034}, 13:{rg:2.620,diff:0.028}
     },
     releaseDate:"Aug 2025",
+    colors:["orange","black"],
     description:"Serum Hybrid AP26 on Fusion symmetric core — benchmark versatility with 2.54 RG for lane transition."
   },
 
@@ -1809,6 +1949,7 @@ const ALL_BALLS = [
       14:{rg:2.510,diff:0.050,moi:0.015}, 13:{rg:2.580,diff:0.044,moi:0.012}
     },
     releaseDate:"Feb 2026",
+    colors:["red","black"],
     description:"QR-12 Solid HK22C on I-Core Gen4 — Track's debut asymmetric Gen4 core for heavy oil tournament play."
   },
 
@@ -1824,6 +1965,7 @@ const ALL_BALLS = [
     ballSlug:"900-global-cove", coreSlug:"900-global-magna-ai-core",
     weightData:{16:{rg:2.480,diff:0.048},15:{rg:2.480,diff:0.048},14:{rg:2.510,diff:0.046},13:{rg:2.580,diff:0.040},12:{rg:2.640,diff:0.033}},
     releaseDate:"Aug 2025",
+    colors:["teal","black"],
     description:"RB 85 Hybrid on Magna A.I. dual-hemisphere symmetric core — smooth, continuous motion on medium-heavy."
   },
   {
@@ -1833,6 +1975,7 @@ const ALL_BALLS = [
     ballSlug:"900-global-ember", coreSlug:"900-global-magna-ai-core",
     weightData:{16:{rg:2.480,diff:0.048},15:{rg:2.480,diff:0.048},14:{rg:2.510,diff:0.046},13:{rg:2.580,diff:0.040},12:{rg:2.640,diff:0.033}},
     releaseDate:"Aug 2025",
+    colors:["red","orange","black"],
     description:"RB 82 Pearl on Magna A.I. — stronger backend Cove companion, angular pearl for medium conditions."
   },
   {
@@ -1842,6 +1985,7 @@ const ALL_BALLS = [
     ballSlug:"900-global-mach-cruise", coreSlug:"900-global-cruise-core",
     weightData:{16:{rg:2.560,diff:0.035},15:{rg:2.560,diff:0.035},14:{rg:2.580,diff:0.033},13:{rg:2.640,diff:0.028},12:{rg:2.700,diff:0.023}},
     releaseDate:"Jul 2025",
+    colors:["red","black"],
     description:"Reserve Blend 93 Solid on Cruise symmetric core — overseas Mach Cruise for controlled medium-heavy oil."
   },
   {
@@ -1851,6 +1995,7 @@ const ALL_BALLS = [
     ballSlug:"900-global-honey-badger-black-edition", coreSlug:"900-global-grapnel-20-core",
     weightData:{16:{rg:2.540,diff:0.048,moi:0.012},15:{rg:2.540,diff:0.048,moi:0.012},14:{rg:2.560,diff:0.046,moi:0.010},13:{rg:2.620,diff:0.040,moi:0.008},12:{rg:2.680,diff:0.033,moi:0.006}},
     releaseDate:"Jul 2025",
+    colors:["black","orange"],
     description:"Reserve Blend 70E Hybrid on Grapnel 2.0 asymmetric — Black Edition HB for medium oil skid/flip shape."
   },
   {
@@ -1860,6 +2005,7 @@ const ALL_BALLS = [
     ballSlug:"900-global-reality-incursion", coreSlug:"900-global-disturbance-ai-core",
     weightData:{16:{rg:2.470,diff:0.056,moi:0.018},15:{rg:2.470,diff:0.056,moi:0.018},14:{rg:2.500,diff:0.054,moi:0.016},13:{rg:2.560,diff:0.048,moi:0.013},12:{rg:2.620,diff:0.041,moi:0.011}},
     releaseDate:"Sep 2025",
+    colors:["silver","black"],
     description:"Reserve Blend 901 Solid on Disturbance A.I. — Reality's next chapter; lower RG, higher diff via A.I. outer core."
   },
   {
@@ -1869,6 +2015,7 @@ const ALL_BALLS = [
     ballSlug:"900-global-remaster-honey-badger", coreSlug:"900-global-grapnel-20-core",
     weightData:{16:{rg:2.540,diff:0.048,moi:0.012},15:{rg:2.540,diff:0.048,moi:0.012},14:{rg:2.560,diff:0.046,moi:0.010},13:{rg:2.620,diff:0.040,moi:0.008},12:{rg:2.680,diff:0.033,moi:0.006}},
     releaseDate:"Jan 2026",
+    colors:["orange","black"],
     description:"Reserve Blend 70D Solid on Grapnel 2.0 — Remaster Honey Badger solid for medium-heavy oil dominance."
   },
   {
@@ -1878,6 +2025,7 @@ const ALL_BALLS = [
     ballSlug:"900-global-origin-ex", coreSlug:"900-global-ellipse-ai-core",
     weightData:{16:{rg:2.470,diff:0.056,moi:0.018},15:{rg:2.480,diff:0.054,moi:0.017},14:{rg:2.510,diff:0.052,moi:0.015},13:{rg:2.570,diff:0.046,moi:0.012},12:{rg:2.630,diff:0.039,moi:0.010}},
     releaseDate:"Oct 2025",
+    colors:["blue","black"],
     description:"Quantum Pearl on Ellipse A.I. — Origin's pearl companion with angular backend and same dual-precession power."
   },
   {
@@ -1887,6 +2035,7 @@ const ALL_BALLS = [
     ballSlug:"900-global-rev-matrix", coreSlug:"900-global-matrix-core",
     weightData:{16:{rg:2.490,diff:0.048,moi:0.014},15:{rg:2.490,diff:0.048,moi:0.014},14:{rg:2.520,diff:0.046,moi:0.012},13:{rg:2.580,diff:0.040,moi:0.009},12:{rg:2.640,diff:0.033,moi:0.007}},
     releaseDate:"Oct 2025",
+    colors:["blue","silver"],
     description:"S86R Pearl on Matrix flip-block asymmetric core — overseas, designed by PWBA pro Daria Payonk for medium oil."
   },
   {
@@ -1896,6 +2045,7 @@ const ALL_BALLS = [
     ballSlug:"900-global-duty-majesty", coreSlug:"900-global-duty-core",
     weightData:{16:{rg:2.540,diff:0.038},15:{rg:2.540,diff:0.038},14:{rg:2.560,diff:0.036},13:{rg:2.620,diff:0.030},12:{rg:2.680,diff:0.024}},
     releaseDate:"Feb 2025",
+    colors:["purple","gold"],
     description:"Reserve Blend 902 Hybrid on Duty symmetric core — overseas controlled motion for medium lane conditions."
   },
   {
@@ -1905,6 +2055,7 @@ const ALL_BALLS = [
     ballSlug:"900-global-honey-badger-blameless", coreSlug:"900-global-grapnel-20-core",
     weightData:{16:{rg:2.540,diff:0.048,moi:0.012},15:{rg:2.540,diff:0.048,moi:0.012},14:{rg:2.560,diff:0.046,moi:0.010},13:{rg:2.620,diff:0.040,moi:0.008},12:{rg:2.680,diff:0.033,moi:0.006}},
     releaseDate:"Feb 2025",
+    colors:["orange","white"],
     description:"Reserve Blend 701 Pearl on Grapnel 2.0 — overseas Blameless, angular Honey Badger for light-medium oil."
   },
 
@@ -1916,6 +2067,7 @@ const ALL_BALLS = [
     ballSlug:"motiv-jackal-exj", coreSlug:"motiv-predator-v2-core",
     weightData:{16:{rg:2.570,diff:0.056,moi:0.020},15:{rg:2.570,diff:0.056,moi:0.020},14:{rg:2.600,diff:0.053,moi:0.017},13:{rg:2.660,diff:0.048,moi:0.014},12:{rg:2.720,diff:0.041,moi:0.012}},
     releaseDate:"Jan 2026",
+    colors:["black","orange","gold"],
     description:"Propulsion HVH Hybrid on Predator V2 — first hybrid Jackal in 3+ years, slots between Jackal Ghost and Crimson Jackal."
   },
   {
@@ -1925,6 +2077,7 @@ const ALL_BALLS = [
     ballSlug:"motiv-subzero-forge", coreSlug:"motiv-detonator-core",
     weightData:{16:{rg:2.470,diff:0.052},15:{rg:2.470,diff:0.052},14:{rg:2.500,diff:0.050},13:{rg:2.560,diff:0.044},12:{rg:2.620,diff:0.037}},
     releaseDate:"Sep 2025",
+    colors:["teal","black"],
     description:"Leverage MXC Solid + Duramax on Detonator symmetric — ice-cold heavy oil force, strong early read with continuous motion."
   },
   {
@@ -1934,6 +2087,7 @@ const ALL_BALLS = [
     ballSlug:"motiv-max-thrill-pearl", coreSlug:"motiv-halogen-v2-core",
     weightData:{16:{rg:2.600,diff:0.035},15:{rg:2.600,diff:0.035},14:{rg:2.620,diff:0.033},13:{rg:2.680,diff:0.028},12:{rg:2.740,diff:0.022}},
     releaseDate:"Sep 2025",
+    colors:["pink","pearl","black"],
     description:"Turmoil XP3 Pearl on Halogen V2 — more angular and cleaner than Top Thrill Pearl, serious dry-lane explosion."
   },
 
@@ -1945,6 +2099,7 @@ const ALL_BALLS = [
     ballSlug:"swag-craze-tour-solid", coreSlug:"swag-craze-core",
     weightData:{15:{rg:2.540,diff:0.036},14:{rg:2.560,diff:0.034},13:{rg:2.620,diff:0.028}},
     releaseDate:"Feb 2026",
+    colors:["purple","black"],
     description:"SWAG Rage Solid AP26 on Craze symmetric core — solid companion to Craze Tour Pearl with more oil traction."
   },
 
@@ -1960,6 +2115,7 @@ const ALL_BALLS = [
     ballSlug:"storm-hy-road-40", coreSlug:"storm-inverted-fe2-core",
     weightData:{16:{rg:2.570,diff:0.046},15:{rg:2.570,diff:0.046},14:{rg:2.570,diff:0.044},13:{rg:2.630,diff:0.038},12:{rg:2.690,diff:0.031}},
     releaseDate:"Jun 2025",
+    colors:["red","orange","black"],
     description:"A1S Pearl on Inverted Fe2 — 40th anniversary HyRoad, clean through the fronts with predictable angular backend."
   },
   {
@@ -1969,6 +2125,7 @@ const ALL_BALLS = [
     ballSlug:"storm-iq-spear", coreSlug:"storm-c3-centripetal-ai-core",
     weightData:{16:{rg:2.550,diff:0.045},15:{rg:2.550,diff:0.045},14:{rg:2.550,diff:0.043},13:{rg:2.620,diff:0.037},12:{rg:2.680,diff:0.030}},
     releaseDate:"Jan 2026",
+    colors:["red","black"],
     description:"R2S Solid on C3 Centripetal A.I. — ultimate control and workability at the breakpoint, A.I. enhanced energy transfer."
   },
   {
@@ -1978,6 +2135,7 @@ const ALL_BALLS = [
     ballSlug:"storm-motor-30", coreSlug:"storm-torsion-ai-core",
     weightData:{16:{rg:2.490,diff:0.048},15:{rg:2.490,diff:0.048},14:{rg:2.520,diff:0.046},13:{rg:2.590,diff:0.040},12:{rg:2.650,diff:0.033}},
     releaseDate:"Feb 2026",
+    colors:["orange","black"],
     description:"RX Pro Pearl on Torsion A.I. — Motor line's 30th anniversary limited edition with explosive rev-up motion."
   },
   {
@@ -1987,6 +2145,7 @@ const ALL_BALLS = [
     ballSlug:"storm-identity-bcp", coreSlug:"storm-ignition-ai-core",
     weightData:{16:{rg:2.490,diff:0.050},15:{rg:2.490,diff:0.050},14:{rg:2.520,diff:0.048},13:{rg:2.590,diff:0.042},12:{rg:2.650,diff:0.035}},
     releaseDate:"Jan 2026",
+    colors:["blue","teal","purple"],
     description:"Hybrid cover on Ignition A.I. — B-C-P (Blue/Crimson/Purple) colorway IDentity, versatile medium oil performer."
   },
   {
@@ -1996,6 +2155,7 @@ const ALL_BALLS = [
     ballSlug:"storm-grand-gate", coreSlug:"storm-ignition-ai-core",
     weightData:{16:{rg:2.490,diff:0.050},15:{rg:2.490,diff:0.050},14:{rg:2.520,diff:0.048},13:{rg:2.590,diff:0.042},12:{rg:2.650,diff:0.035}},
     releaseDate:"Mar 2025",
+    colors:["red","gold"],
     description:"A1S Pearl on Ignition A.I. — Gate series' premium pearl for clean skid with sharp angular backend reaction."
   },
   {
@@ -2005,6 +2165,7 @@ const ALL_BALLS = [
     ballSlug:"storm-star-gate", coreSlug:"storm-ignition-ai-core",
     weightData:{16:{rg:2.490,diff:0.050},15:{rg:2.490,diff:0.050},14:{rg:2.520,diff:0.048},13:{rg:2.590,diff:0.042},12:{rg:2.650,diff:0.035}},
     releaseDate:"Oct 2024",
+    colors:["blue","silver"],
     description:"Hybrid cover on Ignition A.I. — Star Gate's blueberry-scented aggressive solid Gate series entry."
   },
   {
@@ -2014,6 +2175,7 @@ const ALL_BALLS = [
     ballSlug:"storm-marvel-flame", coreSlug:"storm-centripetal-hd-ai-core",
     weightData:{16:{rg:2.460,diff:0.056},15:{rg:2.460,diff:0.056},14:{rg:2.460,diff:0.056},13:{rg:2.590,diff:0.045},12:{rg:2.650,diff:0.035}},
     releaseDate:"Feb 2025",
+    colors:["red","orange","gold"],
     description:"EXO Solid on Centripetal HD A.I. — 3rd Marvel A.I. series, stable arc with high scoreability on medium-heavy."
   },
   {
@@ -2023,6 +2185,7 @@ const ALL_BALLS = [
     ballSlug:"storm-code-impact", coreSlug:"storm-rad4-core",
     weightData:{16:{rg:2.470,diff:0.058,moi:0.020},15:{rg:2.470,diff:0.057,moi:0.020},14:{rg:2.510,diff:0.054,moi:0.017},13:{rg:2.580,diff:0.048,moi:0.014},12:{rg:2.640,diff:0.041,moi:0.012}},
     releaseDate:"Sep 2025",
+    colors:["green","black"],
     description:"NeX Hybrid on RAD4 — the Code series' heaviest hitter, highest diff in the Premier line for maximum heavy oil."
   },
   {
@@ -2032,6 +2195,7 @@ const ALL_BALLS = [
     ballSlug:"storm-summit-world", coreSlug:"storm-centripetal-hd-ai-core",
     weightData:{16:{rg:2.460,diff:0.056},15:{rg:2.460,diff:0.056},14:{rg:2.460,diff:0.056},13:{rg:2.590,diff:0.045},12:{rg:2.650,diff:0.035}},
     releaseDate:"Jul 2025",
+    colors:["green","blue","black"],
     description:"R2S Solid on Centripetal HD A.I. — overseas Summit World, strong continuous roll on medium-heavy oil."
   },
   {
@@ -2041,6 +2205,7 @@ const ALL_BALLS = [
     ballSlug:"storm-wild-absolute", coreSlug:"storm-sentinel-core",
     weightData:{16:{rg:2.470,diff:0.053,moi:0.018},15:{rg:2.470,diff:0.052,moi:0.018},14:{rg:2.510,diff:0.049,moi:0.016},13:{rg:2.580,diff:0.043,moi:0.013},12:{rg:2.640,diff:0.036,moi:0.011}},
     releaseDate:"Dec 2024",
+    colors:["purple","gold","black"],
     description:"NeX Solid on Sentinel — overseas Wild Absolute, stable power axis movement for continuous heavy oil dominance."
   },
   {
@@ -2050,6 +2215,7 @@ const ALL_BALLS = [
     ballSlug:"storm-dna-strand", coreSlug:"storm-g2-core",
     weightData:{16:{rg:2.470,diff:0.058,moi:0.019},15:{rg:2.470,diff:0.057,moi:0.019},14:{rg:2.510,diff:0.054,moi:0.017},13:{rg:2.580,diff:0.048,moi:0.014},12:{rg:2.640,diff:0.041,moi:0.012}},
     releaseDate:"Mar 2025",
+    colors:["blue","silver","black"],
     description:"NeX Solid on G2 asymmetric — stronger midlane read than DNA Coil II, 11% more entry angle vs NRG cover."
   },
   {
@@ -2059,6 +2225,7 @@ const ALL_BALLS = [
     ballSlug:"storm-bite-panic-ai", coreSlug:"storm-g2-ai-core",
     weightData:{16:{rg:2.470,diff:0.058,moi:0.019},15:{rg:2.470,diff:0.057,moi:0.019},14:{rg:2.510,diff:0.054,moi:0.017},13:{rg:2.580,diff:0.048,moi:0.014},12:{rg:2.640,diff:0.041,moi:0.012}},
     releaseDate:"Jan 2025",
+    colors:["red","orange","black"],
     description:"EXO Pearl on G2 A.I. — overseas Bite Panic A.I., improved oil-resistance front and boosted backend power."
   },
   {
@@ -2068,6 +2235,7 @@ const ALL_BALLS = [
     ballSlug:"storm-bite-panic-x", coreSlug:"storm-g2-core",
     weightData:{16:{rg:2.470,diff:0.058,moi:0.019},15:{rg:2.470,diff:0.057,moi:0.019},14:{rg:2.510,diff:0.054,moi:0.017},13:{rg:2.580,diff:0.048,moi:0.014},12:{rg:2.640,diff:0.041,moi:0.012}},
     releaseDate:"Jun 2024",
+    colors:["blue","black"],
     description:"EXO Hybrid on G2 — overseas Bite Panic X, fine flare pattern with astonishing pin action on heavy oil."
   },
   {
@@ -2077,6 +2245,7 @@ const ALL_BALLS = [
     ballSlug:"storm-physix-power-elite-iv", coreSlug:"storm-atomic-ai-core",
     weightData:{16:{rg:2.470,diff:0.056,moi:0.018},15:{rg:2.470,diff:0.055,moi:0.018},14:{rg:2.520,diff:0.054,moi:0.016},13:{rg:2.580,diff:0.047,moi:0.013},12:{rg:2.640,diff:0.040,moi:0.011}},
     releaseDate:"Oct 2024",
+    colors:["blue","silver"],
     description:"R2S Solid on Atomic A.I. — PhysiX Power Elite IV, overseas limited release for maximum heavy oil performance."
   },
   {
@@ -2086,6 +2255,7 @@ const ALL_BALLS = [
     ballSlug:"storm-blue-iq", coreSlug:"storm-c3-centripetal-ai-core",
     weightData:{16:{rg:2.550,diff:0.045},15:{rg:2.550,diff:0.045},14:{rg:2.550,diff:0.043},13:{rg:2.620,diff:0.037},12:{rg:2.680,diff:0.030}},
     releaseDate:"Jun 2025",
+    colors:["blue","black"],
     description:"R2S Solid on C3 A.I. — Blue !Q celebrating the iconic IQ lineage with A.I. enhanced control motion."
   },
   {
@@ -2095,6 +2265,7 @@ const ALL_BALLS = [
     ballSlug:"storm-iq-super-g", coreSlug:"storm-c3-centripetal-core",
     weightData:{16:{rg:2.550,diff:0.040},15:{rg:2.550,diff:0.040},14:{rg:2.550,diff:0.038},13:{rg:2.620,diff:0.032},12:{rg:2.680,diff:0.026}},
     releaseDate:"Aug 2024",
+    colors:["purple","black"],
     description:"R2S Solid on C3 Centripetal — overseas !Q Super G, tuned for smooth mid-lane transition and predictable arc."
   },
 
@@ -2106,6 +2277,7 @@ const ALL_BALLS = [
     ballSlug:"brunswick-danger-zone-purple-ice", coreSlug:"brunswick-twist-core",
     weightData:{16:{rg:2.510,diff:0.040},15:{rg:2.500,diff:0.042},14:{rg:2.530,diff:0.040},13:{rg:2.600,diff:0.034},12:{rg:2.660,diff:0.028}},
     releaseDate:"Feb 2026",
+    colors:["purple","blue","black"],
     description:"QR-12 Solid on Twist symmetric — Danger Zone Purple Ice colorway, same spec as the black version."
   },
   {
@@ -2115,6 +2287,7 @@ const ALL_BALLS = [
     ballSlug:"brunswick-melee-jab-void-black", coreSlug:"brunswick-melee-core",
     weightData:{16:{rg:2.560,diff:0.030},15:{rg:2.560,diff:0.032},14:{rg:2.580,diff:0.030},13:{rg:2.640,diff:0.025},12:{rg:2.700,diff:0.020}},
     releaseDate:"Nov 2025",
+    colors:["black","silver"],
     description:"Reactive Solid on Melee symmetric — Void Black colorway Melee Jab, entry-level medium oil performance."
   },
   {
@@ -2124,6 +2297,7 @@ const ALL_BALLS = [
     ballSlug:"brunswick-vapor-zone-red", coreSlug:"brunswick-vapor-core",
     weightData:{16:{rg:2.560,diff:0.032},15:{rg:2.560,diff:0.034},14:{rg:2.580,diff:0.032},13:{rg:2.640,diff:0.027},12:{rg:2.700,diff:0.022}},
     releaseDate:"Dec 2025",
+    colors:["red","black"],
     description:"Pearl cover on Vapor symmetric core — Vapor Zone Red, polished entry-level ball for medium oil conditions."
   },
 
@@ -2137,6 +2311,7 @@ const ALL_BALLS = [
     ballSlug:"hammer-special-effect", coreSlug:"hammer-huntsman-core",
     weightData:{16:{rg:2.483,diff:0.043,moi:0.015},15:{rg:2.470,diff:0.050,moi:0.017},14:{rg:2.495,diff:0.050,moi:0.016},13:{rg:2.597,diff:0.041,moi:0.014},12:{rg:2.593,diff:0.041,moi:0.014}},
     releaseDate:"Mar 2025",
+    colors:["purple","black","silver"],
     description:"HK22C Cohesion Solid on Huntsman asymmetric — follow-up to the Effect, slightly earlier read for medium-heavy oil with the same signature Huntsman power."
   },
   {
@@ -2146,6 +2321,7 @@ const ALL_BALLS = [
     ballSlug:"hammer-black-widow-mania", coreSlug:"hammer-gas-mask-core",
     weightData:{16:{rg:2.510,diff:0.048,moi:0.015},15:{rg:2.500,diff:0.058,moi:0.016},14:{rg:2.500,diff:0.056,moi:0.016},13:{rg:2.589,diff:0.043,moi:0.011},12:{rg:2.612,diff:0.043,moi:0.011}},
     releaseDate:"Jan 2025",
+    colors:["black","orange","gold"],
     description:"HK22C Cohesion Pearl on Gas Mask — longer and sharper than BW 2.0 Hybrid, perfect medium oil follow-up in the legendary Black Widow lineage."
   },
   {
@@ -2155,6 +2331,7 @@ const ALL_BALLS = [
     ballSlug:"motiv-primal-ghost", coreSlug:"motiv-impulse-v2-core",
     weightData:{16:{rg:2.540,diff:0.049},15:{rg:2.550,diff:0.050},14:{rg:2.560,diff:0.054},13:{rg:2.600,diff:0.055},12:{rg:2.670,diff:0.040}},
     releaseDate:"Sep 2025",
+    colors:["white","silver","pearl"],
     description:"Coercion HFS Solid on Impulse V2 symmetric — fusion of Jackal Ghost's legendary cover with Primal Rage's proven core, smooth and strong medium oil performer."
   },
 
@@ -2166,6 +2343,7 @@ const ALL_BALLS = [
     ballSlug:"motiv-evoke", coreSlug:"motiv-overload-core",
     weightData:{16:{rg:2.480,diff:0.050,moi:0.017},15:{rg:2.480,diff:0.050,moi:0.017},14:{rg:2.510,diff:0.047,moi:0.015},13:{rg:2.580,diff:0.042,moi:0.012},12:{rg:2.640,diff:0.035,moi:0.010}},
     releaseDate:"Feb 2024",
+    colors:["purple","black"],
     description:"Leverage MXC Solid on Overload asymmetric — tunable differential, smooth heavy oil benchmark control."
   },
   {
@@ -2175,6 +2353,7 @@ const ALL_BALLS = [
     ballSlug:"motiv-evoke-hysteria", coreSlug:"motiv-overload-core",
     weightData:{16:{rg:2.480,diff:0.050,moi:0.017},15:{rg:2.480,diff:0.050,moi:0.017},14:{rg:2.510,diff:0.047,moi:0.015},13:{rg:2.580,diff:0.042,moi:0.012},12:{rg:2.640,diff:0.035,moi:0.010}},
     releaseDate:"Mar 2025",
+    colors:["red","black","orange"],
     description:"Propulsion MXV Pearl on Overload — angular backend with tunable differential, devastatingly controllable entry angle."
   },
 
@@ -2186,6 +2365,7 @@ const ALL_BALLS = [
     ballSlug:"columbia-300-ricochet-return", coreSlug:"columbia-300-ricochet-core",
     weightData:{16:{rg:2.502,diff:0.047},15:{rg:2.488,diff:0.054},14:{rg:2.535,diff:0.054},13:{rg:2.600,diff:0.048},12:{rg:2.660,diff:0.040}},
     releaseDate:"Jan 2025",
+    colors:["orange","black"],
     description:"HK22C Micro Flex Hybrid on Ricochet core — skid/flip hybrid companion to the original pearl, versatile medium oil option."
   },
   {
@@ -2195,6 +2375,7 @@ const ALL_BALLS = [
     ballSlug:"columbia-300-pulse", coreSlug:"columbia-300-pulse-powercor-core",
     weightData:{16:{rg:2.481,diff:0.039},15:{rg:2.468,diff:0.045},14:{rg:2.481,diff:0.039},13:{rg:2.550,diff:0.034},12:{rg:2.610,diff:0.028}},
     releaseDate:"Aug 2025",
+    colors:["purple","black"],
     description:"HK22 Hyperflex Solid on Pulse PowerCOR — ultra-low RG with predictable continuous roll, the classic Pulse reimagined."
   },
 
@@ -2206,6 +2387,7 @@ const ALL_BALLS = [
     ballSlug:"radical-intel-recon", coreSlug:"radical-intel-recon-core",
     weightData:{16:{rg:2.483,diff:0.032},15:{rg:2.483,diff:0.032},14:{rg:2.500,diff:0.030},13:{rg:2.570,diff:0.026},12:{rg:2.630,diff:0.022}},
     releaseDate:"Oct 2025",
+    colors:["green","black"],
     description:"HK22 Pearl on Intel Recon core — replicates the beloved original Intel motion with modern chemistry."
   },
 
@@ -2217,6 +2399,7 @@ const ALL_BALLS = [
     ballSlug:"roto-grip-attention-edge", coreSlug:"roto-grip-attention-core",
     weightData:{16:{rg:2.470,diff:0.052,moi:0.018},15:{rg:2.470,diff:0.052,moi:0.018},14:{rg:2.500,diff:0.049,moi:0.016},13:{rg:2.570,diff:0.044,moi:0.013},12:{rg:2.630,diff:0.037,moi:0.011}},
     releaseDate:"Aug 2025",
+    colors:["orange","black"],
     description:"MXC Solid on Attention asymmetric — heavy oil workhorse with strong midlane read and predictable continuation."
   },
   {
@@ -2226,6 +2409,7 @@ const ALL_BALLS = [
     ballSlug:"roto-grip-hyped-super-pearl-ii", coreSlug:"roto-grip-hyped-core",
     weightData:{16:{rg:2.560,diff:0.036},15:{rg:2.560,diff:0.036},14:{rg:2.580,diff:0.034},13:{rg:2.640,diff:0.029},12:{rg:2.700,diff:0.024}},
     releaseDate:"Nov 2025",
+    colors:["pink","pearl","white"],
     description:"HK22 Pearl on Hyped symmetric — clean through the fronts with angular backend flip, ideal for medium and sport patterns."
   },
   {
@@ -2235,6 +2419,7 @@ const ALL_BALLS = [
     ballSlug:"roto-grip-gremlin", coreSlug:"roto-grip-gremlin-core",
     weightData:{16:{rg:2.500,diff:0.058,moi:0.019},15:{rg:2.500,diff:0.058,moi:0.019},14:{rg:2.530,diff:0.055,moi:0.017},13:{rg:2.600,diff:0.049,moi:0.014},12:{rg:2.660,diff:0.042,moi:0.012}},
     releaseDate:"Jul 2025",
+    colors:["green","black","orange"],
     description:"EXO Pearl on Gremlin asymmetric — high differential mischief maker with explosive backend motion on heavier conditions."
   },
   {
@@ -2244,6 +2429,7 @@ const ALL_BALLS = [
     ballSlug:"roto-grip-exit-red", coreSlug:"roto-grip-exit-core",
     weightData:{16:{rg:2.510,diff:0.040},15:{rg:2.510,diff:0.040},14:{rg:2.540,diff:0.038},13:{rg:2.610,diff:0.033},12:{rg:2.670,diff:0.027}},
     releaseDate:"Apr 2025",
+    colors:["red","black"],
     description:"R2S Solid on Exit symmetric — red colorway Exit, strong continuous arc for medium-heavy conditions."
   },
   {
@@ -2253,6 +2439,7 @@ const ALL_BALLS = [
     ballSlug:"roto-grip-hustle-tealblack", coreSlug:"roto-grip-hustle-core",
     weightData:{16:{rg:2.580,diff:0.028},15:{rg:2.580,diff:0.028},14:{rg:2.600,diff:0.026},13:{rg:2.660,diff:0.022},12:{rg:2.720,diff:0.018}},
     releaseDate:"Feb 2025",
+    colors:["teal","black"],
     description:"Reactive Solid on Hustle symmetric — Teal/Black colorway entry-level performer for lighter oil conditions."
   },
 
@@ -2268,6 +2455,7 @@ const ALL_BALLS = [
     ballSlug:"storm-phaze-ii", coreSlug:"storm-velocity-core",
     weightData:{16:{rg:2.480,diff:0.052},15:{rg:2.480,diff:0.052},14:{rg:2.510,diff:0.050},13:{rg:2.580,diff:0.044},12:{rg:2.640,diff:0.037}},
     releaseDate:"Aug 2018",
+    colors:["blue","red","purple"],
     description:"R2S Solid on Velocity — 역대 가장 많이 팔린 스톰 볼 중 하나. 강한 미드레인 반응과 연속적인 백엔드, 전 세계 볼링선수들의 베이스볼."
   },
   {
@@ -2277,6 +2465,7 @@ const ALL_BALLS = [
     ballSlug:"storm-phaze-iii", coreSlug:"storm-velocity-core",
     weightData:{16:{rg:2.480,diff:0.052},15:{rg:2.480,diff:0.052},14:{rg:2.510,diff:0.050},13:{rg:2.580,diff:0.044},12:{rg:2.640,diff:0.037}},
     releaseDate:"Jun 2020",
+    colors:["red","orange","gold"],
     description:"R2S Pearl on Velocity — Phaze II의 펄 버전. 깔끔한 프론트와 날카로운 백엔드 앵글로 미디엄 오일에서 폭발적인 인기."
   },
   {
@@ -2286,6 +2475,7 @@ const ALL_BALLS = [
     ballSlug:"storm-iq-tour", coreSlug:"storm-c3-centripetal-core",
     weightData:{16:{rg:2.570,diff:0.034},15:{rg:2.570,diff:0.034},14:{rg:2.590,diff:0.032},13:{rg:2.650,diff:0.027},12:{rg:2.710,diff:0.022}},
     releaseDate:"Jan 2015",
+    colors:["blue","silver"],
     description:"R2S Solid on C3 Centripetal — 가장 오래 판매된 컨트롤 볼. 투어 선수들의 필수 아이템으로 10년 이상 베스트셀러 유지."
   },
   {
@@ -2295,6 +2485,7 @@ const ALL_BALLS = [
     ballSlug:"storm-iq-tour-pearl", coreSlug:"storm-c3-centripetal-core",
     weightData:{16:{rg:2.570,diff:0.034},15:{rg:2.570,diff:0.034},14:{rg:2.590,diff:0.032},13:{rg:2.650,diff:0.027},12:{rg:2.710,diff:0.022}},
     releaseDate:"Mar 2016",
+    colors:["blue","silver","pearl"],
     description:"R2S Pearl on C3 Centripetal — IQ Tour의 펄 버전. 긴 활주와 예측 가능한 각도로 아마추어~프로까지 폭넓은 사랑."
   },
   {
@@ -2304,6 +2495,7 @@ const ALL_BALLS = [
     ballSlug:"storm-hy-road", coreSlug:"storm-inverted-fe2-core",
     weightData:{16:{rg:2.570,diff:0.046},15:{rg:2.570,diff:0.046},14:{rg:2.590,diff:0.044},13:{rg:2.650,diff:0.038},12:{rg:2.710,diff:0.031}},
     releaseDate:"Jan 2010",
+    colors:["red","black"],
     description:"A1S Pearl on Inverted Fe2 — 스톰 역사상 가장 상징적인 볼. 15년 이상 꾸준히 팔리는 레전드. 볼 입문자의 첫 고성능볼로 전 세계 1위."
   },
   {
@@ -2313,6 +2505,7 @@ const ALL_BALLS = [
     ballSlug:"storm-hy-road-pearl", coreSlug:"storm-inverted-fe2-core",
     weightData:{16:{rg:2.570,diff:0.046},15:{rg:2.570,diff:0.046},14:{rg:2.590,diff:0.044},13:{rg:2.650,diff:0.038},12:{rg:2.710,diff:0.031}},
     releaseDate:"Jun 2014",
+    colors:["red","pearl","white"],
     description:"Pearl cover on Inverted Fe2 — HyRoad 패밀리의 펄 버전. 더 긴 활주와 선명한 앵글. 역대 스톰 판매 Top 5 안에 드는 볼."
   },
   {
@@ -2322,6 +2515,7 @@ const ALL_BALLS = [
     ballSlug:"storm-code-red", coreSlug:"storm-rad-x-core",
     weightData:{16:{rg:2.480,diff:0.053,moi:0.017},15:{rg:2.480,diff:0.052,moi:0.017},14:{rg:2.510,diff:0.049,moi:0.015},13:{rg:2.580,diff:0.044,moi:0.012},12:{rg:2.640,diff:0.037,moi:0.010}},
     releaseDate:"Sep 2021",
+    colors:["red","black"],
     description:"NeX Solid on RAD-X — Code 시리즈의 역대 최고 판매작. 어시머트릭 고성능 헤비오일 볼로 투어 선수들 압도적 선택."
   },
   {
@@ -2331,6 +2525,7 @@ const ALL_BALLS = [
     ballSlug:"storm-marvel-pearl", coreSlug:"storm-centripetal-hd-core",
     weightData:{16:{rg:2.460,diff:0.054},15:{rg:2.460,diff:0.054},14:{rg:2.490,diff:0.052},13:{rg:2.560,diff:0.046},12:{rg:2.620,diff:0.039}},
     releaseDate:"Nov 2019",
+    colors:["purple","pearl","silver"],
     description:"EXO Pearl on Centripetal HD — 출시 즉시 연간 판매 1위. 낮은 RG와 강한 DIFF의 조합으로 2019~2020 시즌 투어를 지배한 볼."
   },
 
@@ -2342,6 +2537,7 @@ const ALL_BALLS = [
     ballSlug:"hammer-black-widow-20", coreSlug:"hammer-gas-mask-core",
     weightData:{16:{rg:2.480,diff:0.058,moi:0.017},15:{rg:2.481,diff:0.058,moi:0.017},14:{rg:2.500,diff:0.054,moi:0.015},13:{rg:2.570,diff:0.048,moi:0.012},12:{rg:2.630,diff:0.041,moi:0.010}},
     releaseDate:"Sep 2018",
+    colors:["black","red"],
     description:"HK22 Hybrid on Gas Mask — 블랙위도우 시리즈의 역대 판매 1위. 헤비~미디엄헤비 전천후 활약, 전 세계 볼링인의 사랑을 받은 레전드."
   },
   {
@@ -2351,6 +2547,7 @@ const ALL_BALLS = [
     ballSlug:"hammer-purple-pearl-urethane", coreSlug:"hammer-offset-core",
     weightData:{16:{rg:2.600,diff:0.020},15:{rg:2.600,diff:0.020},14:{rg:2.620,diff:0.018},13:{rg:2.680,diff:0.015},12:{rg:2.740,diff:0.012}},
     releaseDate:"Jan 2017",
+    colors:["purple","pearl"],
     description:"Urethane cover on Offset — 역대 가장 많이 팔린 우레탄 볼. 드라이~쇼트 패턴의 절대 강자, PBA 투어에서도 꾸준히 사용되는 영원한 베스트셀러."
   },
   {
@@ -2360,6 +2557,7 @@ const ALL_BALLS = [
     ballSlug:"hammer-vibe", coreSlug:"hammer-vibe-core",
     weightData:{16:{rg:2.540,diff:0.030},15:{rg:2.540,diff:0.030},14:{rg:2.560,diff:0.028},13:{rg:2.620,diff:0.024},12:{rg:2.680,diff:0.019}},
     releaseDate:"Mar 2019",
+    colors:["blue","silver"],
     description:"Reactive Solid on Vibe symmetric — 엔트리~미드 퍼포먼스 역대 판매 1위. 가성비 최강으로 입문자들이 가장 많이 선택하는 볼."
   },
   {
@@ -2369,6 +2567,7 @@ const ALL_BALLS = [
     ballSlug:"hammer-bubblegum-vibe", coreSlug:"hammer-vibe-core",
     weightData:{16:{rg:2.540,diff:0.030},15:{rg:2.540,diff:0.030},14:{rg:2.560,diff:0.028},13:{rg:2.620,diff:0.024},12:{rg:2.680,diff:0.019}},
     releaseDate:"Sep 2021",
+    colors:["pink","white","pearl"],
     description:"Reactive Solid on Vibe — 핑크/블루 버블껌 컬러로 입문자 최고 인기. 친근한 디자인과 탁월한 가성비로 볼링 입문 1위 추천볼."
   },
 
@@ -2380,6 +2579,7 @@ const ALL_BALLS = [
     ballSlug:"motiv-venom-shock", coreSlug:"motiv-sigma-v2-core",
     weightData:{16:{rg:2.490,diff:0.044},15:{rg:2.490,diff:0.044},14:{rg:2.520,diff:0.042},13:{rg:2.590,diff:0.037},12:{rg:2.650,diff:0.030}},
     releaseDate:"Mar 2020",
+    colors:["blue","orange","black"],
     description:"Turmoil MFS Pearl on Sigma V2 — 모티브 역대 최고 판매 볼 중 하나. 강한 미드레인과 연속적인 백엔드로 리그~투어까지 압도적 사랑."
   },
   {
@@ -2389,6 +2589,7 @@ const ALL_BALLS = [
     ballSlug:"motiv-venom-exj", coreSlug:"motiv-gear-core",
     weightData:{16:{rg:2.480,diff:0.038},15:{rg:2.480,diff:0.038},14:{rg:2.510,diff:0.036},13:{rg:2.580,diff:0.031},12:{rg:2.640,diff:0.025}},
     releaseDate:"Jun 2024",
+    colors:["purple","orange","black"],
     description:"Coercion HFS Solid on Gear — EJ Tackett 시그니처. 낮은 RG 벤치마크 볼로 2024 베스트셀러. 안정적이고 예측 가능한 미드레인 반응."
   },
   {
@@ -2398,6 +2599,7 @@ const ALL_BALLS = [
     ballSlug:"motiv-forge-fire", coreSlug:"motiv-impulse-v2-core",
     weightData:{16:{rg:2.530,diff:0.051},15:{rg:2.540,diff:0.050},14:{rg:2.550,diff:0.049},13:{rg:2.600,diff:0.041},12:{rg:2.650,diff:0.035}},
     releaseDate:"Sep 2022",
+    colors:["red","orange","black"],
     description:"Coercion MXC Solid on Impulse V2 — 역대 모티브 스트레이트 셀러. 강한 미드레인 반응과 내구성으로 리그볼러들의 절대적 신뢰."
   },
   {
@@ -2407,6 +2609,7 @@ const ALL_BALLS = [
     ballSlug:"motiv-trident-odyssey", coreSlug:"motiv-trident-core",
     weightData:{16:{rg:2.480,diff:0.053,moi:0.018},15:{rg:2.490,diff:0.052,moi:0.018},14:{rg:2.510,diff:0.049,moi:0.016},13:{rg:2.580,diff:0.044,moi:0.013},12:{rg:2.640,diff:0.037,moi:0.011}},
     releaseDate:"Jan 2022",
+    colors:["blue","teal","black"],
     description:"Propulsion MXV Pearl on Trident — 역대 모티브 어시머트릭 판매 1위. Jackal과 함께 모티브의 양대 산맥, 긴 활주와 폭발적 각도."
   },
 
@@ -2418,6 +2621,7 @@ const ALL_BALLS = [
     ballSlug:"brunswick-kingpin-max", coreSlug:"brunswick-eca-xr-core",
     weightData:{16:{rg:2.470,diff:0.054,moi:0.018},15:{rg:2.470,diff:0.053,moi:0.018},14:{rg:2.500,diff:0.050,moi:0.016},13:{rg:2.570,diff:0.045,moi:0.013},12:{rg:2.630,diff:0.038,moi:0.011}},
     releaseDate:"Mar 2022",
+    colors:["black","gold"],
     description:"ECA-XR Solid on ECA-XR — 브런즈윅 헤비오일 역대 판매 1위. 강한 훅과 놀라운 핀 액션으로 2022~2023 투어 지배."
   },
   {
@@ -2427,6 +2631,7 @@ const ALL_BALLS = [
     ballSlug:"brunswick-rhino", coreSlug:"brunswick-rhino-core",
     weightData:{16:{rg:2.540,diff:0.030},15:{rg:2.540,diff:0.030},14:{rg:2.560,diff:0.028},13:{rg:2.620,diff:0.024},12:{rg:2.680,diff:0.019}},
     releaseDate:"Jan 2016",
+    colors:["blue","black"],
     description:"Reactive Solid on Rhino symmetric — 브런즈윅 역대 최고 판매 입문볼. 수십 년간 꾸준히 팔리는 브런즈윅의 아이콘."
   },
 
@@ -2438,6 +2643,7 @@ const ALL_BALLS = [
     ballSlug:"roto-grip-hype-e", coreSlug:"roto-grip-nucleus-core",
     weightData:{16:{rg:2.550,diff:0.038},15:{rg:2.550,diff:0.038},14:{rg:2.570,diff:0.036},13:{rg:2.630,diff:0.031},12:{rg:2.690,diff:0.025}},
     releaseDate:"Apr 2022",
+    colors:["red","orange","black"],
     description:"EXO Pearl on Nucleus — 로토그립 역대 미드퍼포먼스 최고 판매작. 깔끔한 활주와 예측 가능한 백엔드로 2022~2023 리그 1위."
   },
   {
@@ -2447,6 +2653,7 @@ const ALL_BALLS = [
     ballSlug:"roto-grip-ufo-alert", coreSlug:"roto-grip-nucleus-v2-core",
     weightData:{16:{rg:2.490,diff:0.052,moi:0.018},15:{rg:2.490,diff:0.052,moi:0.018},14:{rg:2.520,diff:0.049,moi:0.016},13:{rg:2.590,diff:0.044,moi:0.013},12:{rg:2.650,diff:0.037,moi:0.011}},
     releaseDate:"Aug 2021",
+    colors:["green","blue","black"],
     description:"MXC Pearl on Nucleus V2 — 출시 즉시 로토그립 연간 판매 1위. 강렬한 UFO 패턴과 날카로운 백엔드로 2021~2022 최고 인기."
   },
 
@@ -2458,6 +2665,7 @@ const ALL_BALLS = [
     ballSlug:"dv8-pitbull-bite", coreSlug:"dv8-pitbull-core",
     weightData:{16:{rg:2.480,diff:0.054,moi:0.018},15:{rg:2.480,diff:0.053,moi:0.018},14:{rg:2.510,diff:0.050,moi:0.016},13:{rg:2.580,diff:0.045,moi:0.013},12:{rg:2.640,diff:0.038,moi:0.011}},
     releaseDate:"May 2021",
+    colors:["red","black"],
     description:"HK22 Solid on Pitbull asymmetric — DV8 역대 판매 1위. 강력한 훅과 폭발적인 핀 액션으로 헤비오일 조건에서 절대 강자."
   },
   {
@@ -2467,6 +2675,7 @@ const ALL_BALLS = [
     ballSlug:"dv8-thug", coreSlug:"dv8-thug-core",
     weightData:{16:{rg:2.480,diff:0.055,moi:0.019},15:{rg:2.481,diff:0.054,moi:0.019},14:{rg:2.510,diff:0.051,moi:0.017},13:{rg:2.580,diff:0.046,moi:0.014},12:{rg:2.640,diff:0.039,moi:0.012}},
     releaseDate:"Jan 2019",
+    colors:["black","silver"],
     description:"Composite Hybrid on Thug asymmetric — DV8의 레전드 볼. 미드레인 강한 반응과 연속적인 백엔드 파워로 2019~2021 투어 인기."
   },
 ];
@@ -5461,16 +5670,21 @@ function BallScanner({ balls, onSelectBall }) {
         }
       }
 
-      // ③ 색상 매칭 강화 (20%) - 볼 이름+커버+색상 필드 모두 체크
+      // ③ 색상 매칭 강화 (20%)
       if (colors.length > 0) {
         let colorScore = 0;
+        const ballColors = (ball.colors || []).map(c => c.toLowerCase());
         colors.forEach(c => {
           const cl = c.toLowerCase();
-          const keywords = COLOR_MAP[cl] || [cl];
-          // 볼 이름에 색상 키워드 포함
-          if (keywords.some(k => ballName.includes(k))) colorScore += 0.08;
-          // 커버스탁/색상 필드에 포함
-          else if (keywords.some(k => ballCover.includes(k) || ballColor.includes(k))) colorScore += 0.05;
+          // ball.colors 필드와 직접 비교 (가장 정확)
+          if (ballColors.includes(cl)) {
+            colorScore += 0.08;
+          } else {
+            // 볼 이름에 색상 키워드 포함 (보조)
+            const keywords = COLOR_MAP[cl] || [cl];
+            if (keywords.some(k => ballName.includes(k))) colorScore += 0.04;
+            else if (keywords.some(k => ballCover.includes(k))) colorScore += 0.02;
+          }
         });
         score += Math.min(colorScore, 0.20);
       }
