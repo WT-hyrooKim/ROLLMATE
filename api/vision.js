@@ -23,7 +23,7 @@ export default async function handler(req, res) {
             features: [
               { type: "TEXT_DETECTION", maxResults: 20 },
               { type: "LABEL_DETECTION", maxResults: 10 },
-              { type: "IMAGE_PROPERTIES", maxResults: 5 },
+              { type: "IMAGE_PROPERTIES", maxResults: 8 },
             ]
           }]
         })
@@ -60,43 +60,70 @@ export default async function handler(req, res) {
       }
     }
 
-    // 제품명 추출 - 숫자/짧은글자/브랜드명 제외하고 가장 긴 텍스트
-    const brandLowers = detectedBrand
-      ? brandKeywords[detectedBrand]
-      : [];
-
+    // 제품명 추출
+    const brandLowers = detectedBrand ? brandKeywords[detectedBrand] : [];
     const productCandidates = textLines
       .filter(t => t.length > 2 && t.length < 50)
-      .filter(t => !/^\d+(\.\d+)?$/.test(t))           // 숫자만 제외
-      .filter(t => !/^[A-Z]{1,2}$/.test(t))             // 1-2글자 대문자 제외
-      .filter(t => !brandLowers.some(k => t.toLowerCase() === k)) // 브랜드명 제외
+      .filter(t => !/^\d+(\.\d+)?$/.test(t))
+      .filter(t => !/^[A-Z]{1,2}$/.test(t))
+      .filter(t => !brandLowers.some(k => t.toLowerCase() === k))
       .filter(t => !["usbc","abc","bowling","approved","oz","lbs"].includes(t.toLowerCase()));
 
     const productName = productCandidates.length > 0
       ? productCandidates.slice(0, 2).join(" ").trim()
       : null;
 
-    // 색상 추출
-    const colorMap = (r=0,g=0,b=0) => {
-      if (r > 150 && g < 100 && b < 100) return "red";
-      if (r < 100 && g < 100 && b > 150) return "blue";
-      if (r < 60 && g < 60 && b < 60) return "black";
-      if (r > 200 && g > 200 && b > 200) return "white";
-      if (r > 130 && g < 80 && b > 130) return "purple";
-      if (r > 150 && g > 100 && b < 80) return "orange";
-      if (r < 80 && g > 120 && b < 80) return "green";
+    // ── RGB → 색상명 변환 (개선된 임계값) ──────────────────
+    const rgbToColor = (r=0, g=0, b=0) => {
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+
+      // 무채색 계열 먼저 처리
+      if (max < 50) return "black";
+      if (min > 200) return "white";
+      if (max - min < 30 && max > 150) return "silver";
+      if (max - min < 25 && max < 100) return "black";
+
+      // 채도 있는 색상
+      // orange: R 높음, G 중간(60~170), B 낮음
+      if (r > 180 && g >= 60 && g <= 170 && b < 80) return "orange";
+      // red: R 높음, G 낮음, B 낮음 (더 엄격)
+      if (r > 160 && g < 60 && b < 80) return "red";
+      // pink/magenta: R 높음, B 중간~높음, G 낮음
+      if (r > 160 && b > 100 && g < 100) return "pink";
+      // blue: B 높음, R 낮음
+      if (b > 130 && r < 100 && g < 130) return "blue";
+      // teal/cyan: G+B 높음, R 낮음
+      if (g > 130 && b > 130 && r < 100) return "teal";
+      // green: G 높음, R/B 낮음
+      if (g > 120 && r < 100 && b < 100) return "green";
+      // purple/violet: R+B 높음, G 낮음
+      if (r > 80 && b > 100 && g < 80) return "purple";
+      // gold/yellow: R+G 높음, B 낮음
       if (r > 180 && g > 160 && b < 80) return "gold";
-      if (r > 150 && g > 150 && b > 150) return "silver";
-      if (r > 150 && g < 80 && b > 80) return "pink";
-      if (r < 80 && g > 130 && b > 130) return "teal";
+      // navy: B 중간, R/G 낮음
+      if (b > 80 && b < 140 && r < 60 && g < 80) return "blue";
+
       return null;
     };
 
-    const colors = (result.imagePropertiesAnnotation?.dominantColors?.colors || [])
-      .slice(0, 5)
-      .map(c => colorMap(c.color?.red, c.color?.green, c.color?.blue))
-      .filter(Boolean)
-      .filter((v, i, a) => a.indexOf(v) === i); // 중복 제거
+    const colorCounts = {};
+    (result.imagePropertiesAnnotation?.dominantColors?.colors || [])
+      .slice(0, 8)
+      .forEach(c => {
+        const colorName = rgbToColor(c.color?.red, c.color?.green, c.color?.blue);
+        if (colorName) {
+          // pixelFraction(면적 비율) 가중치 적용
+          const weight = c.pixelFraction || c.score || 0.1;
+          colorCounts[colorName] = (colorCounts[colorName] || 0) + weight;
+        }
+      });
+
+    // 면적 비율 기준으로 정렬, 상위 3개
+    const colors = Object.entries(colorCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([color]) => color);
 
     return res.status(200).json({
       success: true,
