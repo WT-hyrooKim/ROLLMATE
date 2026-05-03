@@ -2678,6 +2678,342 @@ const ALL_BALLS = [
     colors:["black","silver"],
     description:"Composite Hybrid on Thug asymmetric — DV8의 레전드 볼. 미드레인 강한 반응과 연속적인 백엔드 파워로 2019~2021 투어 인기."
   },
+
+  // ── 2026 신규 출시 볼 ─────────────────────────────────
+  // Storm - 2026 Tournament Collection
+  {
+    id:210, brand:"Storm", name:"Concept",
+    cover:"Pearl", coreType:"Symmetric", coreName:"Radius",
+    finish:"1000 Abralon", condition:"Medium Oil", accent:"#00838f",
+    ballSlug:"storm-concept", coreSlug:"storm-radius-core",
+    weightData:{
+      16:{rg:2.59,diff:0.020}, 15:{rg:2.61,diff:0.020},
+      14:{rg:2.63,diff:0.018}
+    },
+    releaseDate:"Feb 2026", fragrance:"Blueberry Fritter",
+    colors:["teal","blue","silver"],
+    description:"ARC Pearl Reactive on Radius Symmetric — 스톰 SPI LAB 시리즈. 우레탄 대안으로 설계된 컨트롤 볼. 1000 Abralon 둔한 마감으로 미드레인 조기 반응과 부드러운 아크 훅."
+  },
+  // Roto Grip - 2026
+  {
+    id:211, brand:"Roto Grip", name:"Transformer",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Morph-Wing",
+    finish:"4000 Abralon", condition:"Medium-Heavy Oil", accent:"#7b1fa2",
+    ballSlug:"roto-grip-transformer", coreSlug:"roto-grip-morph-wing-core",
+    weightData:{
+      16:{rg:2.50,diff:0.051,mb:0.015}, 15:{rg:2.51,diff:0.051,mb:0.015},
+      14:{rg:2.53,diff:0.049,mb:0.014}
+    },
+    releaseDate:"Jan 2026",
+    colors:["purple","blue","gray"],
+    description:"V-R1 Solid on Morph-Wing Asymmetric — 로토그립 HP5 라인 최상위. 드릴링 레이아웃에 따라 극적으로 반응하는 혁신적 코어 설계. 투어 레벨 컨트롤과 강력한 백엔드."
+  },
+  // 900 Global - 2026
+  {
+    id:212, brand:"900 Global", name:"Vengeance",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Blast A.I.",
+    finish:"2000 Grit", condition:"Heavy Oil", accent:"#424242",
+    ballSlug:"900-global-vengeance", coreSlug:"900-global-blast-ai-core",
+    weightData:{
+      16:{rg:2.47,diff:0.055}, 15:{rg:2.47,diff:0.055},
+      14:{rg:2.49,diff:0.052}
+    },
+    releaseDate:"Jan 2026",
+    colors:["black","gray","silver"],
+    description:"RB91 Solid on Blast A.I. Asymmetric — 900 글로벌 2026 파워 피스. 2000 Grit 공격적 마감으로 헤비 오일에서 강력한 미드레인 견인력. Storm Bionic의 강력한 경쟁자."
+  },
+  // Motiv - 2026
+  {
+    id:213, brand:"Motiv", name:"Apex Jackal",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Predator V2",
+    finish:"2000 Grit LSS", condition:"Heavy Oil", accent:"#e65100",
+    ballSlug:"motiv-apex-jackal", coreSlug:"motiv-predator-v2-core",
+    weightData:{
+      16:{rg:2.48,diff:0.052,mb:0.018}, 15:{rg:2.48,diff:0.052,mb:0.018},
+      14:{rg:2.50,diff:0.049}
+    },
+    releaseDate:"Jan 2026",
+    colors:["orange","black"],
+    description:"Coercion HFS Solid on Predator V2 — 모티브 최초 이중밀도 비대칭 코어 채택. 재칼 라인의 새로운 최강자. Duramax 기술로 경기 내내 일관된 퍼포먼스 유지."
+  },
+  {
+    id:214, brand:"Motiv", name:"Evoke Mayhem",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Overload",
+    finish:"2000 Grit LSS", condition:"Heavy Oil", accent:"#1565c0",
+    ballSlug:"motiv-evoke-mayhem", coreSlug:"motiv-overload-core",
+    weightData:{
+      16:{rg:2.48,diff:0.056,mb:0.020}, 15:{rg:2.48,diff:0.056,mb:0.020},
+      14:{rg:2.50,diff:0.053}
+    },
+    releaseDate:"Feb 2026",
+    colors:["teal","purple","blue"],
+    description:"Propulsion MXV Solid on Overload Asymmetric — 모티브 2026 헤비 오일 무기. .056 디퍼런셜과 .020 MB로 투어 레벨 컨디션 완파. Evoke 라인 최강 버전."
+  },
+  {
+    id:215, brand:"Motiv", name:"Supra Sport",
+    cover:"Solid", coreType:"Symmetric", coreName:"Quadfire",
+    finish:"4000 Grit LSS", condition:"Medium Oil", accent:"#0277bd",
+    ballSlug:"motiv-supra-sport", coreSlug:"motiv-quadfire-core",
+    weightData:{
+      15:{rg:2.55,diff:0.042}
+    },
+    releaseDate:"Mar 2026",
+    colors:["blue","silver"],
+    description:"Leverage MFS Solid on Quadfire Symmetric — 모티브 최초 솔리드 수프라. 스포츠 패턴 특화 설계. 높은 RG(2.55)로 컨트롤 가능한 반복적 동작."
+  },
+  {
+    id:216, brand:"Motiv", name:"Venom Hysteria",
+    cover:"Pearl", coreType:"Symmetric", coreName:"Gear",
+    finish:"5000 Grit LSS", condition:"Light-Medium Oil", accent:"#6a1b9a",
+    ballSlug:"motiv-venom-hysteria", coreSlug:"motiv-gear-core",
+    weightData:{
+      15:{rg:2.49,diff:0.034}
+    },
+    releaseDate:"Apr 2026",
+    colors:["black","purple","blue","pearl"],
+    description:"Propulsion MXV Pearl on Gear Symmetric — Venom 라인의 가장 클린하고 각도 있는 볼. 라이트-미디엄 오일에서 강한 백엔드 무브. 2026년 봄 인기 피스."
+  },
+  // Hammer - 2026
+  {
+    id:217, brand:"Hammer", name:"Full Effect",
+    cover:"Hybrid", coreType:"Asymmetric", coreName:"Huntsman",
+    finish:"Factory Compound", condition:"Medium-Heavy Oil", accent:"#c62828",
+    ballSlug:"hammer-full-effect", coreSlug:"hammer-huntsman-core",
+    weightData:{
+      16:{rg:2.470,diff:0.055}, 15:{rg:2.470,diff:0.055},
+      14:{rg:2.490,diff:0.052}
+    },
+    releaseDate:"Mar 2026",
+    colors:["red","black","silver"],
+    description:"HK22C² Hybrid on Huntsman Asymmetric — 이펙트 라인의 폴리시드 버전. Maximum Effect와 Zero Mercy Pearl 사이 강도. 미드-헤비 오일에서 강한 폴리시드 반응."
+  },
+  {
+    id:218, brand:"Hammer", name:"Purple Pearl Urethane 78D",
+    cover:"Urethane", coreType:"Symmetric", coreName:"Super LED",
+    finish:"4000 Abralon", condition:"Light-Medium Oil", accent:"#7b1fa2",
+    ballSlug:"hammer-purple-pearl-urethane-78d", coreSlug:"hammer-super-led-core",
+    weightData:{
+      15:{rg:2.52,diff:0.025}
+    },
+    releaseDate:"Mar 2026",
+    colors:["purple","pearl"],
+    description:"78D Urethane Pearl on Super LED Symmetric — 전설의 PPU 2026년 재출시. 올 뉴 Super LED 코어로 토너먼트 승인 공식. 우레탄 컨트롤의 정석."
+  },
+  // Radical - 2026
+  {
+    id:219, brand:"Radical", name:"Outer Limits Black Hole",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Outer Limits",
+    finish:"500/1000/1500 Siaair + Factory Compound", condition:"Heavy Oil", accent:"#37474f",
+    ballSlug:"radical-outer-limits-black-hole", coreSlug:"radical-outer-limits-core",
+    weightData:{
+      15:{rg:2.48,diff:0.052,mb:0.016}
+    },
+    releaseDate:"Jan 2026",
+    colors:["black","white","blue","purple"],
+    description:"HK22C Solid on Outer Limits Asymmetric — 래디컬 2026 헤비 오일 어시메트릭. 강한 미드레인 견인력과 연속적인 백엔드 파워."
+  },
+  {
+    id:220, brand:"Radical", name:"Deep Impact",
+    cover:"Hybrid", coreType:"Asymmetric", coreName:"Torpedo",
+    finish:"500/2000 Siaair", condition:"Medium-Heavy Oil", accent:"#1565c0",
+    ballSlug:"radical-deep-impact", coreSlug:"radical-torpedo-core",
+    weightData:{
+      15:{rg:2.49,diff:0.051,mb:0.017}
+    },
+    releaseDate:"Feb 2026",
+    colors:["blue","red","purple"],
+    description:"HK22C+ Hybrid on Torpedo Asymmetric — 래디컬 2026 미디엄-헤비 하이브리드. 강한 훅 모션과 백엔드 파워의 균형."
+  },
+  // DV8 - 2026
+  {
+    id:221, brand:"DV8", name:"Dark Side Curse",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Duality",
+    finish:"500/1000/1500 Siaair + Factory Compound", condition:"Medium-Heavy Oil", accent:"#880e4f",
+    ballSlug:"dv8-dark-side-curse", coreSlug:"dv8-duality-core",
+    weightData:{
+      16:{rg:2.48,diff:0.050,mb:0.014}, 15:{rg:2.49,diff:0.050,mb:0.014}
+    },
+    releaseDate:"Jan 2026",
+    colors:["purple","red","black"],
+    description:"Inciter Solid on Duality Asymmetric — DV8 2026 미디엄-헤비 파워 피스. 강한 미드레인 반응과 안정적인 백엔드 무브."
+  },
+  // Ebonite - 2026
+  {
+    id:222, brand:"Ebonite", name:"Spartan",
+    cover:"Hybrid", coreType:"Asymmetric", coreName:"Centurion",
+    finish:"500/1000/1500 Siaair + Factory Compound", condition:"Medium-Heavy Oil", accent:"#b71c1c",
+    ballSlug:"ebonite-spartan", coreSlug:"ebonite-centurion-core",
+    weightData:{
+      15:{rg:2.49,diff:0.052,mb:0.016}
+    },
+    releaseDate:"Jan 2026",
+    colors:["red","black","silver"],
+    description:"Benchmark Hybrid on Centurion Asymmetric — 에보나이트 2026 하이브리드 파워 피스. 미드레인 견인력과 강한 백엔드 반응의 조합."
+  },
+  // SWAG - 2026
+  {
+    id:223, brand:"SWAG", name:"Serpent Hybrid",
+    cover:"Hybrid", coreType:"Asymmetric", coreName:"Serpent",
+    finish:"4000 Abralon", condition:"Medium Oil", accent:"#2e7d32",
+    ballSlug:"swag-serpent-hybrid", coreSlug:"swag-serpent-core",
+    weightData:{
+      15:{rg:2.48,diff:0.051,mb:0.014}
+    },
+    releaseDate:"Feb 2026",
+    colors:["green","black"],
+    description:"SWAG Seram AP26 Hybrid on Serpent Asymmetric — 스왜그 2026 미디엄 오일 하이브리드. 독특한 서팬트 코어로 강한 훅 모션."
+  },
+  {
+    id:224, brand:"SWAG", name:"Judgement Hybrid",
+    cover:"Hybrid", coreType:"Asymmetric", coreName:"Judgement",
+    finish:"4000 Abralon", condition:"Medium-Heavy Oil", accent:"#c62828",
+    ballSlug:"swag-judgement-hybrid", coreSlug:"swag-judgement-core",
+    weightData:{
+      15:{rg:2.47,diff:0.053,mb:0.016}
+    },
+    releaseDate:"Feb 2026",
+    colors:["red","black"],
+    description:"SWAG Rage Hybrid AP26 on Judgement Asymmetric — 스왜그 2026 강력한 헤비 오일 하이브리드. 저 RG와 높은 디퍼런셜로 강한 플레어."
+  },
+  {
+    id:225, brand:"SWAG", name:"Assassin Pearl",
+    cover:"Pearl", coreType:"Asymmetric", coreName:"Assassin",
+    finish:"500 Polished", condition:"Medium Oil", accent:"#37474f",
+    ballSlug:"swag-assassin-pearl", coreSlug:"swag-assassin-core",
+    weightData:{
+      15:{rg:2.49,diff:0.050,mb:0.013}
+    },
+    releaseDate:"Feb 2026",
+    colors:["black","silver","pearl"],
+    description:"SWAG Rage Pearl AP26 on Assassin Asymmetric — 스왜그 2026 폴리시드 어시메트릭. 미드레인 클린함과 강한 백엔드 각도."
+  },
+  {
+    id:226, brand:"SWAG", name:"Unreal Solid",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Unreal",
+    finish:"4000 Abralon", condition:"Heavy Oil", accent:"#1565c0",
+    ballSlug:"swag-unreal-solid", coreSlug:"swag-unreal-core",
+    weightData:{
+      15:{rg:2.47,diff:0.054,mb:0.017}
+    },
+    releaseDate:"Feb 2026",
+    colors:["blue","black"],
+    description:"SWAG Seram AP26 Solid on Unreal Asymmetric — 스왜그 2026 헤비 오일 솔리드. 강한 미드레인 마찰력과 연속적인 백엔드."
+  },
+  {
+    id:227, brand:"SWAG", name:"Craze Tour Pearl",
+    cover:"Pearl", coreType:"Symmetric", coreName:"Craze",
+    finish:"500 Polished", condition:"Medium Oil", accent:"#6a1b9a",
+    ballSlug:"swag-craze-tour-pearl", coreSlug:"swag-craze-core",
+    weightData:{
+      15:{rg:2.50,diff:0.038}
+    },
+    releaseDate:"Feb 2026",
+    colors:["blue","purple","white","pearl"],
+    description:"SWAG Rage Pearl AP26 on Craze Symmetric — 스왜그 2026 투어 시메트릭 펄. 컨트롤 가능한 아크 모션과 강한 백엔드."
+  },
+  {
+    id:228, brand:"SWAG", name:"Craze Tour Solid",
+    cover:"Solid", coreType:"Symmetric", coreName:"Craze",
+    finish:"4000 Abralon", condition:"Medium-Heavy Oil", accent:"#4a148c",
+    ballSlug:"swag-craze-tour-solid", coreSlug:"swag-craze-core",
+    weightData:{
+      15:{rg:2.50,diff:0.038}
+    },
+    releaseDate:"Feb 2026",
+    colors:["purple","black"],
+    description:"SWAG Seram AP26 Solid on Craze Symmetric — 스왜그 2026 투어 시메트릭 솔리드. 미드레인 강한 반응과 연속적인 훅."
+  },
+  // Brunswick - 2026
+  {
+    id:229, brand:"Brunswick", name:"Combat Hybrid",
+    cover:"Hybrid", coreType:"Asymmetric", coreName:"Rampart",
+    finish:"500/1000 Siaair + Factory Compound", condition:"Medium-Heavy Oil", accent:"#c62828",
+    ballSlug:"brunswick-combat-hybrid", coreSlug:"brunswick-rampart-core",
+    weightData:{
+      16:{rg:2.48,diff:0.052,mb:0.015}, 15:{rg:2.49,diff:0.052,mb:0.015},
+      14:{rg:2.51,diff:0.049}
+    },
+    releaseDate:"Feb 2026",
+    colors:["red","black","silver"],
+    description:"Alpha Premier Hybrid on Rampart Asymmetric — 브런즈윅 자체 개발 어시메트릭 코어 데뷔. 미디엄-헤비 오일 권위. 강한 중거리 견인력과 백엔드 파워."
+  },
+  {
+    id:230, brand:"Brunswick", name:"Crown Victory Pearl",
+    cover:"Pearl", coreType:"Asymmetric", coreName:"Tiered Hexagon",
+    finish:"500/1000 Siaair + Crown Factory Compound", condition:"Medium Oil", accent:"#1565c0",
+    ballSlug:"brunswick-crown-victory-pearl", coreSlug:"brunswick-tiered-hexagon-core",
+    weightData:{
+      15:{rg:2.50,diff:0.048,mb:0.014}
+    },
+    releaseDate:"Feb 2026",
+    colors:["blue","pearl","silver"],
+    description:"Crown Pearl on Tiered Hexagon Asymmetric — 브런즈윅 2026 펄 어시메트릭. 강한 플리피 백엔드와 핀 히팅 파워. 브런즈윅의 경쟁력 있는 복귀작."
+  },
+  // Track - 2026
+  {
+    id:231, brand:"Track", name:"Synthesis",
+    cover:"Solid", coreType:"Asymmetric", coreName:"I-Core Gen4",
+    finish:"500/1000/1500 Siaair + Crown Factory Compound", condition:"Heavy Oil", accent:"#4a148c",
+    ballSlug:"track-synthesis", coreSlug:"track-i-core-gen4",
+    weightData:{
+      15:{rg:2.47,diff:0.053,mb:0.017}
+    },
+    releaseDate:"Feb 2026",
+    colors:["purple","black"],
+    description:"Kinetic Solid on I-Core Gen4 Asymmetric — 트랙 전설적인 I-Core 시리즈 4세대. 향상된 중간 디퍼런셜로 더 샤프한 브레이크포인트. 헤비 오일 투어 레벨 성능."
+  },
+  {
+    id:232, brand:"Track", name:"Stealth Mode Hybrid",
+    cover:"Hybrid", coreType:"Asymmetric", coreName:"I-Core Gen4",
+    finish:"4000 Abralon", condition:"Medium-Heavy Oil", accent:"#212121",
+    ballSlug:"track-stealth-mode-hybrid", coreSlug:"track-i-core-gen4",
+    weightData:{
+      15:{rg:2.48,diff:0.051,mb:0.015}
+    },
+    releaseDate:"Feb 2026",
+    colors:["black","silver"],
+    description:"Kinetic Hybrid on I-Core Gen4 Asymmetric — 트랙 2026 하이브리드 버전. Synthesis보다 클린한 프론트와 강한 백엔드 반응."
+  },
+  // Columbia 300 - 2026
+  {
+    id:233, brand:"Columbia 300", name:"Piranha Solid",
+    cover:"Solid", coreType:"Symmetric", coreName:"Piranha",
+    finish:"500/1000/1500 Siaair + Factory Compound", condition:"Medium-Heavy Oil", accent:"#2e7d32",
+    ballSlug:"columbia-300-piranha-solid", coreSlug:"columbia-300-piranha-core",
+    weightData:{
+      15:{rg:2.49,diff:0.042}
+    },
+    releaseDate:"Feb 2026",
+    colors:["green","black"],
+    description:"Piranha MFS Solid on Piranha Symmetric — 콜롬비아300 2026 솔리드. 미드-헤비 오일에서 강한 미드레인 반응. 간결하고 예측 가능한 아크 모션."
+  },
+  // 추가 Roto Grip - 2026 (이미 있는 Gremlin Tour-X 외)
+  {
+    id:234, brand:"Roto Grip", name:"Attention Sign",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Geo Core",
+    finish:"500/1000/1500 Siaair + Factory Compound", condition:"Heavy Oil", accent:"#c62828",
+    ballSlug:"roto-grip-attention-sign", coreSlug:"roto-grip-geo-core",
+    weightData:{
+      15:{rg:2.47,diff:0.054,mb:0.016}
+    },
+    releaseDate:"Jan 2026",
+    colors:["red","black"],
+    description:"V-R1 Solid on Geo Core Asymmetric — 로토그립 2026 어텐션 라인 솔리드. 헤비 오일 강력한 어시메트릭 무브. 투어 레벨 조건에서 탁월한 성능."
+  },
+  // Motiv 추가 - 2026
+  {
+    id:235, brand:"Motiv", name:"Covert VIP ExJ",
+    cover:"Solid", coreType:"Symmetric", coreName:"Vanquish",
+    finish:"4000 Grit LSS", condition:"Heavy Oil", accent:"#1a237e",
+    ballSlug:"motiv-covert-vip-exj", coreSlug:"motiv-vanquish-core",
+    weightData:{
+      16:{rg:2.47,diff:0.056}, 15:{rg:2.47,diff:0.056},
+      14:{rg:2.49,diff:0.053}
+    },
+    releaseDate:"Apr 2026",
+    colors:["blue","black","silver"],
+    description:"Propulsion HVH Solid on Vanquish Symmetric — 모티브 2026 헤비 오일 파워하우스. .056 디퍼런셜 2.47 RG로 최강 견인력. 투어 레벨 헤비 조건 전용."
+  },
 ];
 
 const COND_COLOR = {
@@ -2731,7 +3067,34 @@ function BrandLogo({ brand, size=28, active=false }) {
 
 // 인기/판매 순위 데이터 (BowlersMart·Bowling.com·PBA 투어 사용률 종합, 2024~2025)
 const POPULARITY = {
-  // ── 2025~2026 실제 판매 TOP 순위 반영 ──────────────────
+  // ── 2026 신규 출시 볼 ──────────────────────────────────
+  "Concept":82,
+  "Transformer":85,
+  "Vengeance":83,
+  "Apex Jackal":88,
+  "Evoke Mayhem":86,
+  "Supra Sport":70,
+  "Venom Hysteria":75,
+  "Full Effect":82,
+  "Purple Pearl Urethane 78D":88,
+  "Outer Limits Black Hole":78,
+  "Deep Impact":80,
+  "Dark Side Curse":79,
+  "Spartan":76,
+  "Serpent Hybrid":68,
+  "Judgement Hybrid":72,
+  "Assassin Pearl":65,
+  "Unreal Solid":67,
+  "Craze Tour Pearl":74,
+  "Craze Tour Solid":71,
+  "Combat Hybrid":80,
+  "Crown Victory Pearl":78,
+  "Synthesis":77,
+  "Stealth Mode Hybrid":74,
+  "Piranha Solid":72,
+  "Attention Sign":75,
+  "Covert VIP ExJ":78,
+    // ── 2025~2026 실제 판매 TOP 순위 반영 ──────────────────
   // Storm
   "Bionic":99,                  // 2026 전체 #1, PBA 투어 다수 우승
   "Phaze II":98,                // 역대 최고 베스트셀러
