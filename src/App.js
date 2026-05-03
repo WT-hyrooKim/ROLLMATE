@@ -3016,6 +3016,95 @@ const ALL_BALLS = [
   },
 ];
 
+// ── 한글→영문 볼 검색 매핑 ─────────────────────────────
+const KO_SEARCH_MAP = {
+  // Storm
+  "바이오닉":"Bionic", "이온맥스":"Ion Max", "이온맥스펄":"Ion Max Pearl",
+  "이온프로":"Ion Pro", "페이즈":"Phaze", "페이즈2":"Phaze II",
+  "페이즈2펄":"Phaze II Pearl", "페이즈3":"Phaze III",
+  "하이로드":"Hy-Road", "하이로드펄":"Hy-Road Pearl",
+  "코드레드":"Code Red", "코드아너":"Code Honor",
+  "마블":"Marvel", "마블스케일":"Marvel Scale", "마블펄":"Marvel Pearl",
+  "컨셉":"Concept", "락온":"Lock-On", "이퀴녹스":"EquinoX",
+  "피직스":"PhysiX", "서밋":"Summit", "서밋피크":"Summit Peak",
+  "서밋어센트":"Summit Ascent", "스타로드":"Star Road",
+  "타이푼":"Typhoon", "모터레브":"Motor Rev", "블레이즈":"Blaze DNA",
+  "프라임게이트":"Prime Gate", "버추얼":"Virtual Gravity Destino",
+  "어브솔루트":"Absolute Reign", "와일드":"Wild Absolute",
+  // Hammer
+  "블랙위도우":"Black Widow", "블랙위도우매니아":"Black Widow Mania",
+  "블랙위도우3":"Black Widow 3.0", "블랙위도우투어":"Black Widow Tour V1",
+  "맥시멈이펙트":"Maximum Effect", "이펙트투어":"Effect Tour",
+  "스페셜이펙트":"Special Effect", "해머헤드":"Hammerhead",
+  "해머헤드펄":"Hammerhead Pearl", "제로머시":"Zero Mercy",
+  "앵거":"Anger", "뉴":"NU",
+  // Motiv
+  "재칼":"Jackal", "재칼오닉스":"Jackal Onyx",
+  "에보크":"Evoke", "에보크히스테리아":"Evoke Hysteria",
+  "에보크메이헴":"Evoke Mayhem", "스틸포지":"Steel Forge",
+  "뉴클리어포지":"Nuclear Forge", "섭제로포지":"Subzero Forge",
+  "프라이드":"Pride Empire", "쉐도우탱크":"Shadow Tank",
+  "베놈":"Venom", "베놈쇼크":"Venom Shock", "하이퍼베놈":"Hyper Venom",
+  "리썰베놈":"Lethal Venom", "베놈이엑스제이":"Venom EXJ",
+  "프라이멀":"Primal", "프라이멀고스트":"Primal Ghost",
+  "랩터":"Raptor Reign", "네뷸라":"Nebula", "아펙스재칼":"Apex Jackal",
+  "수프라스포트":"Supra Sport", "코버트":"Covert VIP ExJ",
+  // Roto Grip
+  "그렘린":"Gremlin", "그렘린투어":"Gremlin Tour-X",
+  "트랜스포머":"Transformer", "어텐션":"Attention",
+  "어텐션사인":"Attention Sign", "어텐션스타":"Attention Star",
+  "어텐션엣지":"Attention Edge", "록스타":"Rockstar",
+  "옵티멈아이돌":"Optimum Idol", "빈티지젬":"Vintage Gem",
+  "젬블루사파이어":"Gem Blue Sapphire", "매직젬":"Magic Gem",
+  "허슬":"Hustle",
+  // 900 Global
+  "다크매터":"Dark Matter", "젠":"Zen", "젠25":"Zen 25",
+  "엠버":"Ember", "마하크루즈":"Mach Cruise", "오리진":"Origin",
+  "허니배저":"Honey Badger", "리얼리티":"Reality Incursion",
+  "바이킹":"Viking", "복수":"Vengeance", "벤전스":"Vengeance",
+  "코브":"Cove", "파팬텀크루즈":"Phantom Cruise",
+  // Brunswick
+  "컴뱃":"Combat", "컴뱃하이브리드":"Combat Hybrid",
+  "크라운":"Crown Victory Pearl", "알러트":"Alert",
+  "에너자이즈":"Energize", "데인저존":"Danger Zone",
+  // Columbia 300
+  "피라냐":"Piranha", "스트리트랠리":"Street Rally",
+  "아틀라스":"Atlas", "리코셋":"Ricochet", "펄스":"Pulse",
+  // Radical
+  "딥임팩트":"Deep Impact", "아우터리밋":"Outer Limits Black Hole",
+  "인텔리콘":"Intel Recon", "리디큘러스":"Ridiculous Pearl",
+  "지그재그":"ZigZag",
+  // Track
+  "스텔스":"Stealth Mode Hybrid", "신시시스":"Synthesis",
+  "씨어럼":"Theorem", "아이코어":"I-Core Gen4", "라이노":"Rhyno",
+  // DV8
+  "다크사이드":"Dark Side Curse", "헥클러":"Heckler",
+  "만트라":"Mantra Solid", "헤이터":"Hater", "인티미데이터":"Intimidator",
+  // Ebonite
+  "스파르탄":"Spartan", "이머지":"Emerge", "더원":"The One Ovation",
+  "리얼타임":"Real Time", "엔비전":"Envision",
+  // SWAG
+  "크레이즈":"Craze", "저지먼트":"Judgement Hybrid",
+  "언리얼":"Unreal", "퓨전":"Fusion Hybrid", "서팬트":"Serpent Hybrid",
+  "어쌔신":"Assassin Pearl", "에이펙스":"APEX Solid",
+  // 브랜드명 한글
+  "스톰":"Storm", "해머":"Hammer", "모티브":"Motiv", "모티브":"Motiv",
+  "브런즈윅":"Brunswick", "로토그립":"Roto Grip",
+  "900글로벌":"900 Global", "디브이8":"DV8", "콜롬비아":"Columbia 300",
+  "에보나이트":"Ebonite", "래디컬":"Radical", "트랙":"Track",
+  "스왜그":"SWAG",
+};
+
+// 한글 검색어 → 영문 변환 함수
+const koToEn = (query) => {
+  const q = query.trim().toLowerCase();
+  // 직접 매핑
+  for (const [ko, en] of Object.entries(KO_SEARCH_MAP)) {
+    if (q === ko || q.includes(ko) || ko.includes(q)) return en;
+  }
+  return null;
+};
+
 const COND_COLOR = {
   "Heavy Oil":"#ef5350","Medium-Heavy Oil":"#fb8c00",
   "Medium Oil":"#fdd835","Light-Medium Oil":"#66bb6a","Light Oil":"#42a5f5",
@@ -6492,7 +6581,14 @@ export default function RollmateApp() {
   const filtered = ALL_BALLS.filter(b=>{
     const mB=brand==="전체"||b.brand===brand;
     const mC=cond==="All"||b.condition===cond;
-    const mS=b.name.toLowerCase().includes(search.toLowerCase())||b.brand.toLowerCase().includes(search.toLowerCase());
+    const _sq = search.toLowerCase().trim();
+    const _en = koToEn(_sq);
+    const _searchTarget = (s) => s.toLowerCase();
+    const mS = !_sq ||
+      _searchTarget(b.name).includes(_sq) ||
+      _searchTarget(b.brand).includes(_sq) ||
+      (_en && (_searchTarget(b.name).includes(_en.toLowerCase()) ||
+               _searchTarget(b.brand).includes(_en.toLowerCase())));
     return mB&&mC&&mS;
   }).sort((a,b)=>{
     if(sortBy==="popular") return (POPULARITY[b.name]||0)-(POPULARITY[a.name]||0);
