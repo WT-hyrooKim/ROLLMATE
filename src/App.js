@@ -5961,9 +5961,26 @@ function BallScanner({ balls, onSelectBall }) {
     const mime = file.type || "image/jpeg";
     const reader = new FileReader();
     reader.onload = (e) => {
-      setImg(e.target.result);
-      setImgB64(e.target.result.split(",")[1]);
-      setMimeType(mime);
+      const originalDataUrl = e.target.result;
+      setImg(originalDataUrl);
+      // Canvas로 중앙 60% 크롭 → 배경 색상 노이즈 제거
+      const imgEl = new Image();
+      imgEl.onload = () => {
+        const canvas = document.createElement("canvas");
+        const cropRatio = 0.60;
+        const sw = Math.floor(imgEl.width * cropRatio);
+        const sh = Math.floor(imgEl.height * cropRatio);
+        const sx = Math.floor((imgEl.width - sw) / 2);
+        const sy = Math.floor((imgEl.height - sh) / 2);
+        canvas.width = sw;
+        canvas.height = sh;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(imgEl, sx, sy, sw, sh, 0, 0, sw, sh);
+        const croppedDataUrl = canvas.toDataURL("image/jpeg", 0.92);
+        setImgB64(croppedDataUrl.split(",")[1]);
+        setMimeType("image/jpeg");
+      };
+      imgEl.src = originalDataUrl;
       setResults([]); setStep("idle"); setAnalysis(null); setErrorMsg("");
     };
     reader.readAsDataURL(file);
