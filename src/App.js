@@ -2681,86 +2681,9 @@ const ALL_BALLS = [
 
   // ── 2026 신규 출시 볼 ─────────────────────────────────
   // Storm - 2026 Tournament Collection
-  {
-    id:210, brand:"Storm", name:"Concept",
-    cover:"Pearl", coreType:"Symmetric", coreName:"Radius",
-    finish:"1000 Abralon", condition:"Medium Oil", accent:"#00838f",
-    ballSlug:"storm-concept", coreSlug:"storm-radius-core",
-    weightData:{
-      16:{rg:2.59,diff:0.020}, 15:{rg:2.61,diff:0.020},
-      14:{rg:2.63,diff:0.018}
-    },
-    releaseDate:"Feb 2026", fragrance:"Blueberry Fritter",
-    colors:["teal","blue","silver"],
-    description:"ARC Pearl Reactive on Radius Symmetric — 스톰 SPI LAB 시리즈. 우레탄 대안으로 설계된 컨트롤 볼. 1000 Abralon 둔한 마감으로 미드레인 조기 반응과 부드러운 아크 훅."
-  },
   // Roto Grip - 2026
-  {
-    id:211, brand:"Roto Grip", name:"Transformer",
-    cover:"Solid", coreType:"Asymmetric", coreName:"Morph-Wing",
-    finish:"4000 Abralon", condition:"Medium-Heavy Oil", accent:"#7b1fa2",
-    ballSlug:"roto-grip-transformer", coreSlug:"roto-grip-morph-wing-core",
-    weightData:{
-      16:{rg:2.50,diff:0.051,mb:0.015}, 15:{rg:2.51,diff:0.051,mb:0.015},
-      14:{rg:2.53,diff:0.049,mb:0.014}
-    },
-    releaseDate:"Jan 2026",
-    colors:["purple","blue","gray"],
-    description:"V-R1 Solid on Morph-Wing Asymmetric — 로토그립 HP5 라인 최상위. 드릴링 레이아웃에 따라 극적으로 반응하는 혁신적 코어 설계. 투어 레벨 컨트롤과 강력한 백엔드."
-  },
   // 900 Global - 2026
-  {
-    id:212, brand:"900 Global", name:"Vengeance",
-    cover:"Solid", coreType:"Asymmetric", coreName:"Blast A.I.",
-    finish:"2000 Grit", condition:"Heavy Oil", accent:"#424242",
-    ballSlug:"900-global-vengeance", coreSlug:"900-global-blast-ai-core",
-    weightData:{
-      16:{rg:2.47,diff:0.055}, 15:{rg:2.47,diff:0.055},
-      14:{rg:2.49,diff:0.052}
-    },
-    releaseDate:"Jan 2026",
-    colors:["black","gray","silver"],
-    description:"RB91 Solid on Blast A.I. Asymmetric — 900 글로벌 2026 파워 피스. 2000 Grit 공격적 마감으로 헤비 오일에서 강력한 미드레인 견인력. Storm Bionic의 강력한 경쟁자."
-  },
   // Motiv - 2026
-  {
-    id:213, brand:"Motiv", name:"Apex Jackal",
-    cover:"Solid", coreType:"Asymmetric", coreName:"Predator V2",
-    finish:"2000 Grit LSS", condition:"Heavy Oil", accent:"#e65100",
-    ballSlug:"motiv-apex-jackal", coreSlug:"motiv-predator-v2-core",
-    weightData:{
-      16:{rg:2.48,diff:0.052,mb:0.018}, 15:{rg:2.48,diff:0.052,mb:0.018},
-      14:{rg:2.50,diff:0.049}
-    },
-    releaseDate:"Jan 2026",
-    colors:["orange","black"],
-    description:"Coercion HFS Solid on Predator V2 — 모티브 최초 이중밀도 비대칭 코어 채택. 재칼 라인의 새로운 최강자. Duramax 기술로 경기 내내 일관된 퍼포먼스 유지."
-  },
-  {
-    id:214, brand:"Motiv", name:"Evoke Mayhem",
-    cover:"Solid", coreType:"Asymmetric", coreName:"Overload",
-    finish:"2000 Grit LSS", condition:"Heavy Oil", accent:"#1565c0",
-    ballSlug:"motiv-evoke-mayhem", coreSlug:"motiv-overload-core",
-    weightData:{
-      16:{rg:2.48,diff:0.056,mb:0.020}, 15:{rg:2.48,diff:0.056,mb:0.020},
-      14:{rg:2.50,diff:0.053}
-    },
-    releaseDate:"Feb 2026",
-    colors:["teal","purple","blue"],
-    description:"Propulsion MXV Solid on Overload Asymmetric — 모티브 2026 헤비 오일 무기. .056 디퍼런셜과 .020 MB로 투어 레벨 컨디션 완파. Evoke 라인 최강 버전."
-  },
-  {
-    id:215, brand:"Motiv", name:"Supra Sport",
-    cover:"Solid", coreType:"Symmetric", coreName:"Quadfire",
-    finish:"4000 Grit LSS", condition:"Medium Oil", accent:"#0277bd",
-    ballSlug:"motiv-supra-sport", coreSlug:"motiv-quadfire-core",
-    weightData:{
-      15:{rg:2.55,diff:0.042}
-    },
-    releaseDate:"Mar 2026",
-    colors:["blue","silver"],
-    description:"Leverage MFS Solid on Quadfire Symmetric — 모티브 최초 솔리드 수프라. 스포츠 패턴 특화 설계. 높은 RG(2.55)로 컨트롤 가능한 반복적 동작."
-  },
   {
     id:216, brand:"Motiv", name:"Venom Hysteria",
     cover:"Pearl", coreType:"Symmetric", coreName:"Gear",
@@ -2800,206 +2723,13 @@ const ALL_BALLS = [
     description:"78D Urethane Pearl on Super LED Symmetric — 전설의 PPU 2026년 재출시. 올 뉴 Super LED 코어로 토너먼트 승인 공식. 우레탄 컨트롤의 정석."
   },
   // Radical - 2026
-  {
-    id:219, brand:"Radical", name:"Outer Limits Black Hole",
-    cover:"Solid", coreType:"Asymmetric", coreName:"Outer Limits",
-    finish:"500/1000/1500 Siaair + Factory Compound", condition:"Heavy Oil", accent:"#37474f",
-    ballSlug:"radical-outer-limits-black-hole", coreSlug:"radical-outer-limits-core",
-    weightData:{
-      15:{rg:2.48,diff:0.052,mb:0.016}
-    },
-    releaseDate:"Jan 2026",
-    colors:["black","white","blue","purple"],
-    description:"HK22C Solid on Outer Limits Asymmetric — 래디컬 2026 헤비 오일 어시메트릭. 강한 미드레인 견인력과 연속적인 백엔드 파워."
-  },
-  {
-    id:220, brand:"Radical", name:"Deep Impact",
-    cover:"Hybrid", coreType:"Asymmetric", coreName:"Torpedo",
-    finish:"500/2000 Siaair", condition:"Medium-Heavy Oil", accent:"#1565c0",
-    ballSlug:"radical-deep-impact", coreSlug:"radical-torpedo-core",
-    weightData:{
-      15:{rg:2.49,diff:0.051,mb:0.017}
-    },
-    releaseDate:"Feb 2026",
-    colors:["blue","red","purple"],
-    description:"HK22C+ Hybrid on Torpedo Asymmetric — 래디컬 2026 미디엄-헤비 하이브리드. 강한 훅 모션과 백엔드 파워의 균형."
-  },
   // DV8 - 2026
-  {
-    id:221, brand:"DV8", name:"Dark Side Curse",
-    cover:"Solid", coreType:"Asymmetric", coreName:"Duality",
-    finish:"500/1000/1500 Siaair + Factory Compound", condition:"Medium-Heavy Oil", accent:"#880e4f",
-    ballSlug:"dv8-dark-side-curse", coreSlug:"dv8-duality-core",
-    weightData:{
-      16:{rg:2.48,diff:0.050,mb:0.014}, 15:{rg:2.49,diff:0.050,mb:0.014}
-    },
-    releaseDate:"Jan 2026",
-    colors:["purple","red","black"],
-    description:"Inciter Solid on Duality Asymmetric — DV8 2026 미디엄-헤비 파워 피스. 강한 미드레인 반응과 안정적인 백엔드 무브."
-  },
   // Ebonite - 2026
-  {
-    id:222, brand:"Ebonite", name:"Spartan",
-    cover:"Hybrid", coreType:"Asymmetric", coreName:"Centurion",
-    finish:"500/1000/1500 Siaair + Factory Compound", condition:"Medium-Heavy Oil", accent:"#b71c1c",
-    ballSlug:"ebonite-spartan", coreSlug:"ebonite-centurion-core",
-    weightData:{
-      15:{rg:2.49,diff:0.052,mb:0.016}
-    },
-    releaseDate:"Jan 2026",
-    colors:["red","black","silver"],
-    description:"Benchmark Hybrid on Centurion Asymmetric — 에보나이트 2026 하이브리드 파워 피스. 미드레인 견인력과 강한 백엔드 반응의 조합."
-  },
   // SWAG - 2026
-  {
-    id:223, brand:"SWAG", name:"Serpent Hybrid",
-    cover:"Hybrid", coreType:"Asymmetric", coreName:"Serpent",
-    finish:"4000 Abralon", condition:"Medium Oil", accent:"#2e7d32",
-    ballSlug:"swag-serpent-hybrid", coreSlug:"swag-serpent-core",
-    weightData:{
-      15:{rg:2.48,diff:0.051,mb:0.014}
-    },
-    releaseDate:"Feb 2026",
-    colors:["green","black"],
-    description:"SWAG Seram AP26 Hybrid on Serpent Asymmetric — 스왜그 2026 미디엄 오일 하이브리드. 독특한 서팬트 코어로 강한 훅 모션."
-  },
-  {
-    id:224, brand:"SWAG", name:"Judgement Hybrid",
-    cover:"Hybrid", coreType:"Asymmetric", coreName:"Judgement",
-    finish:"4000 Abralon", condition:"Medium-Heavy Oil", accent:"#c62828",
-    ballSlug:"swag-judgement-hybrid", coreSlug:"swag-judgement-core",
-    weightData:{
-      15:{rg:2.47,diff:0.053,mb:0.016}
-    },
-    releaseDate:"Feb 2026",
-    colors:["red","black"],
-    description:"SWAG Rage Hybrid AP26 on Judgement Asymmetric — 스왜그 2026 강력한 헤비 오일 하이브리드. 저 RG와 높은 디퍼런셜로 강한 플레어."
-  },
-  {
-    id:225, brand:"SWAG", name:"Assassin Pearl",
-    cover:"Pearl", coreType:"Asymmetric", coreName:"Assassin",
-    finish:"500 Polished", condition:"Medium Oil", accent:"#37474f",
-    ballSlug:"swag-assassin-pearl", coreSlug:"swag-assassin-core",
-    weightData:{
-      15:{rg:2.49,diff:0.050,mb:0.013}
-    },
-    releaseDate:"Feb 2026",
-    colors:["black","silver","pearl"],
-    description:"SWAG Rage Pearl AP26 on Assassin Asymmetric — 스왜그 2026 폴리시드 어시메트릭. 미드레인 클린함과 강한 백엔드 각도."
-  },
-  {
-    id:226, brand:"SWAG", name:"Unreal Solid",
-    cover:"Solid", coreType:"Asymmetric", coreName:"Unreal",
-    finish:"4000 Abralon", condition:"Heavy Oil", accent:"#1565c0",
-    ballSlug:"swag-unreal-solid", coreSlug:"swag-unreal-core",
-    weightData:{
-      15:{rg:2.47,diff:0.054,mb:0.017}
-    },
-    releaseDate:"Feb 2026",
-    colors:["blue","black"],
-    description:"SWAG Seram AP26 Solid on Unreal Asymmetric — 스왜그 2026 헤비 오일 솔리드. 강한 미드레인 마찰력과 연속적인 백엔드."
-  },
-  {
-    id:227, brand:"SWAG", name:"Craze Tour Pearl",
-    cover:"Pearl", coreType:"Symmetric", coreName:"Craze",
-    finish:"500 Polished", condition:"Medium Oil", accent:"#6a1b9a",
-    ballSlug:"swag-craze-tour-pearl", coreSlug:"swag-craze-core",
-    weightData:{
-      15:{rg:2.50,diff:0.038}
-    },
-    releaseDate:"Feb 2026",
-    colors:["blue","purple","white","pearl"],
-    description:"SWAG Rage Pearl AP26 on Craze Symmetric — 스왜그 2026 투어 시메트릭 펄. 컨트롤 가능한 아크 모션과 강한 백엔드."
-  },
-  {
-    id:228, brand:"SWAG", name:"Craze Tour Solid",
-    cover:"Solid", coreType:"Symmetric", coreName:"Craze",
-    finish:"4000 Abralon", condition:"Medium-Heavy Oil", accent:"#4a148c",
-    ballSlug:"swag-craze-tour-solid", coreSlug:"swag-craze-core",
-    weightData:{
-      15:{rg:2.50,diff:0.038}
-    },
-    releaseDate:"Feb 2026",
-    colors:["purple","black"],
-    description:"SWAG Seram AP26 Solid on Craze Symmetric — 스왜그 2026 투어 시메트릭 솔리드. 미드레인 강한 반응과 연속적인 훅."
-  },
   // Brunswick - 2026
-  {
-    id:229, brand:"Brunswick", name:"Combat Hybrid",
-    cover:"Hybrid", coreType:"Asymmetric", coreName:"Rampart",
-    finish:"500/1000 Siaair + Factory Compound", condition:"Medium-Heavy Oil", accent:"#c62828",
-    ballSlug:"brunswick-combat-hybrid", coreSlug:"brunswick-rampart-core",
-    weightData:{
-      16:{rg:2.48,diff:0.052,mb:0.015}, 15:{rg:2.49,diff:0.052,mb:0.015},
-      14:{rg:2.51,diff:0.049}
-    },
-    releaseDate:"Feb 2026",
-    colors:["red","black","silver"],
-    description:"Alpha Premier Hybrid on Rampart Asymmetric — 브런즈윅 자체 개발 어시메트릭 코어 데뷔. 미디엄-헤비 오일 권위. 강한 중거리 견인력과 백엔드 파워."
-  },
-  {
-    id:230, brand:"Brunswick", name:"Crown Victory Pearl",
-    cover:"Pearl", coreType:"Asymmetric", coreName:"Tiered Hexagon",
-    finish:"500/1000 Siaair + Crown Factory Compound", condition:"Medium Oil", accent:"#1565c0",
-    ballSlug:"brunswick-crown-victory-pearl", coreSlug:"brunswick-tiered-hexagon-core",
-    weightData:{
-      15:{rg:2.50,diff:0.048,mb:0.014}
-    },
-    releaseDate:"Feb 2026",
-    colors:["blue","pearl","silver"],
-    description:"Crown Pearl on Tiered Hexagon Asymmetric — 브런즈윅 2026 펄 어시메트릭. 강한 플리피 백엔드와 핀 히팅 파워. 브런즈윅의 경쟁력 있는 복귀작."
-  },
   // Track - 2026
-  {
-    id:231, brand:"Track", name:"Synthesis",
-    cover:"Solid", coreType:"Asymmetric", coreName:"I-Core Gen4",
-    finish:"500/1000/1500 Siaair + Crown Factory Compound", condition:"Heavy Oil", accent:"#4a148c",
-    ballSlug:"track-synthesis", coreSlug:"track-i-core-gen4",
-    weightData:{
-      15:{rg:2.47,diff:0.053,mb:0.017}
-    },
-    releaseDate:"Feb 2026",
-    colors:["purple","black"],
-    description:"Kinetic Solid on I-Core Gen4 Asymmetric — 트랙 전설적인 I-Core 시리즈 4세대. 향상된 중간 디퍼런셜로 더 샤프한 브레이크포인트. 헤비 오일 투어 레벨 성능."
-  },
-  {
-    id:232, brand:"Track", name:"Stealth Mode Hybrid",
-    cover:"Hybrid", coreType:"Asymmetric", coreName:"I-Core Gen4",
-    finish:"4000 Abralon", condition:"Medium-Heavy Oil", accent:"#212121",
-    ballSlug:"track-stealth-mode-hybrid", coreSlug:"track-i-core-gen4",
-    weightData:{
-      15:{rg:2.48,diff:0.051,mb:0.015}
-    },
-    releaseDate:"Feb 2026",
-    colors:["black","silver"],
-    description:"Kinetic Hybrid on I-Core Gen4 Asymmetric — 트랙 2026 하이브리드 버전. Synthesis보다 클린한 프론트와 강한 백엔드 반응."
-  },
   // Columbia 300 - 2026
-  {
-    id:233, brand:"Columbia 300", name:"Piranha Solid",
-    cover:"Solid", coreType:"Symmetric", coreName:"Piranha",
-    finish:"500/1000/1500 Siaair + Factory Compound", condition:"Medium-Heavy Oil", accent:"#2e7d32",
-    ballSlug:"columbia-300-piranha-solid", coreSlug:"columbia-300-piranha-core",
-    weightData:{
-      15:{rg:2.49,diff:0.042}
-    },
-    releaseDate:"Feb 2026",
-    colors:["green","black"],
-    description:"Piranha MFS Solid on Piranha Symmetric — 콜롬비아300 2026 솔리드. 미드-헤비 오일에서 강한 미드레인 반응. 간결하고 예측 가능한 아크 모션."
-  },
   // 추가 Roto Grip - 2026 (이미 있는 Gremlin Tour-X 외)
-  {
-    id:234, brand:"Roto Grip", name:"Attention Sign",
-    cover:"Solid", coreType:"Asymmetric", coreName:"Geo Core",
-    finish:"500/1000/1500 Siaair + Factory Compound", condition:"Heavy Oil", accent:"#c62828",
-    ballSlug:"roto-grip-attention-sign", coreSlug:"roto-grip-geo-core",
-    weightData:{
-      15:{rg:2.47,diff:0.054,mb:0.016}
-    },
-    releaseDate:"Jan 2026",
-    colors:["red","black"],
-    description:"V-R1 Solid on Geo Core Asymmetric — 로토그립 2026 어텐션 라인 솔리드. 헤비 오일 강력한 어시메트릭 무브. 투어 레벨 조건에서 탁월한 성능."
-  },
   // Motiv 추가 - 2026
   {
     id:235, brand:"Motiv", name:"Covert VIP ExJ",
@@ -3139,7 +2869,7 @@ function BrandLogo({ brand, size=28, active=false }) {
   if (logo.img) {
     return (
       <div style={{
-        width:size*1.8, height:size*0.7,
+        width:size*2.2, height:size*0.75,
         display:"flex", alignItems:"center", justifyContent:"center",
         flexShrink:0,
       }}>
@@ -5207,100 +4937,64 @@ function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
             </div>
           )}
 
-          {/* 유튜브 채널 관리 탭 */}
-          {tab==="youtube"&&(
-            <div style={{padding:"16px"}}>
-              <div style={{fontWeight:700,fontSize:15,color:"#111",marginBottom:14}}>🎬 유튜브 채널 관리</div>
-
-              {/* 채널 추가 폼 */}
-              <div style={{background:"#f7f7fc",borderRadius:14,padding:"14px",marginBottom:16,
-                border:"1px solid #e2e2e0"}}>
-                <div style={{fontSize:12,fontWeight:700,color:"#555",marginBottom:10}}>+ 채널 추가</div>
-                <input value={newChName} onChange={e=>setNewChName(e.target.value)}
-                  placeholder="채널 이름 (예: 볼링매니아)"
-                  style={{width:"100%",padding:"8px 10px",borderRadius:8,border:"1px solid #e2e2e0",
-                    fontFamily:"inherit",fontSize:13,marginBottom:8,boxSizing:"border-box",outline:"none"}}/>
-                <input value={newChId} onChange={e=>setNewChId(e.target.value)}
-                  placeholder="채널 ID (예: UCm5mJBhOCFAH5aSbC56w6AQ)"
-                  style={{width:"100%",padding:"8px 10px",borderRadius:8,border:"1px solid #e2e2e0",
-                    fontFamily:"inherit",fontSize:13,marginBottom:8,boxSizing:"border-box",outline:"none"}}/>
-                <input value={newChUrl} onChange={e=>setNewChUrl(e.target.value)}
-                  placeholder="채널 URL (예: https://www.youtube.com/@BOWLINGMANIA)"
-                  style={{width:"100%",padding:"8px 10px",borderRadius:8,border:"1px solid #e2e2e0",
-                    fontFamily:"inherit",fontSize:13,marginBottom:10,boxSizing:"border-box",outline:"none"}}/>
-                <button disabled={ytSaving||!newChName||!newChId} onClick={async()=>{
-                  setYtSaving(true);
-                  try {
-                    await sbInsert("youtube_channels",{
-                      name:newChName.trim(),
-                      channel_id:newChId.trim(),
-                      channel_url:newChUrl.trim(),
-                      is_active:true
-                    });
-                    const d = await sbGet("youtube_channels","order=created_at.desc");
-                    setYtChannels(d||[]);
-                    setNewChName(""); setNewChId(""); setNewChUrl("");
-                    showToast("채널 추가 완료!");
-                    sessionStorage.removeItem("bowling_videos");
-                  } catch(e){ showToast("오류 발생","#ef5350"); }
-                  setYtSaving(false);
-                }} style={{width:"100%",padding:"9px",background:ytSaving?"#aaa":"#ff8c00",
-                  border:"none",borderRadius:10,color:"#fff",fontFamily:"inherit",
-                  fontSize:13,fontWeight:700,cursor:"pointer"}}>
-                  {ytSaving?"저장 중...":"채널 추가"}
-                </button>
-              </div>
-
-              {/* 채널 목록 */}
-              <div style={{fontSize:11,color:"#aaa",fontWeight:700,letterSpacing:1,marginBottom:8}}>등록된 채널</div>
-              {ytChannels.length===0?(
-                <div style={{textAlign:"center",padding:"20px",color:"#ccc",fontSize:13}}>
-                  로딩 중...
-                </div>
-              ):ytChannels.map(ch=>(
-                <div key={ch.id} style={{background:"#fff",borderRadius:12,padding:"12px 14px",
-                  marginBottom:8,border:"1px solid #e8e8e8",display:"flex",alignItems:"center",gap:10}}>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:13,fontWeight:700,color:"#111",marginBottom:2}}>{ch.name}</div>
-                    <div style={{fontSize:10,color:"#aaa",overflow:"hidden",textOverflow:"ellipsis",
-                      whiteSpace:"nowrap"}}>{ch.channel_id}</div>
-                  </div>
-                  <div style={{display:"flex",gap:6,flexShrink:0}}>
-                    <button onClick={async()=>{
-                      try {
-                        await sbFetch(`/youtube_channels?id=eq.${ch.id}`,
-                          {method:"PATCH",body:JSON.stringify({is_active:!ch.is_active}),prefer:"return=representation"});
-                        const d = await sbGet("youtube_channels","order=created_at.desc");
-                        setYtChannels(d||[]);
-                        sessionStorage.removeItem("bowling_videos");
-                        showToast(ch.is_active?"비활성화 완료":"활성화 완료");
-                      } catch(e){ showToast("오류","#ef5350"); }
-                    }} style={{padding:"4px 10px",borderRadius:8,border:"none",cursor:"pointer",
-                      fontFamily:"inherit",fontSize:11,fontWeight:700,
-                      background:ch.is_active?"rgba(67,160,71,0.12)":"rgba(0,0,0,0.06)",
-                      color:ch.is_active?"#43a047":"#999"}}>
-                      {ch.is_active?"ON":"OFF"}
-                    </button>
-                    <button onClick={async()=>{
-                      if(!window.confirm(`"${ch.name}" 채널을 삭제할까요?`)) return;
-                      try {
-                        await sbFetch(`/youtube_channels?id=eq.${ch.id}`,{method:"DELETE"});
-                        const d = await sbGet("youtube_channels","order=created_at.desc");
-                        setYtChannels(d||[]);
-                        sessionStorage.removeItem("bowling_videos");
-                        showToast("삭제 완료");
-                      } catch(e){ showToast("오류","#ef5350"); }
-                    }} style={{padding:"4px 10px",borderRadius:8,border:"none",cursor:"pointer",
-                      fontFamily:"inherit",fontSize:11,fontWeight:700,
-                      background:"rgba(239,83,80,0.1)",color:"#ef5350"}}>
-                      삭제
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
         </>
+      )}
+    </div>
+  );
+}
+
+// ══ 관리자 공지사항 패널 ════════════════════════════════
+function AdminNoticePanel({ notices, setNotices, showToast }) {
+  const [show, setShow] = useState(false);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const save = async () => {
+    if(!title.trim()) return;
+    setSaving(true);
+    try {
+      const res = await sbInsert("notices", {title:title.trim(), content:body.trim(), is_active:true});
+      setNotices(prev=>[...(res||[]), ...prev]);
+      setTitle(""); setBody(""); setShow(false);
+      showToast("공지사항 등록 완료! 📢");
+    } catch(e){ showToast("오류 발생","#ef5350"); }
+    setSaving(false);
+  };
+
+  return (
+    <div style={{marginBottom:8}}>
+      <button onClick={()=>setShow(s=>!s)} style={{
+        width:"100%",padding:"8px 14px",
+        background:show?"#f5f5f5":"rgba(255,140,0,0.08)",
+        border:"1px dashed rgba(255,140,0,0.4)",borderRadius:12,
+        color:"#ff8c00",fontFamily:"inherit",fontSize:12,fontWeight:700,
+        cursor:"pointer",display:"flex",alignItems:"center",gap:6,
+        justifyContent:"center"}}>
+        <span>{show?"✕ 닫기":"📢 공지사항 추가"}</span>
+      </button>
+      {show&&(
+        <div style={{background:"rgba(255,140,0,0.06)",borderRadius:14,padding:"12px",
+          marginTop:6,border:"1px solid rgba(255,140,0,0.2)"}}>
+          <input value={title} onChange={e=>setTitle(e.target.value)}
+            placeholder="공지 제목"
+            style={{width:"100%",background:"rgba(255,255,255,0.08)",
+              border:"1px solid rgba(255,255,255,0.15)",borderRadius:10,
+              color:"#fff",padding:"8px 12px",fontSize:13,outline:"none",
+              fontFamily:"inherit",marginBottom:8,boxSizing:"border-box"}}/>
+          <textarea value={body} onChange={e=>setBody(e.target.value)}
+            placeholder="공지 내용" rows={2}
+            style={{width:"100%",background:"rgba(255,255,255,0.08)",
+              border:"1px solid rgba(255,255,255,0.15)",borderRadius:10,
+              color:"#fff",padding:"8px 12px",fontSize:13,outline:"none",
+              fontFamily:"inherit",resize:"none",marginBottom:8,boxSizing:"border-box"}}/>
+          <button onClick={save} disabled={saving} style={{
+            width:"100%",padding:"9px",background:"#ff8c00",border:"none",
+            borderRadius:10,color:"#fff",fontFamily:"inherit",
+            fontSize:13,fontWeight:700,cursor:"pointer"}}>
+            {saving?"등록 중...":"등록"}
+          </button>
+        </div>
       )}
     </div>
   );
@@ -5621,9 +5315,21 @@ function BoardView({ nickname, onLoginRequest }) {
               <div style={{fontSize:13}}>첫 글을 남겨보세요!</div>
             </div>
           ):posts.map(p=>(
-            <div key={p.id} onClick={()=>setSelPost(p)}
+            <div key={p.id}
               style={{background:"rgba(255,255,255,0.05)",borderRadius:14,padding:"12px 14px",
-                cursor:"pointer",border:"1px solid rgba(255,255,255,0.07)"}}>
+                border:"1px solid rgba(255,255,255,0.07)",position:"relative"}}>
+              {/* 관리자 삭제 버튼 */}
+              {nickname && localStorage.getItem("rm_admin")==="1" && (
+                <button onClick={async(e)=>{
+                  e.stopPropagation();
+                  if(!window.confirm("게시물을 삭제할까요?")) return;
+                  await sbFetch(`/posts?id=eq.${p.id}`,{method:"DELETE"});
+                  load();
+                }} style={{position:"absolute",top:8,right:8,background:"rgba(239,83,80,0.15)",
+                  border:"none",borderRadius:6,padding:"2px 8px",color:"#ef5350",
+                  fontSize:10,cursor:"pointer",fontFamily:"inherit",fontWeight:700}}>삭제</button>
+              )}
+              <div onClick={()=>setSelPost(p)} style={{cursor:"pointer"}}>
               {p.image_url&&(
                 <img src={p.image_url} style={{width:"100%",borderRadius:10,maxHeight:140,
                   objectFit:"cover",marginBottom:8}}/>
@@ -5643,6 +5349,7 @@ function BoardView({ nickname, onLoginRequest }) {
                   fontSize:12,color:p.likes>0?"#ff8c00":"rgba(255,255,255,0.3)",fontFamily:"inherit"}}>
                   ❤️ {p.likes||0}
                 </button>
+              </div>
               </div>
             </div>
           ))}
@@ -6751,20 +6458,7 @@ export default function RollmateApp() {
     setArsenal(mapped);
   };
 
-  // 관리자면 관리자 화면
-  if(nickname && isAdmin) return (
-    <AdminView
-      nickname={nickname}
-      onLogout={()=>{
-        localStorage.removeItem("rm_nickname");
-        localStorage.removeItem("rm_pw");
-        localStorage.removeItem("rm_admin");
-        setNickname(""); setArsenal([]); setIsAdmin(false);
-        setView("home");
-      }}
-      showToast={showToast}
-    />
-  );
+  // 관리자도 일반 화면 사용 (isAdmin으로 관리버튼만 추가)
 
 
   return (
@@ -6893,6 +6587,12 @@ export default function RollmateApp() {
               textTransform:"uppercase"}}>
               ROLL<span style={{color:"#ff8c00",textShadow:"0 0 12px rgba(255,140,0,0.6)"}}>MATE</span>
             </span>
+            {isAdmin&&(
+              <span style={{fontSize:9,fontWeight:800,background:"#ff8c00",color:"#fff",
+                padding:"1px 5px",borderRadius:4,letterSpacing:0.5,marginLeft:2}}>
+                ADMIN
+              </span>
+            )}
           </div>
           {/* 검색창 자리 - balls 뷰로 이동 */}
           <div style={{flex:1}}/>
@@ -6923,26 +6623,42 @@ export default function RollmateApp() {
         {view==="home"&&!sel&&(
           <div style={{animation:"fadeUp .3s ease both"}}>
             {/* 공지사항 배너 */}
-            {notices.length>0&&(
-              <div style={{marginBottom:16}}>
-                {notices.map(n=>(
-                  <div key={n.id} style={{
-                    background:"linear-gradient(135deg,#18181b 0%,#1c1917 100%)",
-                    borderRadius:16,marginBottom:8,overflow:"hidden",
-                    boxShadow:"0 2px 16px rgba(0,0,0,0.18)"}}>
-                    <div style={{height:2,background:"linear-gradient(90deg,#ff8c00,#e65100)"}}/>
-                    <div style={{padding:"12px 14px",display:"flex",gap:10,alignItems:"flex-start"}}>
-                      <div style={{background:"rgba(255,140,0,0.15)",borderRadius:8,padding:"5px 8px",
-                        fontSize:10,color:"#ff8c00",fontWeight:800,letterSpacing:1,flexShrink:0}}>NOTICE</div>
-                      <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontWeight:700,fontSize:13,color:"#fff",marginBottom:2}}>{n.title}</div>
-                        <div style={{fontSize:12,color:"rgba(255,255,255,0.5)",lineHeight:1.6}}>{n.content}</div>
-                      </div>
+            <div style={{marginBottom:16}}>
+              {/* 관리자 공지 추가 버튼 */}
+              {isAdmin&&(
+                <AdminNoticePanel
+                  notices={notices}
+                  setNotices={setNotices}
+                  showToast={showToast}
+                />
+              )}
+              {notices.filter(n=>n.is_active!==false).map(n=>(
+                <div key={n.id} style={{
+                  background:"linear-gradient(135deg,#18181b 0%,#1c1917 100%)",
+                  borderRadius:16,marginBottom:8,overflow:"hidden",
+                  boxShadow:"0 2px 16px rgba(0,0,0,0.18)"}}>
+                  <div style={{height:2,background:"linear-gradient(90deg,#ff8c00,#e65100)"}}/>
+                  <div style={{padding:"12px 14px",display:"flex",gap:10,alignItems:"flex-start"}}>
+                    <div style={{background:"rgba(255,140,0,0.15)",borderRadius:8,padding:"5px 8px",
+                      fontSize:10,color:"#ff8c00",fontWeight:800,letterSpacing:1,flexShrink:0}}>NOTICE</div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{fontWeight:700,fontSize:13,color:"#fff",marginBottom:2}}>{n.title}</div>
+                      <div style={{fontSize:12,color:"rgba(255,255,255,0.5)",lineHeight:1.6}}>{n.content}</div>
                     </div>
+                    {isAdmin&&(
+                      <button onClick={async()=>{
+                        if(!window.confirm("삭제할까요?")) return;
+                        await sbFetch(`/notices?id=eq.${n.id}`,{method:"DELETE"});
+                        setNotices(prev=>prev.filter(x=>x.id!==n.id));
+                        showToast("공지 삭제 완료");
+                      }} style={{background:"rgba(239,83,80,0.2)",border:"none",borderRadius:6,
+                        padding:"3px 8px",color:"#ef5350",fontSize:10,cursor:"pointer",flexShrink:0,
+                        fontFamily:"inherit",fontWeight:700}}>삭제</button>
+                    )}
                   </div>
-                ))}
-              </div>
-            )}
+                </div>
+              ))}
+            </div>
 
             {/* POPULAR */}
             <div style={{marginBottom:20}}>
@@ -7003,10 +6719,24 @@ export default function RollmateApp() {
                 <div style={{fontSize:15,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
                   🎬 <span>볼링 영상</span>
                 </div>
-                <button onClick={()=>setView("videos")} style={{fontSize:12,color:"#ff8c00",
-                  background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:700}}>
-                  전체보기 →
-                </button>
+                <div style={{display:"flex",gap:6,alignItems:"center"}}>
+                  {isAdmin&&(
+                    <button onClick={()=>{
+                      sessionStorage.removeItem("bowling_videos");
+                      sessionStorage.removeItem("bowling_videos_time");
+                      showToast("영상 업데이트 중...");
+                      setTimeout(()=>window.location.reload(), 500);
+                    }} style={{fontSize:11,color:"#43a047",background:"rgba(67,160,71,0.1)",
+                      border:"1px solid rgba(67,160,71,0.3)",borderRadius:8,padding:"3px 10px",
+                      cursor:"pointer",fontFamily:"inherit",fontWeight:700}}>
+                      🔄 최신업데이트
+                    </button>
+                  )}
+                  <button onClick={()=>setView("videos")} style={{fontSize:12,color:"#ff8c00",
+                    background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:700}}>
+                    전체보기 →
+                  </button>
+                </div>
               </div>
               <VideoBoard preview={true}/>
             </div>
@@ -7023,7 +6753,17 @@ export default function RollmateApp() {
         {view==="balls"&&!sel&&(
           <div style={{animation:"fadeUp .3s ease both"}}>
             <div style={{marginBottom:10}}>
-              <div style={{fontWeight:800,fontSize:18,color:"#1c1c1e",marginBottom:10}}>볼링공 ({ALL_BALLS.length})</div>
+              <div style={{fontWeight:800,fontSize:18,color:"#1c1c1e",marginBottom:10}}>
+                {brand==="전체"
+                  ? `볼링공 (${ALL_BALLS.length})`
+                  : `볼링공 (${ALL_BALLS.length}) › ${brand}(${({
+  "Storm":"스톰","Hammer":"해머","Motiv":"모티브","Roto Grip":"로토그립",
+  "900 Global":"900글로벌","Brunswick":"브런즈윅","Columbia 300":"콜롬비아300",
+  "DV8":"디브이8","Ebonite":"에보나이트","Radical":"래디컬","Track":"트랙",
+  "SWAG":"스왜그","Pyramid":"피라미드"
+}[brand])||""}) (${ALL_BALLS.filter(b=>b.brand===brand).length})`
+                }
+              </div>
               {/* 검색창 */}
               <div style={{position:"relative",marginBottom:10}}>
                 <span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",fontSize:13,color:"#ff8c00"}}>🔍</span>
@@ -7043,16 +6783,14 @@ export default function RollmateApp() {
               {brandCounts.map(({brand:b,count,icon})=>{
                 const act=brand===b;
                 const logo=BRAND_LOGO?.[b];
-                return <button key={b} className="chip" onClick={()=>setBrand(b)} style={{
+                return <button key={b} className="chip" onClick={()=>setBrand(act?"전체":b)} style={{
                   background:act?"#1c1c1e":"#fff",
                   color:act?"#fff":"#1a1a2e",flexShrink:0,
-                  padding:"6px 10px",
+                  padding:"8px 14px",
                   boxShadow:act?"0 4px 14px rgba(55,65,81,.28)":"0 1px 4px rgba(0,0,0,0.07)",
                   border:`1px solid ${act?"#1c1c1e":"#e8e8e8"}`}}>
-                  <BrandLogo brand={b} size={22} active={act}/>
-                  <span style={{background:act?"rgba(255,255,255,.2)":"rgba(255,255,255,0.1)",
-                    color:act?"#fff":"rgba(255,255,255,0.5)",
-                    padding:"1px 5px",borderRadius:4,fontSize:12,fontWeight:800}}>{count}</span>
+                  <BrandLogo brand={b} size={28} active={act}/>
+
                 </button>;
               })}
             </div>
