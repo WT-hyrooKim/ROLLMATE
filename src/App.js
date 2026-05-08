@@ -4943,6 +4943,144 @@ function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
   );
 }
 
+// ══ 관리자 인기순위 관리 뷰 ════════════════════════════
+function AdminPopularityView({ dbPopularity, setDbPopularity, showToast, onBack }) {
+  const [balls, setBalls] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(null);
+  const [search, setSearch] = useState("");
+
+  useEffect(()=>{
+    // DB에서 현재 순위 로드
+    sbGet("ball_popularity","order=score.desc")
+      .then(d=>{
+        setBalls(d||[]);
+        setLoading(false);
+      }).catch(()=>setLoading(false));
+  },[]);
+
+  const updateScore = async (ball, newScore) => {
+    const score = Math.min(100, Math.max(0, Number(newScore)));
+    setSaving(ball.ball_id);
+    try {
+      await sbFetch(`/ball_popularity?ball_id=eq.${ball.ball_id}`,{
+        method:"PATCH",
+        body:JSON.stringify({score, updated_at:new Date().toISOString()}),
+        prefer:"return=representation"
+      });
+      // 로컬 state 업데이트
+      setBalls(prev=>prev.map(b=>b.ball_id===ball.ball_id?{...b,score}:b)
+        .sort((a,b2)=>b2.score-a.score));
+      setDbPopularity(prev=>({...prev,[ball.ball_name]:score}));
+      showToast(`${ball.ball_name} 순위 업데이트 완료!`);
+    } catch(e){ showToast("저장 오류","#ef5350"); }
+    setSaving(null);
+  };
+
+  const addBall = async (ballName, ballId) => {
+    // 새 볼 인기순위 추가
+    try {
+      const res = await sbInsert("ball_popularity",{
+        ball_id:ballId, ball_name:ballName, score:50
+      });
+      setBalls(prev=>[...prev,{ball_id:ballId,ball_name:ballName,score:50}]
+        .sort((a,b)=>b.score-a.score));
+      setDbPopularity(prev=>({...prev,[ballName]:50}));
+      showToast(`${ballName} 추가 완료!`);
+    } catch(e){ showToast("이미 등록된 볼이에요","#fb8c00"); }
+  };
+
+  const filteredBalls = balls.filter(b=>
+    b.ball_name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  // DB에 없는 ALL_BALLS 목록
+  const registeredIds = new Set(balls.map(b=>b.ball_id));
+
+  return (
+    <div style={{animation:"fadeUp .3s ease both"}}>
+      {/* 헤더 */}
+      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+        <button onClick={onBack} style={{background:"none",border:"none",
+          color:"#aaa",cursor:"pointer",fontSize:13,fontFamily:"inherit",padding:0}}>
+          ← 홈
+        </button>
+        <div style={{fontWeight:800,fontSize:18,color:"#1c1c1e"}}>🔥 인기순위 관리</div>
+      </div>
+
+      <div style={{fontSize:12,color:"#aaa",marginBottom:12}}>
+        점수 0~100 | 높을수록 상위 노출 | TOP 5가 홈화면에 표시
+      </div>
+
+      {/* 검색 */}
+      <input value={search} onChange={e=>setSearch(e.target.value)}
+        placeholder="볼 이름 검색..."
+        style={{width:"100%",background:"#f7f7f7",border:"1px solid #e8e8e8",
+          borderRadius:12,color:"#1c1c1e",padding:"9px 14px",fontSize:13,
+          outline:"none",fontFamily:"inherit",marginBottom:12,boxSizing:"border-box"}}/>
+
+      {loading?(
+        <div style={{textAlign:"center",padding:"30px",color:"#aaa"}}>로딩 중...</div>
+      ):(
+        <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:20}}>
+          {filteredBalls.map((ball,i)=>(
+            <div key={ball.ball_id} style={{background:"#fff",borderRadius:14,
+              padding:"10px 14px",boxShadow:"0 1px 6px rgba(0,0,0,0.06)",
+              border:"1px solid #f0f0f0",display:"flex",alignItems:"center",gap:10}}>
+              {/* 순위 */}
+              <div style={{width:28,height:28,borderRadius:"50%",flexShrink:0,
+                background:i<5?"#ff8c00":"#f0f0f0",
+                display:"flex",alignItems:"center",justifyContent:"center",
+                fontSize:11,fontWeight:900,color:i<5?"#fff":"#aaa"}}>{i+1}</div>
+              {/* 볼 이름 */}
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:13,fontWeight:700,color:"#111",
+                  overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
+                  {ball.ball_name}
+                </div>
+              </div>
+              {/* 점수 입력 */}
+              <input
+                type="number" min={0} max={100}
+                defaultValue={ball.score}
+                onBlur={e=>e.target.value!==String(ball.score)&&updateScore(ball,e.target.value)}
+                onKeyDown={e=>e.key==="Enter"&&updateScore(ball,e.target.value)}
+                style={{width:56,background:"#f7f7f7",border:"1px solid #e8e8e8",
+                  borderRadius:8,color:"#1c1c1e",padding:"5px 8px",fontSize:13,
+                  outline:"none",fontFamily:"inherit",textAlign:"center"}}/>
+              {saving===ball.ball_id&&(
+                <span style={{fontSize:11,color:"#43a047"}}>✓</span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* DB에 없는 볼 추가 */}
+      {search && ALL_BALLS.filter(b=>
+        b.name.toLowerCase().includes(search.toLowerCase()) &&
+        !registeredIds.has(b.id)
+      ).length > 0 && (
+        <div style={{marginTop:8}}>
+          <div style={{fontSize:11,color:"#aaa",marginBottom:6}}>미등록 볼 추가:</div>
+          {ALL_BALLS.filter(b=>
+            b.name.toLowerCase().includes(search.toLowerCase()) &&
+            !registeredIds.has(b.id)
+          ).slice(0,5).map(b=>(
+            <button key={b.id} onClick={()=>addBall(b.name,b.id)}
+              style={{display:"block",width:"100%",padding:"9px 14px",marginBottom:6,
+                background:"rgba(255,140,0,0.06)",border:"1px dashed rgba(255,140,0,0.3)",
+                borderRadius:12,color:"#ff8c00",fontFamily:"inherit",fontSize:12,
+                fontWeight:700,cursor:"pointer",textAlign:"left"}}>
+              + {b.brand} {b.name}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ══ 관리자 공지사항 패널 ════════════════════════════════
 function AdminNoticePanel({ notices, setNotices, showToast }) {
   const [show, setShow] = useState(false);
@@ -6215,7 +6353,8 @@ export default function RollmateApp() {
   const [posts,setPosts]                 = useState([]);
   const [scores,setScores]               = useState([]);
   const [ballLikes,setBallLikes]         = useState([]);
-  const [myBowlingTab,setMyBowlingTab]   = useState("arsenal"); // arsenal | scores // null | 'Heavy' | 'Medium' | 'Light'
+  const [myBowlingTab,setMyBowlingTab]   = useState("arsenal"); // arsenal | scores
+  const [dbPopularity,setDbPopularity]   = useState({}); // Supabase 인기순위 // null | 'Heavy' | 'Medium' | 'Light'
   const [notices,setNotices]   = useState([]);
   const scrollPos            = useRef(0);
 
@@ -6316,7 +6455,10 @@ export default function RollmateApp() {
                _searchTarget(b.brand).includes(_en.toLowerCase())));
     return mB&&mC&&mS;
   }).sort((a,b)=>{
-    if(sortBy==="popular") return (POPULARITY[b.name]||0)-(POPULARITY[a.name]||0);
+    if(sortBy==="popular"){
+      const pop = Object.keys(dbPopularity).length>0 ? dbPopularity : POPULARITY;
+      return (pop[b.name]||0)-(pop[a.name]||0);
+    }
     if(sortBy==="latest"){
       const parseDate=s=>{if(!s)return 0;const[m,y]=s.split(" ");const months={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};return parseInt(y)*100+(months[m]||0);};
       return parseDate(b.releaseDate)-parseDate(a.releaseDate);
@@ -6666,10 +6808,20 @@ export default function RollmateApp() {
                 <div style={{fontSize:15,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
                   🔥 <span>인기 볼링공</span>
                 </div>
+                {isAdmin&&(
+                  <button onClick={()=>setView("admin_popularity")}
+                    style={{fontSize:11,color:"#ff8c00",background:"rgba(255,140,0,0.1)",
+                      border:"1px solid rgba(255,140,0,0.3)",borderRadius:8,
+                      padding:"3px 10px",cursor:"pointer",fontFamily:"inherit",fontWeight:700}}>
+                    ✏️ 순위 수정
+                  </button>
+                )}
               </div>
               <div style={{display:"flex",flexDirection:"column",gap:6}}>
-                {[...ALL_BALLS].sort((a,b)=>(POPULARITY[b.name]||0)-(POPULARITY[a.name]||0))
-                  .slice(0,5).map((ball,i)=>{
+                {[...ALL_BALLS].sort((a,b)=>{
+                    const pop = Object.keys(dbPopularity).length>0 ? dbPopularity : POPULARITY;
+                    return (pop[b.name]||0)-(pop[a.name]||0);
+                  }).slice(0,5).map((ball,i)=>{
                   const d=ball.weightData?.[15]||ball.weightData?.[16];
                   const oilColor=COND_COLOR[ball.condition]||"#aaa";
                   return (
@@ -6919,6 +7071,16 @@ export default function RollmateApp() {
               </div>
             )}
           </div>
+        )}
+
+        {/* ADMIN POPULARITY - 인기순위 관리 */}
+        {view==="admin_popularity"&&(
+          <AdminPopularityView
+            dbPopularity={dbPopularity}
+            setDbPopularity={setDbPopularity}
+            showToast={showToast}
+            onBack={()=>setView("home")}
+          />
         )}
 
         {/* BOARD - 자유게시판 */}
