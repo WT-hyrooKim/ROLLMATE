@@ -4943,6 +4943,101 @@ function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
   );
 }
 
+// ══ 관리자 최신볼링공 관리 뷰 ══════════════════════════
+function AdminLatestView({ showToast, onBack }) {
+  const [search, setSearch] = useState("");
+
+  // releaseDate 파싱
+  const parseDate = (d) => {
+    if(!d) return 0;
+    const [mon, yr] = d.split(" ");
+    const months = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,
+      Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+    return (parseInt(yr)||0)*100 + (months[mon]||0);
+  };
+
+  const sorted = [...ALL_BALLS]
+    .sort((a,b)=>parseDate(b.releaseDate)-parseDate(a.releaseDate));
+
+  const filtered = sorted.filter(b=>
+    !search ||
+    b.name.toLowerCase().includes(search.toLowerCase()) ||
+    b.brand.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div style={{animation:"fadeUp .3s ease both"}}>
+      {/* 헤더 */}
+      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+        <button onClick={onBack} style={{background:"none",border:"none",
+          color:"#aaa",cursor:"pointer",fontSize:13,fontFamily:"inherit",padding:0}}>
+          ← 홈
+        </button>
+        <div style={{fontWeight:800,fontSize:18,color:"#1c1c1e"}}>🔥 최신 볼링공 현황</div>
+      </div>
+
+      <div style={{background:"rgba(255,140,0,0.08)",borderRadius:12,padding:"10px 14px",
+        marginBottom:14,border:"1px solid rgba(255,140,0,0.2)"}}>
+        <div style={{fontSize:12,color:"#ff8c00",fontWeight:700,marginBottom:4}}>
+          📌 홈화면 노출 TOP 5
+        </div>
+        {sorted.slice(0,5).map((b,i)=>(
+          <div key={b.id} style={{fontSize:12,color:"#1c1c1e",padding:"2px 0",
+            display:"flex",gap:8,alignItems:"center"}}>
+            <span style={{fontWeight:800,color:"#ff8c00",width:16}}>{i+1}</span>
+            <span style={{fontWeight:700}}>{b.brand} {b.name}</span>
+            <span style={{color:"#aaa",marginLeft:"auto"}}>{b.releaseDate}</span>
+          </div>
+        ))}
+      </div>
+
+      <div style={{fontSize:12,color:"#aaa",marginBottom:10}}>
+        최신 출시순 전체 목록 ({ALL_BALLS.length}개) · 새 볼 추가 시 자동 반영
+      </div>
+
+      <input value={search} onChange={e=>setSearch(e.target.value)}
+        placeholder="볼 이름, 브랜드 검색..."
+        style={{width:"100%",background:"#f7f7f7",border:"1px solid #e8e8e8",
+          borderRadius:12,color:"#1c1c1e",padding:"9px 14px",fontSize:13,
+          outline:"none",fontFamily:"inherit",marginBottom:12,boxSizing:"border-box"}}/>
+
+      <div style={{display:"flex",flexDirection:"column",gap:6}}>
+        {filtered.map((ball,i)=>(
+          <div key={ball.id} style={{background:"#fff",borderRadius:12,
+            padding:"10px 14px",boxShadow:"0 1px 4px rgba(0,0,0,0.06)",
+            border:`1px solid ${i<5?"rgba(255,140,0,0.2)":"#f0f0f0"}`,
+            display:"flex",alignItems:"center",gap:10}}>
+            <div style={{width:28,height:28,borderRadius:"50%",flexShrink:0,
+              background:i<5?"#ff8c00":"#f0f0f0",
+              display:"flex",alignItems:"center",justifyContent:"center",
+              fontSize:11,fontWeight:900,color:i<5?"#fff":"#aaa"}}>
+              {i+1}
+            </div>
+            <div style={{width:36,height:36,borderRadius:"50%",overflow:"hidden",flexShrink:0}}>
+              <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={36} radius="50%"/>
+            </div>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontSize:10,color:"#aaa",fontWeight:700,letterSpacing:1}}>
+                {ball.brand.toUpperCase()}
+              </div>
+              <div style={{fontSize:13,fontWeight:700,color:"#111",
+                overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
+                {ball.name}
+              </div>
+            </div>
+            <div style={{textAlign:"right",flexShrink:0}}>
+              <div style={{fontSize:11,color:i<5?"#ff8c00":"#aaa",fontWeight:700}}>
+                {ball.releaseDate}
+              </div>
+              {i<5&&<div style={{fontSize:9,color:"#ff8c00",fontWeight:700}}>홈 노출</div>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ══ 관리자 인기순위 관리 뷰 ════════════════════════════
 function AdminPopularityView({ dbPopularity, setDbPopularity, showToast, onBack }) {
   const [balls, setBalls] = useState([]);
@@ -6808,7 +6903,14 @@ export default function RollmateApp() {
                 <div style={{fontSize:15,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
                   🔥 <span>최신 볼링공</span>
                 </div>
-
+                {isAdmin&&(
+                  <button onClick={()=>setView("admin_latest")}
+                    style={{fontSize:11,color:"#ff8c00",background:"rgba(255,140,0,0.1)",
+                      border:"1px solid rgba(255,140,0,0.3)",borderRadius:8,
+                      padding:"3px 10px",cursor:"pointer",fontFamily:"inherit",fontWeight:700}}>
+                    🔄 최신업데이트
+                  </button>
+                )}
               </div>
               <div style={{display:"flex",flexDirection:"column",gap:6}}>
                 {[...ALL_BALLS].sort((a,b)=>{
@@ -7070,6 +7172,14 @@ export default function RollmateApp() {
               </div>
             )}
           </div>
+        )}
+
+        {/* ADMIN LATEST - 최신볼링공 관리 */}
+        {view==="admin_latest"&&(
+          <AdminLatestView
+            showToast={showToast}
+            onBack={()=>setView("home")}
+          />
         )}
 
         {/* ADMIN POPULARITY - 인기순위 관리 */}
