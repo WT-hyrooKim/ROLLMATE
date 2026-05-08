@@ -6806,21 +6806,20 @@ export default function RollmateApp() {
             <div style={{marginBottom:20}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
                 <div style={{fontSize:15,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
-                  🔥 <span>인기 볼링공</span>
+                  🔥 <span>최신 볼링공</span>
                 </div>
-                {isAdmin&&(
-                  <button onClick={()=>setView("admin_popularity")}
-                    style={{fontSize:11,color:"#ff8c00",background:"rgba(255,140,0,0.1)",
-                      border:"1px solid rgba(255,140,0,0.3)",borderRadius:8,
-                      padding:"3px 10px",cursor:"pointer",fontFamily:"inherit",fontWeight:700}}>
-                    ✏️ 순위 수정
-                  </button>
-                )}
+
               </div>
               <div style={{display:"flex",flexDirection:"column",gap:6}}>
                 {[...ALL_BALLS].sort((a,b)=>{
-                    const pop = Object.keys(dbPopularity).length>0 ? dbPopularity : POPULARITY;
-                    return (pop[b.name]||0)-(pop[a.name]||0);
+                    const parseDate = (d) => {
+                      if(!d) return 0;
+                      const [mon,yr] = d.split(" ");
+                      const months = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,
+                        Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+                      return (parseInt(yr)||0)*100 + (months[mon]||0);
+                    };
+                    return parseDate(b.releaseDate) - parseDate(a.releaseDate);
                   }).slice(0,5).map((ball,i)=>{
                   const d=ball.weightData?.[15]||ball.weightData?.[16];
                   const oilColor=COND_COLOR[ball.condition]||"#aaa";
@@ -6856,7 +6855,7 @@ export default function RollmateApp() {
             <div style={{marginBottom:20}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
                 <div style={{fontSize:15,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
-                  💬 <span>자유게시판</span>
+                  📋 <span>자유게시판</span>
                 </div>
                 <button onClick={()=>setView("board")} style={{fontSize:11,color:"#ff8c00",background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:700}}>
                   전체보기 →
@@ -6869,7 +6868,7 @@ export default function RollmateApp() {
             <div style={{marginBottom:20}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
                 <div style={{fontSize:15,fontWeight:800,color:"#1c1c1e",display:"flex",alignItems:"center",gap:6}}>
-                  🎬 <span>볼링 영상</span>
+                  🎥 <span>볼링 영상</span>
                 </div>
                 <div style={{display:"flex",gap:6,alignItems:"center"}}>
                   {isAdmin&&(
@@ -7096,7 +7095,7 @@ export default function RollmateApp() {
                 color:"#aaa",cursor:"pointer",fontSize:13,fontFamily:"inherit",padding:0}}>
                 ← 홈
               </button>
-              <div style={{fontWeight:800,fontSize:18,color:"#1c1c1e"}}>🎬 볼링 영상</div>
+              <div style={{fontWeight:800,fontSize:18,color:"#1c1c1e"}}>🎥 볼링 영상</div>
             </div>
             <VideoBoard preview={false}/>
           </div>
