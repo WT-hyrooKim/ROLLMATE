@@ -5884,6 +5884,14 @@ function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setMod
   const [scoreGames, setScoreGames] = useState("1");
   const [scoreMemo, setScoreMemo] = useState("");
   const [saving, setSaving] = useState(false);
+  // 스캔 관련 state
+  const [scanMode, setScanMode] = useState(false);
+  const [scanImg, setScanImg] = useState(null);
+  const [scanResult, setScanResult] = useState(null);
+  const [scanning, setScanning] = useState(false);
+  const [playerMap, setPlayerMap] = useState({}); // label → nickname
+  const [scanSaving, setScanSaving] = useState(false);
+  const scanFileRef = useRef();
 
   useEffect(()=>{
     if(!nickname) return;
@@ -5915,6 +5923,74 @@ function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setMod
       showToast("점수 기록 완료! 🎳");
     } catch(e){ showToast("저장 오류","#ef5350"); }
     setSaving(false);
+  };
+
+  // ── 점수판 사진 처리 ─────────────────────────────────────
+  const handleScanFile = (file) => {
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setScanImg(e.target.result);
+      setScanResult(null);
+      setPlayerMap({});
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const runScan = async () => {
+    if(!scanImg) return;
+    setScanning(true);
+    try {
+      const b64 = scanImg.split(",")[1];
+      const mime = scanImg.split(";")[0].split(":")[1] || "image/jpeg";
+      const res = await fetch("/api/score-scan", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({imageBase64:b64, mimeType:mime})
+      });
+      const data = await res.json();
+      if(data.success) {
+        setScanResult(data);
+        // 레인 자동 설정
+        if(data.lane) setScoreLane(data.lane);
+        // 날짜 자동 설정
+        if(data.date) setScoreDate(data.date);
+      } else {
+        showToast(data.error||"인식 실패","#ef5350");
+      }
+    } catch(e){ showToast("오류 발생","#ef5350"); }
+    setScanning(false);
+  };
+
+  const saveScanResult = async () => {
+    if(!scanResult) return;
+    const myLabel = Object.keys(playerMap).find(k=>playerMap[k]===nickname);
+    if(!myLabel) { showToast("'내 점수' 체크를 해주세요","#fb8c00"); return; }
+
+    const myPlayer = scanResult.players.find(p=>p.label===myLabel);
+    if(!myPlayer?.totalScore) { showToast("점수를 인식하지 못했어요","#ef5350"); return; }
+
+    setScanSaving(true);
+    try {
+      const row = {
+        nickname,
+        date: scoreDate,
+        lane: scanResult.lane||scoreLane,
+        score: myPlayer.totalScore,
+        game_count: 1,
+        frames: myPlayer.frames,
+        player_label: myLabel,
+        memo: `📷 사진 스캔 (${myLabel})`,
+      };
+      const res = await sbInsert("scores", row);
+      setScores(prev=>[res[0],...prev]);
+      setScanMode(false);
+      setScanImg(null);
+      setScanResult(null);
+      setPlayerMap({});
+      showToast(`${myPlayer.totalScore}점 기록 완료! 🎳`);
+    } catch(e){ showToast("저장 오류","#ef5350"); }
+    setScanSaving(false);
   };
 
   const avgScore = scores.length ? Math.round(scores.reduce((a,s)=>a+s.score,0)/scores.length) : 0;
@@ -5973,15 +6049,188 @@ function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setMod
             </div>
           )}
 
-          {/* 추가 버튼 */}
-          <button onClick={()=>setShowScoreForm(f=>!f)} style={{
-            width:"100%",padding:"11px",
-            background:showScoreForm?"#f5f5f5":"#fff",
-            border:"1.5px solid #ff8c00",borderRadius:14,
-            color:"#ff8c00",fontFamily:"inherit",fontSize:13,fontWeight:700,
-            cursor:"pointer",marginBottom:10,transition:"all .15s"}}>
-            {showScoreForm?"✕ 닫기":"+ 점수 기록 추가"}
-          </button>
+          {/* 버튼 영역 */}
+          <div style={{display:"flex",gap:8,marginBottom:10}}>
+            <button onClick={()=>{setScanMode(s=>!s);setShowScoreForm(false);setScanResult(null);setScanImg(null);}}
+              style={{flex:1,padding:"11px",
+                background:scanMode?"#f5f5f5":"#fff",
+                border:"1.5px solid #1e88e5",borderRadius:14,
+                color:"#1e88e5",fontFamily:"inherit",fontSize:13,fontWeight:700,
+                cursor:"pointer",transition:"all .15s"}}>
+              {scanMode?"✕ 닫기":"📷 사진으로 기록"}
+            </button>
+            <button onClick={()=>{setShowScoreForm(f=>!f);setScanMode(false);}}
+              style={{flex:1,padding:"11px",
+                background:showScoreForm?"#f5f5f5":"#fff",
+                border:"1.5px solid #ff8c00",borderRadius:14,
+                color:"#ff8c00",fontFamily:"inherit",fontSize:13,fontWeight:700,
+                cursor:"pointer",transition:"all .15s"}}>
+              {showScoreForm?"✕ 닫기":"✏️ 직접 입력"}
+            </button>
+          </div>
+
+          {/* 사진 스캔 UI */}
+          {scanMode&&(
+            <div style={{background:"#fff",borderRadius:16,padding:"14px",
+              marginBottom:12,boxShadow:"0 2px 12px rgba(0,0,0,0.08)"}}>
+              {!scanImg?(
+                <div>
+                  <div style={{fontSize:12,color:"#666",marginBottom:10,lineHeight:1.7}}>
+                    볼링장 전광판 사진을 찍거나 업로드해주세요.<br/>
+                    점수판이 선명하게 보이도록 촬영해주세요.
+                  </div>
+                  <div style={{display:"flex",gap:8}}>
+                    <button onClick={()=>scanFileRef.current?.click()}
+                      style={{flex:1,padding:"12px",background:"#f7f7f7",
+                        border:"1.5px dashed #ddd",borderRadius:12,
+                        color:"#555",fontFamily:"inherit",fontSize:13,
+                        fontWeight:700,cursor:"pointer"}}>
+                      🖼️ 갤러리
+                    </button>
+                    <button onClick={()=>{
+                      const input = document.createElement("input");
+                      input.type="file"; input.accept="image/*"; input.capture="environment";
+                      input.onchange=e=>handleScanFile(e.target.files[0]);
+                      input.click();
+                    }} style={{flex:1,padding:"12px",background:"#1e88e5",
+                      border:"none",borderRadius:12,
+                      color:"#fff",fontFamily:"inherit",fontSize:13,
+                      fontWeight:700,cursor:"pointer"}}>
+                      📷 카메라
+                    </button>
+                    <input ref={scanFileRef} type="file" accept="image/*"
+                      style={{display:"none"}}
+                      onChange={e=>handleScanFile(e.target.files[0])}/>
+                  </div>
+                </div>
+              ):(
+                <div>
+                  {/* 이미지 미리보기 */}
+                  <img src={scanImg} alt="scan"
+                    style={{width:"100%",borderRadius:10,marginBottom:10,
+                      maxHeight:200,objectFit:"cover"}}/>
+
+                  {scanning&&(
+                    <div style={{textAlign:"center",padding:"16px",color:"#1e88e5",
+                      fontSize:13,fontWeight:700}}>
+                      ⚙️ 점수판 분석 중...
+                    </div>
+                  )}
+
+                  {/* 스캔 결과 */}
+                  {scanResult&&!scanning&&(
+                    <div>
+                      <div style={{fontSize:12,fontWeight:700,color:"#333",
+                        marginBottom:8}}>
+                        📋 인식 결과
+                        {scanResult.lane&&<span style={{color:"#aaa",fontWeight:500,marginLeft:6}}>
+                          레인 {scanResult.lane}
+                        </span>}
+                      </div>
+
+                      {scanResult.players.map((p,i)=>(
+                        <div key={i} style={{background:"#f7f7f7",borderRadius:12,
+                          padding:"10px 12px",marginBottom:8}}>
+                          <div style={{display:"flex",alignItems:"center",
+                            gap:8,marginBottom:8}}>
+                            <span style={{fontSize:12,fontWeight:800,color:"#1e88e5",
+                              background:"rgba(30,136,229,0.1)",padding:"2px 8px",
+                              borderRadius:6}}>{p.label}</span>
+                            <span style={{fontSize:20,fontWeight:900,color:"#ff8c00"}}>
+                              {p.totalScore}점
+                            </span>
+                            <div style={{flex:1}}/>
+                            {/* 내 점수 여부 토글 */}
+                            <label style={{display:"flex",alignItems:"center",
+                              gap:4,fontSize:11,color:"#555",cursor:"pointer"}}>
+                              <input type="checkbox"
+                                checked={playerMap[p.label]===nickname}
+                                onChange={e=>{
+                                  setPlayerMap(prev=>({
+                                    ...prev,
+                                    [p.label]:e.target.checked?nickname:null
+                                  }));
+                                }}/>
+                              내 점수
+                            </label>
+                          </div>
+
+                          {/* 프레임별 누적점수 */}
+                          <div style={{display:"flex",gap:3,flexWrap:"wrap"}}>
+                            {Array.from({length:10}).map((_,f)=>(
+                              <div key={f} style={{
+                                background:p.frames[f]!=null?"#fff":"rgba(0,0,0,0.04)",
+                                borderRadius:6,padding:"4px 6px",
+                                minWidth:28,textAlign:"center",
+                                border:"1px solid #e8e8e8"}}>
+                                <div style={{fontSize:8,color:"#aaa",marginBottom:1}}>
+                                  {f+1}F
+                                </div>
+                                <div style={{fontSize:11,fontWeight:700,color:"#333"}}>
+                                  {p.frames[f]??"-"}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* 날짜 입력 */}
+                      <div style={{marginBottom:8}}>
+                        <div style={{fontSize:10,color:"#aaa",fontWeight:600,marginBottom:4}}>
+                          날짜
+                        </div>
+                        <input type="date" value={scoreDate}
+                          onChange={e=>setScoreDate(e.target.value)}
+                          style={{width:"100%",background:"#f7f7f7",
+                            border:"1px solid #e8e8e8",borderRadius:10,
+                            color:"#1c1c1e",padding:"8px 10px",fontSize:13,
+                            outline:"none",fontFamily:"inherit",boxSizing:"border-box"}}/>
+                      </div>
+
+                      {/* 저장 버튼 */}
+                      <button onClick={saveScanResult} disabled={scanSaving}
+                        style={{width:"100%",padding:"11px",
+                          background:Object.values(playerMap).includes(nickname)?"#ff8c00":"#ccc",
+                          border:"none",borderRadius:12,color:"#fff",
+                          fontFamily:"inherit",fontSize:13,fontWeight:800,
+                          cursor:"pointer"}}>
+                        {scanSaving?"저장 중...":
+                          Object.values(playerMap).includes(nickname)?
+                          "내 점수 저장하기":"'내 점수' 체크 후 저장"}
+                      </button>
+                    </div>
+                  )}
+
+                  {!scanning&&!scanResult&&(
+                    <div style={{display:"flex",gap:8}}>
+                      <button onClick={()=>{setScanImg(null);setScanResult(null);}}
+                        style={{flex:1,padding:"10px",background:"#f5f5f5",
+                          border:"none",borderRadius:10,color:"#666",
+                          fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                        다시 찍기
+                      </button>
+                      <button onClick={runScan}
+                        style={{flex:2,padding:"10px",background:"#1e88e5",
+                          border:"none",borderRadius:10,color:"#fff",
+                          fontFamily:"inherit",fontSize:13,fontWeight:700,cursor:"pointer"}}>
+                        🔍 점수 분석
+                      </button>
+                    </div>
+                  )}
+
+                  {!scanning&&scanResult&&(
+                    <button onClick={()=>{setScanImg(null);setScanResult(null);setPlayerMap({});}}
+                      style={{width:"100%",marginTop:8,padding:"9px",background:"#f5f5f5",
+                        border:"none",borderRadius:10,color:"#666",
+                        fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                      🔄 다시 스캔
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* 입력 폼 */}
           {showScoreForm&&(
@@ -6028,26 +6277,49 @@ function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setMod
             <div style={{display:"flex",flexDirection:"column",gap:8}}>
               {scores.map(s=>(
                 <div key={s.id} style={{background:"#fff",borderRadius:14,padding:"12px 14px",
-                  boxShadow:"0 1px 6px rgba(0,0,0,0.06)",border:"1px solid #f0f0f0",
-                  display:"flex",alignItems:"center",gap:12}}>
-                  <div style={{textAlign:"center",flexShrink:0}}>
-                    <div style={{fontSize:26,fontWeight:900,color:"#ff8c00",lineHeight:1}}>{s.score}</div>
-                    <div style={{fontSize:9,color:"#aaa",fontWeight:600}}>점</div>
-                  </div>
-                  <div style={{width:1,height:36,background:"#f0f0f0",flexShrink:0}}/>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:12,fontWeight:700,color:"#333",marginBottom:2}}>
-                      {s.date}{s.lane&&<span style={{color:"#aaa",fontWeight:500}}> · 레인 {s.lane}</span>}
+                  boxShadow:"0 1px 6px rgba(0,0,0,0.06)",border:"1px solid #f0f0f0"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:s.frames?8:0}}>
+                    <div style={{textAlign:"center",flexShrink:0}}>
+                      <div style={{fontSize:26,fontWeight:900,color:"#ff8c00",lineHeight:1}}>{s.score}</div>
+                      <div style={{fontSize:9,color:"#aaa",fontWeight:600}}>점</div>
                     </div>
-                    <div style={{display:"flex",gap:6,alignItems:"center"}}>
-                      <span style={{fontSize:10,color:"#ff8c00",fontWeight:700,
-                        background:"rgba(255,140,0,0.1)",padding:"1px 6px",borderRadius:6}}>
-                        {s.game_count}게임
-                      </span>
-                      {s.memo&&<span style={{fontSize:11,color:"#aaa",overflow:"hidden",
-                        textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.memo}</span>}
+                    <div style={{width:1,height:36,background:"#f0f0f0",flexShrink:0}}/>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{fontSize:12,fontWeight:700,color:"#333",marginBottom:2}}>
+                        {s.date}{s.lane&&<span style={{color:"#aaa",fontWeight:500}}> · 레인 {s.lane}</span>}
+                      </div>
+                      <div style={{display:"flex",gap:6,alignItems:"center"}}>
+                        <span style={{fontSize:10,color:"#ff8c00",fontWeight:700,
+                          background:"rgba(255,140,0,0.1)",padding:"1px 6px",borderRadius:6}}>
+                          {s.game_count}게임
+                        </span>
+                        {s.player_label&&<span style={{fontSize:10,color:"#1e88e5",
+                          background:"rgba(30,136,229,0.1)",padding:"1px 6px",borderRadius:6,fontWeight:700}}>
+                          {s.player_label}
+                        </span>}
+                        {s.memo&&<span style={{fontSize:11,color:"#aaa",overflow:"hidden",
+                          textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.memo}</span>}
+                      </div>
                     </div>
                   </div>
+                  {/* 프레임별 누적점수 */}
+                  {s.frames&&Array.isArray(s.frames)&&(
+                    <div style={{display:"flex",gap:3,overflowX:"auto",
+                      msOverflowStyle:"none",scrollbarWidth:"none"}}>
+                      {Array.from({length:10}).map((_,f)=>(
+                        <div key={f} style={{
+                          background:s.frames[f]!=null?"#f7f7f7":"rgba(0,0,0,0.02)",
+                          borderRadius:6,padding:"4px 6px",minWidth:28,
+                          textAlign:"center",border:"1px solid #eee",flexShrink:0}}>
+                          <div style={{fontSize:8,color:"#bbb",marginBottom:1}}>{f+1}F</div>
+                          <div style={{fontSize:11,fontWeight:700,
+                            color:s.frames[f]!=null?"#333":"#ddd"}}>
+                            {s.frames[f]??"-"}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
