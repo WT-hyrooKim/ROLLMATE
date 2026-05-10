@@ -5049,13 +5049,13 @@ function AdminYoutubeView({ showToast, onBack }) {
         <div style={{background:"#f7f9ff",borderRadius:14,padding:"14px",
           marginBottom:14,border:"1px solid rgba(30,136,229,0.2)"}}>
           <div style={{fontSize:12,color:"#666",marginBottom:10,lineHeight:1.7}}>
-            유튜브 채널 주소의 <b>@핸들</b>을 입력하세요<br/>
-            예) youtube.com/<b>@BOWLINGMANIA</b> → <b>@BOWLINGMANIA</b> 입력
+            유튜브 채널 페이지에서 <b>URL을 복사</b>해서 붙여넣으세요<br/>
+            예) https://www.youtube.com/<b>@BOWLINGMANIA</b>
           </div>
           <div style={{display:"flex",gap:8,marginBottom:10}}>
             <input value={handle} onChange={e=>setHandle(e.target.value)}
               onKeyDown={e=>e.key==="Enter"&&searchChannel()}
-              placeholder="@채널핸들 또는 채널 URL"
+              placeholder="유튜브 채널 URL 붙여넣기"
               style={{flex:1,background:"#fff",border:"1px solid #e0e8ff",
                 borderRadius:10,color:"#1c1c1e",padding:"9px 12px",fontSize:13,
                 outline:"none",fontFamily:"inherit"}}/>

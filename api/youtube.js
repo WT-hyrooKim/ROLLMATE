@@ -10,13 +10,33 @@ export default async function handler(req, res) {
   const SUPABASE_URL = "https://klesgczkebudkuidhflc.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtsZXNnY3prZWJ1ZGt1aWRoZmxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzOTE1MjksImV4cCI6MjA4ODk2NzUyOX0.ZKAAmR2yj9Aia-1-q_3ZAOfx-95MnW9OWz9jpr2qxfw";
 
-  // ── POST: @핸들로 채널 ID 조회 ──────────────────────────
+  // ── POST: URL 또는 @핸들로 채널 조회 ────────────────────
   if (req.method === "POST") {
     const { handle } = req.body;
     if (!handle) return res.status(400).json({ error: "handle required" });
 
-    // @제거 후 핸들 정리
-    const cleanHandle = handle.replace(/^@/, "").replace(/^https?:\/\/.*@/, "").trim();
+    // URL에서 @핸들 추출
+    // 지원 형식:
+    // https://www.youtube.com/@BOWLINGMANIA
+    // https://youtube.com/@bowlingmania?si=xxx
+    // @BOWLINGMANIA
+    // BOWLINGMANIA
+    let cleanHandle = handle.trim();
+
+    // URL인 경우 @핸들 추출
+    const handleMatch = cleanHandle.match(/@([\w-]+)/);
+    if (handleMatch) {
+      cleanHandle = handleMatch[1];
+    } else {
+      // URL이지만 @없는 경우 (youtube.com/c/channelname 등)
+      const pathMatch = cleanHandle.match(/youtube\.com\/(?:c\/|channel\/|user\/)?([^/?&]+)/i);
+      if (pathMatch) cleanHandle = pathMatch[1];
+      else cleanHandle = cleanHandle.replace(/^@/, "").split("?")[0].trim();
+    }
+
+    if (!cleanHandle) {
+      return res.status(200).json({ error: "유효한 유튜브 URL이나 @핸들을 입력해주세요." });
+    }
 
     try {
       const response = await fetch(
@@ -26,7 +46,9 @@ export default async function handler(req, res) {
       const data = await response.json();
 
       if (!data.items?.length) {
-        return res.status(200).json({ error: "채널을 찾을 수 없어요. @핸들을 확인해주세요." });
+        return res.status(200).json({
+          error: `"@${cleanHandle}" 채널을 찾을 수 없어요. URL을 다시 확인해주세요.`
+        });
       }
 
       const ch = data.items[0];
