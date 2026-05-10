@@ -4973,8 +4973,11 @@ function AdminYoutubeView({ showToast, onBack }) {
         body:JSON.stringify({handle:handle.trim()})
       });
       const data = await res.json();
-      if(data.error) { showToast(data.error,"#ef5350"); }
-      else { setPreview(data); }
+      if(!data.success || data.error) {
+        showToast(data.error||"채널을 찾을 수 없어요","#ef5350");
+      } else {
+        setPreview(data);
+      }
     } catch(e){ showToast("조회 오류","#ef5350"); }
     setSearching(false);
   };
@@ -4995,7 +4998,9 @@ function AdminYoutubeView({ showToast, onBack }) {
       sessionStorage.removeItem("bowling_videos");
       sessionStorage.removeItem("bowling_videos_time");
       showToast(`${preview.channelName} 채널 추가 완료! 🎥`);
-    } catch(e){ showToast("이미 등록된 채널이에요","#fb8c00"); }
+    } catch(e){
+      showToast("이미 등록된 채널이거나 오류가 발생했어요","#fb8c00");
+    }
     setSaving(false);
   };
 
