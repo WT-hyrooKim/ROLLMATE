@@ -30,82 +30,96 @@ export default async function handler(req, res) {
     if (!response.ok) return res.status(200).json({ error: data.error?.message });
 
     const annotations = data.responses?.[0]?.textAnnotations || [];
-    if (!annotations.length) return res.status(200).json({ error: "텍스트를 인식하지 못했어요" });
+    const fullText = annotations[0]?.description || "";
 
-    const fullText = annotations[0].description;
-
-    // 위치 정보 포함한 블록 추출
+    // 위치 정보 포함 블록
     const blocks = annotations.slice(1).map(a => ({
       text: a.description,
       x: Math.round(a.boundingPoly?.vertices?.[0]?.x || 0),
       y: Math.round(a.boundingPoly?.vertices?.[0]?.y || 0),
       x2: Math.round(a.boundingPoly?.vertices?.[2]?.x || 0),
       y2: Math.round(a.boundingPoly?.vertices?.[2]?.y || 0),
+      w: Math.round((a.boundingPoly?.vertices?.[2]?.x || 0) - (a.boundingPoly?.vertices?.[0]?.x || 0)),
+      h: Math.round((a.boundingPoly?.vertices?.[2]?.y || 0) - (a.boundingPoly?.vertices?.[0]?.y || 0)),
     }));
 
-    // 이미지 전체 높이 추정
-    const maxY = Math.max(...blocks.map(b => b.y2));
-    const maxX = Math.max(...blocks.map(b => b.x2));
+    const maxX = Math.max(...blocks.map(b => b.x2), 1);
+    const maxY = Math.max(...blocks.map(b => b.y2), 1);
 
-    // ── 1. 레인 번호 추출 ──────────────────────────────────
+    // ── 레인 번호 ──────────────────────────────────────────
     const laneMatch = fullText.match(/레인\s*0?(\d{1,2})/);
     const lane = laneMatch ? laneMatch[1] : null;
 
-    // ── 2. 플레이어 라벨 추출 ─────────────────────────────
-    // 53A, 53B 또는 숫자+알파벳 패턴
-    const labelBlocks = blocks.filter(b => /^\d{1,3}[A-Za-z]$/.test(b.text));
+    // ── 총점 추출 전략 ─────────────────────────────────────
+    // 전광판 총점은 보통 오른쪽 끝에 큰 폰트로 표시
+    // 크기가 크고 오른쪽에 위치한 숫자 = 총점
+    const rightEdge = maxX * 0.65;
 
-    // ── 3. 총점 추출 ──────────────────────────────────────
-    // 오른쪽 끝 큰 숫자 (총점은 보통 이미지 오른쪽에 크게 표시)
-    const rightThreshold = maxX * 0.7;
-    const scoreBlocks = blocks.filter(b =>
-      /^\d{2,3}$/.test(b.text) &&
-      parseInt(b.text) >= 50 &&
-      parseInt(b.text) <= 300 &&
-      b.x > rightThreshold
-    ).sort((a,b) => a.y - b.y);
+    // 큰 숫자 블록 (총점 후보)
+    // 폰트 크기 = 블록 높이로 추정
+    const bigNumBlocks = blocks
+      .filter(b => {
+        const num = parseInt(b.text);
+        return /^\d{2,3}$/.test(b.text) &&
+          num >= 50 && num <= 300 &&
+          b.x > rightEdge;
+      })
+      .sort((a, b) => {
+        // 더 크고 오른쪽에 있는 것 우선
+        const sizeA = a.w * a.h;
+        const sizeB = b.w * b.h;
+        return sizeB - sizeA;
+      });
 
-    // ── 4. 누적점수 추출 (중간 영역 숫자들) ─────────────────
-    // 볼링 전광판에서 프레임 누적점수는 중간 영역에 표시
-    const midBlocks = blocks.filter(b =>
-      /^\d{1,3}$/.test(b.text) &&
-      parseInt(b.text) >= 1 &&
-      parseInt(b.text) <= 300
-    ).sort((a,b) => a.y - b.y || a.x - b.x);
+    // ── 플레이어 라벨 ──────────────────────────────────────
+    const labelBlocks = blocks
+      .filter(b => /^\d{1,3}[A-Za-z]$/.test(b.text))
+      .sort((a, b) => a.y - b.y);
 
-    // ── 5. 플레이어별 파싱 ────────────────────────────────
+    // ── 누적점수 추출 ──────────────────────────────────────
+    // 중앙 영역의 숫자들 (프레임 누적점수)
+    const midNums = blocks
+      .filter(b => {
+        const num = parseInt(b.text);
+        return /^\d{1,3}$/.test(b.text) &&
+          num >= 1 && num <= 300 &&
+          b.x < rightEdge;
+      })
+      .sort((a, b) => a.y - b.y || a.x - b.x);
+
+    // ── 플레이어별 파싱 ────────────────────────────────────
     const players = [];
 
-    if (labelBlocks.length >= 1) {
-      // 라벨 Y좌표 기준으로 행 나누기
-      const sortedLabels = labelBlocks.sort((a,b) => a.y - b.y);
+    if (labelBlocks.length > 0) {
+      labelBlocks.forEach((label, i) => {
+        const nextLabel = labelBlocks[i + 1];
+        const rowY1 = label.y - 30;
+        const rowY2 = nextLabel ? nextLabel.y - 30 : label.y + maxY * 0.3;
 
-      sortedLabels.forEach((label, i) => {
-        const rowY1 = label.y - 20;
-        const rowY2 = sortedLabels[i+1] ? sortedLabels[i+1].y - 20 : label.y + (maxY * 0.25);
-
-        // 해당 행의 숫자들
-        const rowNums = midBlocks
+        // 해당 행의 누적점수
+        const rowNums = midNums
           .filter(b => b.y >= rowY1 && b.y < rowY2)
-          .sort((a,b) => a.x - b.x)
+          .sort((a, b) => a.x - b.x)
           .map(b => parseInt(b.text));
 
-        // 누적점수 배열 (최대 10개)
-        // 볼링 전광판은 누적점수를 표시하므로 오름차순으로 정렬된 숫자들
-        const cumScores = rowNums
-          .filter((n,idx,arr) => idx === 0 || n >= arr[idx-1]) // 오름차순 필터
-          .slice(0, 10);
+        // 누적점수 필터 (오름차순 유지)
+        const cumScores = [];
+        let prev = 0;
+        for (const n of rowNums) {
+          if (n > prev && n <= 300) {
+            cumScores.push(n);
+            prev = n;
+          }
+        }
 
-        // 총점 (해당 행의 오른쪽 큰 숫자)
-        const rowTotal = scoreBlocks.find(b =>
-          b.y >= rowY1 && b.y < rowY2
-        );
+        // 총점: 해당 행의 오른쪽 큰 숫자
+        const rowTotal = bigNumBlocks.find(b => b.y >= rowY1 && b.y < rowY2);
         const totalScore = rowTotal
           ? parseInt(rowTotal.text)
-          : cumScores[cumScores.length - 1] || null;
+          : (cumScores.length > 0 ? cumScores[cumScores.length - 1] : null);
 
-        // 프레임 배열 (10개, 없으면 null)
-        const frames = Array.from({length: 10}, (_, f) => cumScores[f] ?? null);
+        // 프레임 배열
+        const frames = Array.from({ length: 10 }, (_, f) => cumScores[f] ?? null);
 
         players.push({
           label: label.text,
@@ -115,48 +129,31 @@ export default async function handler(req, res) {
         });
       });
     } else {
-      // 라벨 없을 때 - 숫자만으로 파싱
-      // Y좌표 클러스터링으로 행 구분
-      const yValues = [...new Set(midBlocks.map(b => Math.round(b.y / 30) * 30))].sort((a,b)=>a-b);
-
-      yValues.slice(0, 2).forEach((yCluster, i) => {
-        const rowNums = midBlocks
-          .filter(b => Math.abs(Math.round(b.y / 30) * 30 - yCluster) < 30)
-          .sort((a,b) => a.x - b.x)
-          .map(b => parseInt(b.text));
-
-        const cumScores = rowNums.filter((n,idx,arr) =>
-          idx === 0 || n >= arr[idx-1]
-        ).slice(0, 10);
-
-        const totalScore = scoreBlocks[i] ? parseInt(scoreBlocks[i].text) : cumScores[cumScores.length-1];
-
+      // 라벨 없을 때 - 총점만 추출
+      bigNumBlocks.slice(0, 2).forEach((b, i) => {
         players.push({
-          label: `P${i+1}`,
-          frames: Array.from({length:10}, (_,f) => cumScores[f] ?? null),
-          totalScore,
-          cumulative: cumScores,
+          label: `P${i + 1}`,
+          frames: Array(10).fill(null),
+          totalScore: parseInt(b.text),
+          cumulative: [],
         });
       });
     }
 
-    // 결과가 없으면 fullText 기반으로 숫자 추출 시도
-    if (players.length === 0 || players.every(p => !p.totalScore)) {
-      const allNums = fullText.match(/\d+/g)?.map(Number)
-        .filter(n => n >= 50 && n <= 300) || [];
+    // 결과 없으면 fullText에서 큰 숫자 추출
+    if (players.length === 0) {
+      const nums = (fullText.match(/\d{2,3}/g) || [])
+        .map(Number)
+        .filter(n => n >= 50 && n <= 300);
 
-      return res.status(200).json({
-        success: true,
-        players: [{
+      if (nums.length > 0) {
+        players.push({
           label: "P1",
           frames: Array(10).fill(null),
-          totalScore: allNums[allNums.length - 1] || null,
-          cumulative: allNums,
-        }],
-        lane,
-        fullText: fullText.slice(0, 1000),
-        debug: { blocks: blocks.slice(0, 50), maxX, maxY },
-      });
+          totalScore: Math.max(...nums),
+          cumulative: nums,
+        });
+      }
     }
 
     return res.status(200).json({
@@ -166,7 +163,7 @@ export default async function handler(req, res) {
       fullText: fullText.slice(0, 1000),
     });
 
-  } catch(e) {
+  } catch (e) {
     return res.status(500).json({ error: e.message });
   }
 }
