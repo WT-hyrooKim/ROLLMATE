@@ -4948,9 +4948,9 @@ function AdminYoutubeView({ showToast, onBack }) {
   const [channels, setChannels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
-  const [newName, setNewName] = useState("");
-  const [newId, setNewId] = useState("");
-  const [newUrl, setNewUrl] = useState("");
+  const [handle, setHandle] = useState("");       // @핸들 입력
+  const [preview, setPreview] = useState(null);   // 조회된 채널 미리보기
+  const [searching, setSearching] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const load = () => {
@@ -4959,27 +4959,43 @@ function AdminYoutubeView({ showToast, onBack }) {
       .then(d=>{ setChannels(d||[]); setLoading(false); })
       .catch(()=>setLoading(false));
   };
-
   useEffect(()=>{ load(); },[]);
 
+  // @핸들로 채널 조회
+  const searchChannel = async () => {
+    if(!handle.trim()) return;
+    setSearching(true);
+    setPreview(null);
+    try {
+      const res = await fetch("/api/youtube", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({handle:handle.trim()})
+      });
+      const data = await res.json();
+      if(data.error) { showToast(data.error,"#ef5350"); }
+      else { setPreview(data); }
+    } catch(e){ showToast("조회 오류","#ef5350"); }
+    setSearching(false);
+  };
+
+  // 채널 등록
   const addChannel = async () => {
-    if(!newName.trim()||!newId.trim()) return;
+    if(!preview) return;
     setSaving(true);
     try {
       await sbInsert("youtube_channels",{
-        name:newName.trim(),
-        channel_id:newId.trim(),
-        channel_url:newUrl.trim()||`https://www.youtube.com/@${newId.trim()}`,
+        name:preview.channelName,
+        channel_id:preview.channelId,
+        channel_url:preview.channelUrl,
         is_active:true
       });
-      setNewName(""); setNewId(""); setNewUrl("");
-      setShowAdd(false);
+      setHandle(""); setPreview(null); setShowAdd(false);
       load();
-      // 영상 캐시 초기화
       sessionStorage.removeItem("bowling_videos");
       sessionStorage.removeItem("bowling_videos_time");
-      showToast("채널 추가 완료! 🎥");
-    } catch(e){ showToast("오류 발생","#ef5350"); }
+      showToast(`${preview.channelName} 채널 추가 완료! 🎥`);
+    } catch(e){ showToast("이미 등록된 채널이에요","#fb8c00"); }
     setSaving(false);
   };
 
@@ -5019,49 +5035,66 @@ function AdminYoutubeView({ showToast, onBack }) {
         <div style={{fontWeight:800,fontSize:18,color:"#1c1c1e"}}>📡 유튜브 채널 관리</div>
       </div>
 
-      {/* 안내 */}
-      <div style={{background:"#f0f4ff",borderRadius:12,padding:"10px 14px",
-        marginBottom:14,fontSize:12,color:"#3949ab",lineHeight:1.7}}>
-        📌 등록된 채널의 최신 영상이 홈화면에 표시돼요<br/>
-        채널 ID는 유튜브 채널 URL에서 확인하세요<br/>
-        예) youtube.com/@BOWLINGMANIA → 채널 ID: UCm5mJBhOCFAH5aSbC56w6AQ
-      </div>
-
-      {/* 채널 추가 버튼 */}
-      <button onClick={()=>setShowAdd(s=>!s)} style={{
-        width:"100%",padding:"10px",
-        background:showAdd?"#f5f5f5":"rgba(30,136,229,0.08)",
-        border:"1px dashed rgba(30,136,229,0.4)",borderRadius:12,
-        color:"#1e88e5",fontFamily:"inherit",fontSize:13,fontWeight:700,
-        cursor:"pointer",marginBottom:12}}>
+      {/* 채널 추가 */}
+      <button onClick={()=>{setShowAdd(s=>!s);setPreview(null);setHandle("");}}
+        style={{width:"100%",padding:"10px",
+          background:showAdd?"#f5f5f5":"rgba(30,136,229,0.08)",
+          border:"1px dashed rgba(30,136,229,0.4)",borderRadius:12,
+          color:"#1e88e5",fontFamily:"inherit",fontSize:13,fontWeight:700,
+          cursor:"pointer",marginBottom:12}}>
         {showAdd?"✕ 닫기":"+ 채널 추가"}
       </button>
 
-      {/* 채널 추가 폼 */}
       {showAdd&&(
         <div style={{background:"#f7f9ff",borderRadius:14,padding:"14px",
           marginBottom:14,border:"1px solid rgba(30,136,229,0.2)"}}>
-          {[
-            {label:"채널 이름", val:newName, set:setNewName, ph:"예: 볼링매니아"},
-            {label:"채널 ID", val:newId, set:setNewId, ph:"예: UCm5mJBhOCFAH5aSbC56w6AQ"},
-            {label:"채널 URL (선택)", val:newUrl, set:setNewUrl, ph:"예: https://www.youtube.com/@BOWLINGMANIA"},
-          ].map(f=>(
-            <div key={f.label} style={{marginBottom:8}}>
-              <div style={{fontSize:10,color:"#888",fontWeight:700,marginBottom:4}}>{f.label}</div>
-              <input value={f.val} onChange={e=>f.set(e.target.value)}
-                placeholder={f.ph}
-                style={{width:"100%",background:"#fff",border:"1px solid #e0e8ff",
-                  borderRadius:10,color:"#1c1c1e",padding:"9px 12px",fontSize:13,
-                  outline:"none",fontFamily:"inherit",boxSizing:"border-box"}}/>
+          <div style={{fontSize:12,color:"#666",marginBottom:10,lineHeight:1.7}}>
+            유튜브 채널 주소의 <b>@핸들</b>을 입력하세요<br/>
+            예) youtube.com/<b>@BOWLINGMANIA</b> → <b>@BOWLINGMANIA</b> 입력
+          </div>
+          <div style={{display:"flex",gap:8,marginBottom:10}}>
+            <input value={handle} onChange={e=>setHandle(e.target.value)}
+              onKeyDown={e=>e.key==="Enter"&&searchChannel()}
+              placeholder="@채널핸들 또는 채널 URL"
+              style={{flex:1,background:"#fff",border:"1px solid #e0e8ff",
+                borderRadius:10,color:"#1c1c1e",padding:"9px 12px",fontSize:13,
+                outline:"none",fontFamily:"inherit"}}/>
+            <button onClick={searchChannel} disabled={searching||!handle.trim()}
+              style={{padding:"9px 16px",background:searching?"#ccc":"#1e88e5",
+                border:"none",borderRadius:10,color:"#fff",fontFamily:"inherit",
+                fontSize:13,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap"}}>
+              {searching?"조회 중...":"채널 조회"}
+            </button>
+          </div>
+
+          {/* 채널 미리보기 */}
+          {preview&&(
+            <div style={{background:"#fff",borderRadius:12,padding:"12px 14px",
+              border:"1px solid rgba(30,136,229,0.3)",marginBottom:10}}>
+              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+                {preview.thumbnail&&(
+                  <img src={preview.thumbnail} alt={preview.channelName}
+                    style={{width:40,height:40,borderRadius:"50%",objectFit:"cover"}}/>
+                )}
+                <div>
+                  <div style={{fontSize:14,fontWeight:700,color:"#111"}}>
+                    {preview.channelName}
+                  </div>
+                  <div style={{fontSize:11,color:"#aaa"}}>{preview.channelId}</div>
+                </div>
+                <span style={{marginLeft:"auto",fontSize:10,background:"rgba(67,160,71,0.1)",
+                  color:"#43a047",padding:"2px 8px",borderRadius:6,fontWeight:700}}>
+                  ✓ 확인됨
+                </span>
+              </div>
+              <button onClick={addChannel} disabled={saving}
+                style={{width:"100%",padding:"10px",background:"#1e88e5",
+                  border:"none",borderRadius:10,color:"#fff",fontFamily:"inherit",
+                  fontSize:13,fontWeight:700,cursor:"pointer"}}>
+                {saving?"추가 중...":"이 채널 추가하기"}
+              </button>
             </div>
-          ))}
-          <button onClick={addChannel} disabled={saving||!newName||!newId}
-            style={{width:"100%",padding:"11px",
-              background:saving||!newName||!newId?"#ccc":"#1e88e5",
-              border:"none",borderRadius:10,color:"#fff",
-              fontFamily:"inherit",fontSize:13,fontWeight:700,cursor:"pointer"}}>
-            {saving?"추가 중...":"채널 추가"}
-          </button>
+          )}
         </div>
       )}
 
@@ -5085,50 +5118,42 @@ function AdminYoutubeView({ showToast, onBack }) {
               padding:"12px 14px",boxShadow:"0 1px 6px rgba(0,0,0,0.06)",
               border:`1px solid ${ch.is_active?"rgba(30,136,229,0.2)":"#f0f0f0"}`}}>
               <div style={{display:"flex",alignItems:"center",gap:10}}>
-                {/* 채널 아이콘 */}
                 <div style={{width:36,height:36,borderRadius:"50%",flexShrink:0,
-                  background:ch.is_active?"rgba(255,0,0,0.1)":"#f0f0f0",
+                  background:ch.is_active?"rgba(255,0,0,0.1)":"#f5f5f5",
                   display:"flex",alignItems:"center",justifyContent:"center",
-                  fontSize:18}}>▶</div>
-                {/* 채널 정보 */}
+                  fontSize:16}}>▶</div>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{fontSize:14,fontWeight:700,color:"#111",marginBottom:2}}>
                     {ch.name}
                   </div>
-                  <div style={{fontSize:10,color:"#aaa",overflow:"hidden",
-                    textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
-                    {ch.channel_id}
-                  </div>
                   {ch.channel_url&&(
                     <a href={ch.channel_url} target="_blank" rel="noreferrer"
                       onClick={e=>e.stopPropagation()}
-                      style={{fontSize:10,color:"#1e88e5",textDecoration:"none"}}>
-                      채널 바로가기 →
+                      style={{fontSize:11,color:"#1e88e5",textDecoration:"none"}}>
+                      {ch.channel_url.replace("https://","").replace("www.","")} →
                     </a>
                   )}
                 </div>
-                {/* 버튼 */}
                 <div style={{display:"flex",gap:5,flexShrink:0}}>
                   <button onClick={()=>toggleActive(ch)} style={{
-                    padding:"5px 10px",borderRadius:8,border:"none",
-                    cursor:"pointer",fontFamily:"inherit",fontSize:11,fontWeight:700,
+                    padding:"5px 10px",borderRadius:8,border:"none",cursor:"pointer",
+                    fontFamily:"inherit",fontSize:11,fontWeight:700,
                     background:ch.is_active?"rgba(67,160,71,0.12)":"rgba(0,0,0,0.06)",
                     color:ch.is_active?"#43a047":"#999"}}>
                     {ch.is_active?"ON":"OFF"}
                   </button>
                   <button onClick={()=>deleteChannel(ch)} style={{
-                    padding:"5px 10px",borderRadius:8,border:"none",
-                    cursor:"pointer",fontFamily:"inherit",fontSize:11,fontWeight:700,
+                    padding:"5px 10px",borderRadius:8,border:"none",cursor:"pointer",
+                    fontFamily:"inherit",fontSize:11,fontWeight:700,
                     background:"rgba(239,83,80,0.1)",color:"#ef5350"}}>
                     삭제
                   </button>
                 </div>
               </div>
-              {/* 상태 표시 */}
               {!ch.is_active&&(
-                <div style={{marginTop:6,fontSize:10,color:"#aaa",
+                <div style={{marginTop:6,fontSize:10,color:"#bbb",
                   paddingTop:6,borderTop:"1px solid #f5f5f5"}}>
-                  ⚠️ 비활성화 상태 - 홈화면에 영상이 표시되지 않아요
+                  ⚠️ 비활성화 - 홈화면에 영상이 표시되지 않아요
                 </div>
               )}
             </div>
@@ -5138,6 +5163,7 @@ function AdminYoutubeView({ showToast, onBack }) {
     </div>
   );
 }
+
 
 // ══ 관리자 최신볼링공 관리 뷰 ══════════════════════════
 function AdminLatestView({ showToast, onBack }) {
