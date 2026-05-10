@@ -5951,12 +5951,12 @@ function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setMod
       const data = await res.json();
       if(data.success) {
         setScanResult(data);
-        // 레인 자동 설정
         if(data.lane) setScoreLane(data.lane);
-        // 날짜 자동 설정
         if(data.date) setScoreDate(data.date);
       } else {
         showToast(data.error||"인식 실패","#ef5350");
+        // 실패해도 fullText 표시
+        if(data.fullText) setScanResult({...data, success:false, players:[]});
       }
     } catch(e){ showToast("오류 발생","#ef5350"); }
     setScanning(false);
@@ -6220,12 +6220,27 @@ function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setMod
                   )}
 
                   {!scanning&&scanResult&&(
-                    <button onClick={()=>{setScanImg(null);setScanResult(null);setPlayerMap({});}}
-                      style={{width:"100%",marginTop:8,padding:"9px",background:"#f5f5f5",
-                        border:"none",borderRadius:10,color:"#666",
-                        fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer"}}>
-                      🔄 다시 스캔
-                    </button>
+                    <div>
+                      {/* OCR 원문 디버그 */}
+                      <details style={{marginTop:8,marginBottom:4}}>
+                        <summary style={{fontSize:11,color:"#aaa",cursor:"pointer",
+                          padding:"4px 0"}}>
+                          🔍 OCR 인식 원문 보기
+                        </summary>
+                        <div style={{background:"#f0f0f0",borderRadius:8,
+                          padding:"8px",marginTop:4,fontSize:10,
+                          color:"#555",whiteSpace:"pre-wrap",
+                          maxHeight:120,overflowY:"auto",lineHeight:1.6}}>
+                          {scanResult.fullText||"텍스트 없음"}
+                        </div>
+                      </details>
+                      <button onClick={()=>{setScanImg(null);setScanResult(null);setPlayerMap({});}}
+                        style={{width:"100%",padding:"9px",background:"#f5f5f5",
+                          border:"none",borderRadius:10,color:"#666",
+                          fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                        🔄 다시 스캔
+                      </button>
+                    </div>
                   )}
                 </div>
               )}
