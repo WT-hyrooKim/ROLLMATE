@@ -46,92 +46,45 @@ export default async function handler(req, res) {
       if (m) labelPositions.push({ idx, label: m[1], rest: m[2] });
     });
 
-    // ── 투구 토큰 추출 함수 ────────────────────────────────
-    const extractTokens = (text) => {
-      // X(스트라이크), /(스페어), -(거터), 숫자, ☑(스트라이크 기호) 추출
-      const cleaned = text.toUpperCase()
+    // ── 투구 기호 추출 ─────────────────────────────────────
+    const extractShots = (text) => {
+      return text.toUpperCase()
         .replace(/☑/g, 'X')
-        .replace(/[|｜]/g, '')  // 프레임 구분선 제거
-        .replace(/[^\dX\/\-\s]/g, ' ');
-      return cleaned.match(/X|\/|\-|\d/g) || [];
+        .replace(/[|｜]/g, ' ')
+        .match(/X|\/|\-|\d/g) || [];
     };
 
-    // ── 프레임 파싱 함수 ───────────────────────────────────
+    // ── 프레임 파싱 (기호만, 계산 없음) ───────────────────
     const parseFrames = (tokens) => {
       const frames = [];
       let i = 0;
-      for (let fn = 1; fn <= 10; fn++) {
-        if (i >= tokens.length) break;
+      for (let fn = 1; fn <= 10 && i < tokens.length; fn++) {
         const s1 = tokens[i];
         if (s1 === 'X') {
           if (fn === 10) {
-            const s2 = tokens[i+1] || '';
-            const s3 = tokens[i+2] || '';
-            frames.push(['X', s2, s3]);
+            frames.push({ shots: ['X', tokens[i+1]||'', tokens[i+2]||''], isStrike:true });
             i += 3;
           } else {
-            frames.push(['X']);
+            frames.push({ shots: ['X'], isStrike: true });
             i += 1;
           }
         } else {
           const s2 = tokens[i+1] || '';
           if (s2 === '/') {
             if (fn === 10) {
-              const s3 = tokens[i+2] || '';
-              frames.push([s1, '/', s3]);
+              frames.push({ shots: [s1, '/', tokens[i+2]||''], isSpare:true });
               i += 3;
             } else {
-              frames.push([s1, '/']);
+              frames.push({ shots: [s1, '/'], isSpare: true });
               i += 2;
             }
           } else {
-            frames.push([s1, s2]);
+            frames.push({ shots: [s1, s2] });
             i += 2;
           }
         }
       }
       return frames;
-    };
-
-    // ── 점수 계산 함수 ─────────────────────────────────────
-    const calcScore = (frames) => {
-      const shots = [];
-      for (const f of frames) {
-        for (const s of f) {
-          if (s === 'X') shots.push(10);
-          else if (s === '/') shots.push(10 - (shots[shots.length-1] || 0));
-          else if (s === '-' || s === '') shots.push(0);
-          else if (/\d/.test(s)) shots.push(parseInt(s));
-          else shots.push(0);
-        }
-      }
-
-      let total = 0, si = 0;
-      const cumulative = [];
-
-      for (let fi = 0; fi < Math.min(10, frames.length); fi++) {
-        if (si >= shots.length) break;
-        let frameScore = 0;
-        const validShots = frames[fi].filter(s => s !== '').length;
-
-        if (shots[si] === 10) {  // 스트라이크
-          frameScore = 10 +
-            (shots[si+1] || 0) +
-            (shots[si+2] || 0);
-          si += (fi < 9 ? 1 : validShots);
-        } else if (si+1 < shots.length && shots[si] + shots[si+1] === 10) {  // 스페어
-          frameScore = 10 + (shots[si+2] || 0);
-          si += (fi < 9 ? 2 : validShots);
-        } else {
-          frameScore = (shots[si] || 0) + (shots[si+1] || 0);
-          si += 2;
-        }
-
-        total += frameScore;
-        cumulative.push(total);
-      }
-
-      return { total, cumulative };
     };
 
     // ── 플레이어별 파싱 ────────────────────────────────────
@@ -141,70 +94,63 @@ export default async function handler(req, res) {
       labelPositions.forEach((lp, pos) => {
         const nextIdx = labelPositions[pos + 1]?.idx ?? lines.length;
 
-        // 해당 범위 텍스트 수집
+        // 해당 범위 텍스트
         let segment = lp.rest + " ";
         for (let li = lp.idx + 1; li < nextIdx; li++) {
           segment += lines[li] + " ";
         }
 
-        // 투구 토큰 추출
-        const tokens = extractTokens(segment);
-
-        // 누적점수 추출 (백업용)
-        const cumBackup = [];
+        // 누적점수 추출 (오름차순)
+        const cumScores = [];
         let prev = 0;
-        segment.match(/\d+/g)?.forEach(n => {
+        (segment.match(/\d+/g) || []).forEach(n => {
           const num = parseInt(n);
-          if (num > prev && num <= 300 && cumBackup.length < 10) {
-            cumBackup.push(num);
+          if (num > prev && num <= 300 && cumScores.length < 10) {
+            cumScores.push(num);
             prev = num;
           }
         });
 
-        // 프레임 파싱 및 점수 계산
+        // 투구 기호 추출
+        const tokens = extractShots(segment);
         const frames = parseFrames(tokens);
-        const { total, cumulative } = calcScore(frames);
 
-        // 총점 검증: 계산값과 OCR 누적점수 마지막 값 비교
-        const ocrTotal = cumBackup[cumBackup.length - 1] || null;
-        const finalTotal = total > 0 ? total : ocrTotal;
-        const finalCumulative = cumulative.length > 0 ? cumulative : cumBackup;
+        // 총점 = 누적점수 마지막 값
+        const totalScore = cumScores[cumScores.length - 1] || null;
+
+        // 프레임별 누적점수 (10개)
+        const frameCumulative = Array.from({ length: 10 }, (_, f) => cumScores[f] ?? null);
 
         players.push({
           label: lp.label,
-          frames: frames.map(f => f.join('')),  // 표시용: "9/", "X", "81" 등
-          framesRaw: frames,
-          totalScore: finalTotal,
-          cumulative: finalCumulative,
-          // 누적점수 배열 (프레임별)
-          frameCumulative: Array.from({ length: 10 }, (_, i) => finalCumulative[i] ?? null),
+          frames,           // 투구 기호 배열
+          frameCumulative,  // 프레임별 누적점수
+          totalScore,
+          cumScores,
         });
       });
     }
 
-    // 라벨 없을 때 - 누적점수만
+    // 라벨 없을 때
     if (players.length === 0) {
       const bigNums = [...new Set(
         (fullText.match(/\b([1-2]\d{2}|300)\b/g) || []).map(Number)
           .filter(n => n >= 50 && n <= 300)
       )].slice(0, 2);
-
       bigNums.forEach((score, i) => {
         players.push({
           label: `P${i+1}`,
           frames: [],
-          framesRaw: [],
-          totalScore: score,
-          cumulative: [score],
           frameCumulative: Array(10).fill(null),
+          totalScore: score,
+          cumScores: [score],
         });
       });
     }
 
     return res.status(200).json({
       success: players.length > 0,
-      players,
-      lane,
+      players, lane,
       fullText: fullText.slice(0, 1000),
     });
 

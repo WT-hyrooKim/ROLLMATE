@@ -83,21 +83,26 @@ export default async function handler(req, res) {
         const ytRes = await fetch(
           `https://www.googleapis.com/youtube/v3/search?` +
           `part=snippet&channelId=${ch.channel_id}&type=video&` +
-          `videoEmbeddable=true&maxResults=3&order=date&` +
+          `videoEmbeddable=true&videoDuration=medium&maxResults=5&order=date&` +
           `key=${GOOGLE_API_KEY}`
         );
         const ytData = await ytRes.json();
         if (ytData.items?.length) {
           ytData.items.forEach(item => {
-            allVideos.push({
-              id: item.id.videoId,
-              title: item.snippet.title,
-              channel: item.snippet.channelTitle,
-              channelName: ch.name,
-              thumb: item.snippet.thumbnails?.medium?.url ||
-                `https://img.youtube.com/vi/${item.id.videoId}/mqdefault.jpg`,
-              publishedAt: item.snippet.publishedAt,
-            });
+            const title = item.snippet.title || "";
+            // Shorts 필터링: 제목에 shorts 포함 제외
+            const isShorts = /shorts/i.test(title);
+            if (!isShorts) {
+              allVideos.push({
+                id: item.id.videoId,
+                title,
+                channel: item.snippet.channelTitle,
+                channelName: ch.name,
+                thumb: item.snippet.thumbnails?.medium?.url ||
+                  `https://img.youtube.com/vi/${item.id.videoId}/mqdefault.jpg`,
+                publishedAt: item.snippet.publishedAt,
+              });
+            }
           });
         }
       } catch(e) {}
