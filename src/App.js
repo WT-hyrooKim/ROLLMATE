@@ -5978,9 +5978,9 @@ function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setMod
         lane: scanResult.lane||scoreLane,
         score: myPlayer.totalScore,
         game_count: 1,
-        frames: myPlayer.frames,
-        player_label: myLabel,
-        memo: `📷 사진 스캔 (${myLabel})`,
+        frames: myPlayer.frameCumulative||myPlayer.frames,
+        player_label: myPlayer.label,
+        memo: `📷 사진 스캔 (${myPlayer.label}) | ${myPlayer.frames?.slice(0,10).join(' ')||''}`.trim(),
       };
       const res = await sbInsert("scores", row);
       setScores(prev=>[res[0],...prev]);
@@ -6155,22 +6155,32 @@ function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setMod
                             </label>
                           </div>
 
-                          {/* 프레임별 누적점수 */}
-                          <div style={{display:"flex",gap:3,flexWrap:"wrap"}}>
-                            {Array.from({length:10}).map((_,f)=>(
-                              <div key={f} style={{
-                                background:p.frames[f]!=null?"#fff":"rgba(0,0,0,0.04)",
-                                borderRadius:6,padding:"4px 6px",
-                                minWidth:28,textAlign:"center",
-                                border:"1px solid #e8e8e8"}}>
-                                <div style={{fontSize:8,color:"#aaa",marginBottom:1}}>
-                                  {f+1}F
+                          {/* 프레임별 투구 + 누적점수 */}
+                          <div style={{display:"flex",gap:3,overflowX:"auto"}}>
+                            {Array.from({length:10}).map((_,f)=>{
+                              const shot = p.frames?.[f] || "";
+                              const cum = p.frameCumulative?.[f] ?? p.frames?.[f] ?? null;
+                              const isStrike = shot==="X";
+                              const isSpare = shot.includes("/");
+                              return (
+                                <div key={f} style={{
+                                  background:shot?"#fff":"rgba(0,0,0,0.03)",
+                                  borderRadius:8,padding:"4px 5px",
+                                  minWidth:32,textAlign:"center",flexShrink:0,
+                                  border:`1px solid ${isStrike?"rgba(255,140,0,0.4)":isSpare?"rgba(30,136,229,0.3)":"#e8e8e8"}`}}>
+                                  <div style={{fontSize:8,color:"#bbb",marginBottom:2}}>{f+1}F</div>
+                                  <div style={{fontSize:12,fontWeight:800,
+                                    color:isStrike?"#ff8c00":isSpare?"#1e88e5":"#333",
+                                    lineHeight:1}}>
+                                    {shot||"-"}
+                                  </div>
+                                  <div style={{fontSize:9,color:"#888",marginTop:2,
+                                    borderTop:"1px solid #f0f0f0",paddingTop:1}}>
+                                    {cum??"-"}
+                                  </div>
                                 </div>
-                                <div style={{fontSize:11,fontWeight:700,color:"#333"}}>
-                                  {p.frames[f]??"-"}
-                                </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         </div>
                       ))}
