@@ -32,132 +32,74 @@ export default async function handler(req, res) {
     const annotations = data.responses?.[0]?.textAnnotations || [];
     const fullText = annotations[0]?.description || "";
 
-    // 위치 정보 포함 블록
-    const blocks = annotations.slice(1).map(a => ({
-      text: a.description,
-      x: Math.round(a.boundingPoly?.vertices?.[0]?.x || 0),
-      y: Math.round(a.boundingPoly?.vertices?.[0]?.y || 0),
-      x2: Math.round(a.boundingPoly?.vertices?.[2]?.x || 0),
-      y2: Math.round(a.boundingPoly?.vertices?.[2]?.y || 0),
-      w: Math.round((a.boundingPoly?.vertices?.[2]?.x || 0) - (a.boundingPoly?.vertices?.[0]?.x || 0)),
-      h: Math.round((a.boundingPoly?.vertices?.[2]?.y || 0) - (a.boundingPoly?.vertices?.[0]?.y || 0)),
-    }));
-
-    const maxX = Math.max(...blocks.map(b => b.x2), 1);
-    const maxY = Math.max(...blocks.map(b => b.y2), 1);
-
     // ── 레인 번호 ──────────────────────────────────────────
     const laneMatch = fullText.match(/레인\s*0?(\d{1,2})/);
     const lane = laneMatch ? laneMatch[1] : null;
 
-    // ── 총점 추출 전략 ─────────────────────────────────────
-    // 전광판 총점은 보통 오른쪽 끝에 큰 폰트로 표시
-    // 크기가 크고 오른쪽에 위치한 숫자 = 총점
-    const rightEdge = maxX * 0.65;
+    // ── 라인 단위 파싱 ─────────────────────────────────────
+    const lines = fullText.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+    const labelPattern = /^(\d{1,3}[A-Za-z])\s*(\d*)/;
 
-    // 큰 숫자 블록 (총점 후보)
-    // 폰트 크기 = 블록 높이로 추정
-    const bigNumBlocks = blocks
-      .filter(b => {
-        const num = parseInt(b.text);
-        return /^\d{2,3}$/.test(b.text) &&
-          num >= 50 && num <= 300 &&
-          b.x > rightEdge;
-      })
-      .sort((a, b) => {
-        // 더 크고 오른쪽에 있는 것 우선
-        const sizeA = a.w * a.h;
-        const sizeB = b.w * b.h;
-        return sizeB - sizeA;
-      });
+    // 라벨 위치 찾기
+    const labelPositions = [];
+    lines.forEach((line, idx) => {
+      const m = line.match(labelPattern);
+      if (m) labelPositions.push({ idx, label: m[1], firstStr: m[2] });
+    });
 
-    // ── 플레이어 라벨 ──────────────────────────────────────
-    const labelBlocks = blocks
-      .filter(b => /^\d{1,3}[A-Za-z]$/.test(b.text))
-      .sort((a, b) => a.y - b.y);
-
-    // ── 누적점수 추출 ──────────────────────────────────────
-    // 중앙 영역의 숫자들 (프레임 누적점수)
-    const midNums = blocks
-      .filter(b => {
-        const num = parseInt(b.text);
-        return /^\d{1,3}$/.test(b.text) &&
-          num >= 1 && num <= 300 &&
-          b.x < rightEdge;
-      })
-      .sort((a, b) => a.y - b.y || a.x - b.x);
-
-    // ── 플레이어별 파싱 ────────────────────────────────────
     const players = [];
 
-    if (labelBlocks.length > 0) {
-      labelBlocks.forEach((label, i) => {
-        const nextLabel = labelBlocks[i + 1];
-        const rowY1 = label.y - 30;
-        const rowY2 = nextLabel ? nextLabel.y - 30 : label.y + maxY * 0.3;
+    if (labelPositions.length > 0) {
+      labelPositions.forEach((lp, pos) => {
+        const nextIdx = labelPositions[pos + 1]?.idx ?? lines.length;
 
-        // 해당 행의 누적점수
-        const rowNums = midNums
-          .filter(b => b.y >= rowY1 && b.y < rowY2)
-          .sort((a, b) => a.x - b.x)
-          .map(b => parseInt(b.text));
+        // 해당 라벨 ~ 다음 라벨 사이 모든 숫자 수집
+        const allNums = [];
+        if (lp.firstStr) {
+          const n = parseInt(lp.firstStr);
+          if (n >= 1 && n <= 300) allNums.push(n);
+        }
+        for (let li = lp.idx + 1; li < nextIdx; li++) {
+          const numsInLine = lines[li].match(/\d+/g)?.map(Number) || [];
+          numsInLine.forEach(n => {
+            if (n >= 1 && n <= 300) allNums.push(n);
+          });
+        }
 
-        // 누적점수 필터 (오름차순 유지)
+        // 오름차순 필터 (누적점수 특성)
         const cumScores = [];
         let prev = 0;
-        for (const n of rowNums) {
-          if (n > prev && n <= 300) {
+        for (const n of allNums) {
+          if (n > prev && n <= 300 && cumScores.length < 10) {
             cumScores.push(n);
             prev = n;
           }
         }
 
-        // 총점: 해당 행의 오른쪽 큰 숫자
-        const rowTotal = bigNumBlocks.find(b => b.y >= rowY1 && b.y < rowY2);
-        const totalScore = rowTotal
-          ? parseInt(rowTotal.text)
-          : (cumScores.length > 0 ? cumScores[cumScores.length - 1] : null);
-
-        // 프레임 배열
+        const totalScore = cumScores.length > 0 ? cumScores[cumScores.length - 1] : null;
         const frames = Array.from({ length: 10 }, (_, f) => cumScores[f] ?? null);
 
-        players.push({
-          label: label.text,
-          frames,
-          totalScore,
-          cumulative: cumScores,
-        });
+        players.push({ label: lp.label, frames, totalScore, cumulative: cumScores });
       });
     } else {
-      // 라벨 없을 때 - 총점만 추출
-      bigNumBlocks.slice(0, 2).forEach((b, i) => {
+      // 라벨 없을 때 - 100~300 숫자 중 최대 2개
+      const bigNums = [...new Set(
+        (fullText.match(/\b([1-2]\d{2}|300)\b/g) || []).map(Number)
+          .filter(n => n >= 100 && n <= 300)
+      )].slice(0, 2);
+
+      bigNums.forEach((score, i) => {
         players.push({
           label: `P${i + 1}`,
           frames: Array(10).fill(null),
-          totalScore: parseInt(b.text),
-          cumulative: [],
+          totalScore: score,
+          cumulative: [score],
         });
       });
     }
 
-    // 결과 없으면 fullText에서 큰 숫자 추출
-    if (players.length === 0) {
-      const nums = (fullText.match(/\d{2,3}/g) || [])
-        .map(Number)
-        .filter(n => n >= 50 && n <= 300);
-
-      if (nums.length > 0) {
-        players.push({
-          label: "P1",
-          frames: Array(10).fill(null),
-          totalScore: Math.max(...nums),
-          cumulative: nums,
-        });
-      }
-    }
-
     return res.status(200).json({
-      success: true,
+      success: players.length > 0,
       players,
       lane,
       fullText: fullText.slice(0, 1000),
