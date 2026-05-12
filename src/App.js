@@ -5875,6 +5875,113 @@ function PostDetail({ post, nickname, onBack, onLoginRequest }) {
   );
 }
 
+// ══ 볼링 점수판 컴포넌트 ══════════════════════════════
+function BowlingScoreSheet({ frameShots, frameCumulative }) {
+  // frameShots: [{shots:["X"],isStrike:true}, ...] or null (빈 프레임)
+  // frameCumulative: [18, 38, ...] or null
+
+  const shotColor = (s) => {
+    if (!s || s === "") return "#ccc";
+    if (s === "X") return "#e65100";
+    if (s === "/") return "#1565c0";
+    if (s === "-") return "#999";
+    return "#1c1c1e";
+  };
+
+  return (
+    <div style={{width:"100%",overflowX:"auto"}}>
+      <div style={{
+        display:"grid",
+        gridTemplateColumns:"repeat(9,1fr) 1.4fr",
+        border:"1.5px solid #ccc",
+        borderRadius:8,
+        overflow:"hidden",
+        minWidth:300,
+      }}>
+        {Array.from({length:10}).map((_,f)=>{
+          const frame = frameShots?.[f];
+          const cum = frameCumulative?.[f];
+          const isEmpty = !frame && cum == null;
+          const is10th = f === 9;
+          const shots = frame?.shots || [];
+          const isStrike = frame?.isStrike;
+          const isSpare = frame?.isSpare;
+
+          return (
+            <div key={f} style={{
+              borderRight: f < 9 ? "1px solid #ccc" : "none",
+              background: isEmpty ? "#f5f5f5" : "#fff",
+            }}>
+              {/* 프레임 번호 */}
+              <div style={{
+                fontSize:9, color:"#888", fontWeight:700,
+                textAlign:"center", padding:"2px 0",
+                borderBottom:"1px solid #ddd",
+                background: isEmpty ? "#efefef" : "#fafafa",
+              }}>{f+1}</div>
+
+              {/* 투구 기호 영역 */}
+              <div style={{
+                display:"flex",
+                justifyContent: is10th ? "space-around" : "flex-end",
+                alignItems:"center",
+                padding: is10th ? "3px 2px" : "3px 4px",
+                minHeight:22,
+                gap:2,
+                borderBottom:"1px solid #ddd",
+              }}>
+                {isEmpty ? (
+                  <span style={{fontSize:10,color:"#ddd"}}>·</span>
+                ) : is10th ? (
+                  // 10프레임: 최대 3구
+                  [0,1,2].map(si=>{
+                    const s = shots[si] || "";
+                    return (
+                      <span key={si} style={{
+                        fontSize:11, fontWeight:900,
+                        color: shotColor(s),
+                        minWidth:10, textAlign:"center",
+                        lineHeight:1,
+                      }}>{s}</span>
+                    );
+                  })
+                ) : (
+                  // 1~9프레임: 2구
+                  [0,1].map(si=>{
+                    const s = shots[si] || "";
+                    return (
+                      <span key={si} style={{
+                        fontSize:11, fontWeight:900,
+                        color: shotColor(s),
+                        minWidth:10, textAlign:"center",
+                        lineHeight:1,
+                      }}>{s}</span>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* 누적점수 */}
+              <div style={{
+                textAlign:"center",
+                padding:"4px 2px",
+                fontSize:12, fontWeight:700,
+                color: isEmpty ? "#ddd" : "#1c1c1e",
+                minHeight:24,
+                display:"flex",
+                alignItems:"center",
+                justifyContent:"center",
+              }}>
+                {isEmpty ? "" : (cum ?? "")}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ══ 마이볼링 뷰 ══════════════════════════════════════════
 function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setModal, setEditEnt, setView, myBowlingTab, setMyBowlingTab, onLoginRequest, showToast }) {
   const [showScoreForm, setShowScoreForm] = useState(false);
@@ -6123,28 +6230,31 @@ function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setMod
                       <div style={{fontSize:12,fontWeight:700,color:"#333",
                         marginBottom:8}}>
                         📋 인식 결과
-                        {scanResult.lane&&<span style={{color:"#aaa",fontWeight:500,marginLeft:6}}>
-                          레인 {scanResult.lane}
-                        </span>}
+                        {scanResult.lane&&<span style={{color:"#aaa",fontWeight:500,
+                          marginLeft:6}}>레인 {scanResult.lane}</span>}
                       </div>
 
-                      {scanResult.players.map((p,i)=>(
-                        <div key={i} style={{background:"#f7f9ff",borderRadius:12,
-                          padding:"10px 12px",marginBottom:8,
-                          border:"1px solid #e8eeff"}}>
+                      {scanResult.players.map((p,pi)=>(
+                        <div key={pi} style={{background:"#fff",borderRadius:14,
+                          padding:"12px",marginBottom:10,
+                          border:"1px solid #e8e8e8",
+                          boxShadow:"0 1px 6px rgba(0,0,0,0.06)"}}>
+
                           {/* 헤더 */}
                           <div style={{display:"flex",alignItems:"center",
                             gap:8,marginBottom:10}}>
-                            <span style={{fontSize:12,fontWeight:800,color:"#1e88e5",
-                              background:"rgba(30,136,229,0.12)",padding:"3px 10px",
-                              borderRadius:6}}>{p.label}</span>
-                            <span style={{fontSize:22,fontWeight:900,color:"#ff8c00"}}>
-                              {p.totalScore??"-"}점
+                            <span style={{fontSize:13,fontWeight:800,
+                              color:"#fff",background:"#1e88e5",
+                              padding:"3px 10px",borderRadius:6}}>
+                              {p.label}
                             </span>
+                            <span style={{fontSize:24,fontWeight:900,color:"#ff8c00"}}>
+                              {p.totalScore??"-"}
+                            </span>
+                            <span style={{fontSize:12,color:"#aaa"}}>점</span>
                             <div style={{flex:1}}/>
                             <label style={{display:"flex",alignItems:"center",
-                              gap:5,fontSize:12,color:"#555",cursor:"pointer",
-                              fontWeight:600}}>
+                              gap:5,fontSize:12,color:"#333",cursor:"pointer",fontWeight:600}}>
                               <input type="checkbox"
                                 checked={playerMap[p.label]===nickname}
                                 onChange={e=>setPlayerMap(prev=>({
@@ -6154,84 +6264,14 @@ function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setMod
                             </label>
                           </div>
 
-                          {/* 볼링 점수판 - 고정너비 */}
-                          <div style={{width:"100%",overflowX:"auto"}}>
-                            <table style={{borderCollapse:"collapse",
-                              width:"100%",minWidth:320,tableLayout:"fixed"}}>
-                              <tbody>
-                                {/* 투구 기호 행 */}
-                                <tr>
-                                  {Array.from({length:10}).map((_,f)=>{
-                                    const frame = p.frameShots?.[f];
-                                    const shots = frame?.shots || [];
-                                    const isEmpty = !frame;
-                                    const sc = (s)=>s==="X"?"#ff8c00":s==="/"?"#1e88e5":s==="-"?"#ccc":"#333";
-                                    return (
-                                      <td key={f} style={{
-                                        border:"1px solid #dde",
-                                        padding:0,
-                                        width:f===9?"10%":"9%",
-                                        background:isEmpty?"#f0f0f4":f%2===0?"#fff":"#f7f7ff",
-                                        verticalAlign:"bottom",
-                                        minWidth:f===9?36:28}}>
-                                        <div style={{fontSize:7,color:"#bbb",
-                                          textAlign:"center",borderBottom:"1px solid #eee",
-                                          padding:"1px 0",lineHeight:1.4}}>{f+1}</div>
-                                        <div style={{display:"flex",
-                                          justifyContent:f===9?"space-around":"flex-end",
-                                          padding:"2px 2px 1px",minHeight:16,gap:1}}>
-                                          {isEmpty?(
-                                            <span style={{fontSize:9,color:"#ddd"}}>·</span>
-                                          ):f===9?(
-                                            shots.slice(0,3).map((s,si)=>(
-                                              <span key={si} style={{fontSize:9,
-                                                fontWeight:800,color:sc(s),lineHeight:1}}>
-                                                {s||""}
-                                              </span>
-                                            ))
-                                          ):(
-                                            shots.slice(0,2).map((s,si)=>(
-                                              <span key={si} style={{fontSize:9,
-                                                fontWeight:800,color:sc(s),lineHeight:1}}>
-                                                {s||""}
-                                              </span>
-                                            ))
-                                          )}
-                                        </div>
-                                      </td>
-                                    );
-                                  })}
-                                </tr>
-                                {/* 누적점수 행 */}
-                                <tr>
-                                  {Array.from({length:10}).map((_,f)=>{
-                                    const cum = p.frameCumulative?.[f];
-                                    const isEmpty = cum==null;
-                                    return (
-                                      <td key={f} style={{
-                                        border:"1px solid #dde",
-                                        textAlign:"center",
-                                        padding:"3px 1px",
-                                        background:isEmpty?"#f0f0f4":f%2===0?"#fff":"#f7f7ff",
-                                        fontSize:11,fontWeight:700,
-                                        color:isEmpty?"#ddd":"#222",
-                                        height:22}}>
-                                        {isEmpty?"":cum}
-                                      </td>
-                                    );
-                                  })}
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
+                          {/* 볼링 점수판 */}
+                          <BowlingScoreSheet frameShots={p.frameShots} frameCumulative={p.frameCumulative}/>
                         </div>
                       ))}
 
-                      {/* 날짜 입력 */}
+                      {/* 날짜 */}
                       <div style={{marginBottom:8}}>
-                        <div style={{fontSize:10,color:"#aaa",fontWeight:600,marginBottom:4}}>
-                          날짜
-                        </div>
+                        <div style={{fontSize:10,color:"#aaa",fontWeight:600,marginBottom:4}}>날짜</div>
                         <input type="date" value={scoreDate}
                           onChange={e=>setScoreDate(e.target.value)}
                           style={{width:"100%",background:"#f7f7f7",
@@ -6240,33 +6280,15 @@ function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setMod
                             outline:"none",fontFamily:"inherit",boxSizing:"border-box"}}/>
                       </div>
 
-                      {/* 저장 버튼 */}
+                      {/* 저장 */}
                       <button onClick={saveScanResult} disabled={scanSaving}
                         style={{width:"100%",padding:"11px",
-                          background:Object.values(playerMap).includes(nickname)?"#ff8c00":"#ccc",
+                          background:Object.values(playerMap).includes(nickname)?"#ff8c00":"#ddd",
                           border:"none",borderRadius:12,color:"#fff",
-                          fontFamily:"inherit",fontSize:13,fontWeight:800,
-                          cursor:"pointer"}}>
+                          fontFamily:"inherit",fontSize:13,fontWeight:800,cursor:"pointer"}}>
                         {scanSaving?"저장 중...":
                           Object.values(playerMap).includes(nickname)?
                           "내 점수 저장하기":"'내 점수' 체크 후 저장"}
-                      </button>
-                    </div>
-                  )}
-
-                  {!scanning&&!scanResult&&(
-                    <div style={{display:"flex",gap:8}}>
-                      <button onClick={()=>{setScanImg(null);setScanResult(null);}}
-                        style={{flex:1,padding:"10px",background:"#f5f5f5",
-                          border:"none",borderRadius:10,color:"#666",
-                          fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer"}}>
-                        다시 찍기
-                      </button>
-                      <button onClick={runScan}
-                        style={{flex:2,padding:"10px",background:"#1e88e5",
-                          border:"none",borderRadius:10,color:"#fff",
-                          fontFamily:"inherit",fontSize:13,fontWeight:700,cursor:"pointer"}}>
-                        🔍 점수 분석
                       </button>
                     </div>
                   )}
@@ -6369,35 +6391,13 @@ function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setMod
                       </div>
                     </div>
                   </div>
-                  {/* 프레임별 누적점수 - 테이블 형식 */}
+                  {/* 볼링 점수판 형식 */}
                   {s.frames&&Array.isArray(s.frames)&&(
-                    <div style={{width:"100%",overflowX:"auto",marginTop:6}}>
-                      <table style={{borderCollapse:"collapse",width:"100%",
-                        tableLayout:"fixed",minWidth:280}}>
-                        <tbody>
-                          <tr>
-                            {Array.from({length:10}).map((_,f)=>(
-                              <td key={f} style={{
-                                border:"1px solid #e8e8e8",
-                                fontSize:7,color:"#bbb",textAlign:"center",
-                                padding:"1px 0",background:"#fafafa",
-                                lineHeight:1.4}}>{f+1}</td>
-                            ))}
-                          </tr>
-                          <tr>
-                            {Array.from({length:10}).map((_,f)=>(
-                              <td key={f} style={{
-                                border:"1px solid #e8e8e8",
-                                textAlign:"center",padding:"3px 1px",
-                                fontSize:11,fontWeight:700,
-                                background:s.frames[f]!=null?"#fff":"#f7f7f7",
-                                color:s.frames[f]!=null?"#333":"#ddd"}}>
-                                {s.frames[f]??"-"}
-                              </td>
-                            ))}
-                          </tr>
-                        </tbody>
-                      </table>
+                    <div style={{marginTop:8}}>
+                      <BowlingScoreSheet
+                        frameShots={null}
+                        frameCumulative={s.frames}
+                      />
                     </div>
                   )}
                 </div>
