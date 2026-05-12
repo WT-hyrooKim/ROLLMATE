@@ -6224,6 +6224,24 @@ function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setMod
                     </div>
                   )}
 
+                  {/* 분석 버튼 - 이미지 있고 결과 없을 때 */}
+                  {!scanning&&!scanResult&&(
+                    <div style={{display:"flex",gap:8,marginBottom:8}}>
+                      <button onClick={()=>{setScanImg(null);setScanResult(null);setPlayerMap({});}}
+                        style={{flex:1,padding:"11px",background:"#f5f5f5",
+                          border:"none",borderRadius:12,color:"#666",
+                          fontFamily:"inherit",fontSize:13,fontWeight:700,cursor:"pointer"}}>
+                        🔄 다시 찍기
+                      </button>
+                      <button onClick={runScan}
+                        style={{flex:2,padding:"11px",background:"#1e88e5",
+                          border:"none",borderRadius:12,color:"#fff",
+                          fontFamily:"inherit",fontSize:14,fontWeight:800,cursor:"pointer"}}>
+                        🔍 점수 분석
+                      </button>
+                    </div>
+                  )}
+
                   {/* 스캔 결과 */}
                   {scanResult&&!scanning&&(
                     <div>
