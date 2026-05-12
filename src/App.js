@@ -5877,84 +5877,89 @@ function PostDetail({ post, nickname, onBack, onLoginRequest }) {
 
 // ══ 볼링 점수판 컴포넌트 ══════════════════════════════
 function BowlingScoreSheet({ frameShots, frameCumulative }) {
-  // frameShots: [{shots:["X"],isStrike:true}, ...] or null (빈 프레임)
-  // frameCumulative: [18, 38, ...] or null
-
+  // 볼링 스코어 기록지 스타일
   const shotColor = (s) => {
-    if (!s || s === "") return "#ccc";
-    if (s === "X") return "#e65100";
+    if (s === "X") return "#c0392b";
     if (s === "/") return "#1565c0";
     if (s === "-") return "#999";
     return "#1c1c1e";
   };
 
   return (
-    <div style={{width:"100%",overflowX:"auto"}}>
+    <div style={{width:"100%",overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
       <div style={{
-        display:"grid",
-        gridTemplateColumns:"repeat(9,1fr) 1.4fr",
-        border:"1.5px solid #ccc",
-        borderRadius:8,
+        display:"flex",
+        border:"2px solid #333",
+        borderRadius:6,
         overflow:"hidden",
         minWidth:300,
+        background:"#fff",
+        fontFamily:"'Courier New',monospace",
       }}>
         {Array.from({length:10}).map((_,f)=>{
           const frame = frameShots?.[f];
           const cum = frameCumulative?.[f];
-          const isEmpty = !frame && cum == null;
+          const isEmpty = !frame && (cum==null || cum===undefined);
           const is10th = f === 9;
           const shots = frame?.shots || [];
-          const isStrike = frame?.isStrike;
-          const isSpare = frame?.isSpare;
 
           return (
             <div key={f} style={{
-              borderRight: f < 9 ? "1px solid #ccc" : "none",
-              background: isEmpty ? "#f5f5f5" : "#fff",
+              flex: is10th ? "1.5" : "1",
+              borderRight: f < 9 ? "1.5px solid #333" : "none",
+              display:"flex",
+              flexDirection:"column",
+              minWidth: is10th ? 44 : 30,
             }}>
               {/* 프레임 번호 */}
               <div style={{
-                fontSize:9, color:"#888", fontWeight:700,
-                textAlign:"center", padding:"2px 0",
-                borderBottom:"1px solid #ddd",
-                background: isEmpty ? "#efefef" : "#fafafa",
+                fontSize:9, color:"#555", fontWeight:700,
+                textAlign:"center",
+                padding:"2px 0",
+                borderBottom:"1px solid #aaa",
+                background:"#f0f0f0",
+                letterSpacing:0,
               }}>{f+1}</div>
 
-              {/* 투구 기호 영역 */}
+              {/* 투구 기호 박스 */}
               <div style={{
                 display:"flex",
-                justifyContent: is10th ? "space-around" : "flex-end",
+                justifyContent:"flex-end",
                 alignItems:"center",
-                padding: is10th ? "3px 2px" : "3px 4px",
-                minHeight:22,
-                gap:2,
-                borderBottom:"1px solid #ddd",
+                borderBottom:"1px solid #aaa",
+                minHeight:24,
+                padding:"2px 3px",
+                gap:1,
+                background: isEmpty ? "#f9f9f9" : "#fff",
               }}>
-                {isEmpty ? (
-                  <span style={{fontSize:10,color:"#ddd"}}>·</span>
-                ) : is10th ? (
-                  // 10프레임: 최대 3구
-                  [0,1,2].map(si=>{
-                    const s = shots[si] || "";
-                    return (
-                      <span key={si} style={{
-                        fontSize:11, fontWeight:900,
-                        color: shotColor(s),
-                        minWidth:10, textAlign:"center",
-                        lineHeight:1,
-                      }}>{s}</span>
-                    );
-                  })
+                {isEmpty ? null : is10th ? (
+                  // 10프레임: 3칸
+                  <div style={{display:"flex",gap:2,width:"100%",justifyContent:"space-around"}}>
+                    {[0,1,2].map(si=>{
+                      const s = shots[si]||"";
+                      return (
+                        <span key={si} style={{
+                          fontSize:12, fontWeight:900,
+                          color: shotColor(s),
+                          textAlign:"center",
+                          minWidth:10,
+                          lineHeight:1,
+                          fontFamily:"'Courier New',monospace",
+                        }}>{s}</span>
+                      );
+                    })}
+                  </div>
                 ) : (
-                  // 1~9프레임: 2구
+                  // 1~9프레임: 오른쪽 정렬 2칸
                   [0,1].map(si=>{
-                    const s = shots[si] || "";
+                    const s = shots[si]||"";
                     return (
                       <span key={si} style={{
-                        fontSize:11, fontWeight:900,
+                        fontSize:12, fontWeight:900,
                         color: shotColor(s),
                         minWidth:10, textAlign:"center",
                         lineHeight:1,
+                        fontFamily:"'Courier New',monospace",
                       }}>{s}</span>
                     );
                   })
@@ -5964,15 +5969,17 @@ function BowlingScoreSheet({ frameShots, frameCumulative }) {
               {/* 누적점수 */}
               <div style={{
                 textAlign:"center",
-                padding:"4px 2px",
                 fontSize:12, fontWeight:700,
                 color: isEmpty ? "#ddd" : "#1c1c1e",
-                minHeight:24,
+                padding:"3px 2px",
+                minHeight:22,
                 display:"flex",
                 alignItems:"center",
                 justifyContent:"center",
+                background: isEmpty ? "#f9f9f9" : "#fff",
+                fontFamily:"'Courier New',monospace",
               }}>
-                {isEmpty ? "" : (cum ?? "")}
+                {isEmpty ? "" : (cum??"")}
               </div>
             </div>
           );
@@ -5981,6 +5988,7 @@ function BowlingScoreSheet({ frameShots, frameCumulative }) {
     </div>
   );
 }
+
 
 // ══ 마이볼링 뷰 ══════════════════════════════════════════
 function MyBowlingView({ nickname, arsenal, scores, setScores, dbLoading, setModal, setEditEnt, setView, myBowlingTab, setMyBowlingTab, onLoginRequest, showToast }) {
