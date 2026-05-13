@@ -5875,6 +5875,7 @@ function PostDetail({ post, nickname, onBack, onLoginRequest }) {
         boxShadow:"0 1px 8px rgba(0,0,0,0.06)",border:"1px solid #f0f0f0"}}>
         <div style={{fontSize:16,fontWeight:800,color:"#1c1c1e",marginBottom:6}}>{post.title}</div>
         <div style={{fontSize:11,color:"#aaa",marginBottom:12}}>
+          {post.nickname} · {new Date(post.created_at).toLocaleDateString("ko-KR")}
         </div>
         {post.image_url&&<img src={post.image_url} style={{width:"100%",borderRadius:10,marginBottom:10}}/>}
         {post.content&&<div style={{fontSize:13,color:"#444",lineHeight:1.7}}>{post.content}</div>}
@@ -5892,10 +5893,10 @@ function PostDetail({ post, nickname, onBack, onLoginRequest }) {
           borderRadius:12,color:"#fff",fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer"}}>등록</button>
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:6}}>
+        {comments.map(c=>(
           <div key={c.id} style={{background:"#f7f7f7",borderRadius:10,padding:"10px 12px"}}>
             <div style={{fontSize:11,color:"#ff8c00",fontWeight:700,marginBottom:3}}>{c.nickname}</div>
             <div style={{fontSize:13,color:"#333"}}>{c.content}</div>
-            <div style={{fontSize:13,color:"rgba(255,255,255,0.8)"}}>{c.content}</div>
           </div>
         ))}
       </div>
