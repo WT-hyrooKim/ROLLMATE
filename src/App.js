@@ -5759,15 +5759,15 @@ function BoardView({ nickname, onLoginRequest }) {
 
       {/* 글쓰기 */}
       {showWrite&&(
-        <div style={{background:"rgba(255,255,255,0.06)",borderRadius:16,padding:"14px",marginBottom:14,
-          border:"1px solid rgba(255,140,0,0.2)"}}>
+        <div style={{background:"#fff",borderRadius:16,padding:"14px",marginBottom:14,
+          border:"1px solid rgba(255,140,0,0.2)",boxShadow:"0 2px 12px rgba(0,0,0,0.08)"}}>
           <input value={title} onChange={e=>setTitle(e.target.value)} placeholder="제목"
-            style={{width:"100%",background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",
-              borderRadius:10,color:"#fff",padding:"9px 12px",fontSize:13,outline:"none",
+            style={{width:"100%",background:"#f7f7f7",border:"1px solid #e8e8e8",
+              borderRadius:10,color:"#1c1c1e",padding:"9px 12px",fontSize:13,outline:"none",
               fontFamily:"inherit",marginBottom:8,boxSizing:"border-box"}}/>
           <textarea value={body} onChange={e=>setBody(e.target.value)} placeholder="내용을 입력하세요..."
-            rows={3} style={{width:"100%",background:"rgba(255,255,255,0.08)",
-              border:"1px solid rgba(255,255,255,0.15)",borderRadius:10,color:"#fff",
+            rows={3} style={{width:"100%",background:"#f7f7f7",
+              border:"1px solid #e8e8e8",borderRadius:10,color:"#1c1c1e",
               padding:"9px 12px",fontSize:13,outline:"none",fontFamily:"inherit",
               resize:"none",boxSizing:"border-box",marginBottom:8}}/>
           {imgPreview&&(
@@ -5780,7 +5780,7 @@ function BoardView({ nickname, onLoginRequest }) {
           )}
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
             <button onClick={()=>fileRef.current?.click()} style={{padding:"6px 12px",borderRadius:12,
-              border:"1px solid rgba(255,255,255,0.2)",background:"transparent",color:"rgba(255,255,255,0.6)",
+              border:"1px solid #e8e8e8",background:"#f7f7f7",color:"#555",
               fontFamily:"inherit",fontSize:12,cursor:"pointer"}}>📷 사진</button>
             <input ref={fileRef} type="file" accept="image/*" style={{display:"none"}}
               onChange={e=>handleImg(e.target.files[0])}/>
