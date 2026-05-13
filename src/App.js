@@ -6494,7 +6494,7 @@ function ArsenalTab({ arsenal, dbLoading, setModal, setEditEnt, setView, nicknam
 }
 
 // ══ 마이페이지 슬라이드 패널 ════════════════════════════
-function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameChange, onDeleteAll, onLogout, isAdmin, pendingCount, showToast }) {
+function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameChange, onDeleteAll, onLogout, isAdmin, pendingCount, onMemberManage, showToast }) {
   const [section, setSection] = useState(null);
   const [posts, setPosts] = useState([]);
   const [scores, setScores] = useState([]);
@@ -6588,7 +6588,7 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
               letterSpacing:1.5,marginBottom:8}}>기타</div>
             {/* 관리자 전용 회원관리 버튼 */}
             {isAdmin&&(
-              <button onClick={()=>setSection("members")} style={{
+              <button onClick={()=>{onClose();onMemberManage();}} style={{
                 width:"100%",padding:"13px 16px",borderRadius:14,border:"none",
                 background:"rgba(255,140,0,0.1)",color:"#ff8c00",
                 fontFamily:"inherit",fontSize:14,fontWeight:700,cursor:"pointer",
@@ -6626,7 +6626,7 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
           {/* 섹션별 입력 */}
           {section==="pw"&&<PwChangeSection onDone={()=>setSection(null)} nickname={nickname} showToast={showToast}/>}
           {section==="nick"&&<NickChangeSection onDone={()=>setSection(null)} nickname={nickname} showToast={showToast}/>}
-          {section==="members"&&<MemberManageSection onDone={()=>setSection(null)} showToast={showToast}/>}
+
           {section==="delete"&&(
             <div style={{marginTop:12,background:"rgba(239,83,80,0.1)",borderRadius:14,padding:"14px",
               border:"1px solid rgba(239,83,80,0.3)"}}>
@@ -7422,6 +7422,7 @@ export default function RollmateApp() {
           arsenal={arsenal}
           isAdmin={isAdmin}
           pendingCount={pendingCount||0}
+          onMemberManage={()=>setView("admin_members")}
           onClose={()=>setShowMyPage(false)}
           onPasswordChange={async(oldPw,newPw)=>{
             try {
@@ -7841,6 +7842,30 @@ export default function RollmateApp() {
           </div>
         )}
 
+        {/* ADMIN MEMBERS - 회원 관리 */}
+        {view==="admin_members"&&(
+          <div style={{animation:"fadeUp .3s ease both"}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+              <button onClick={()=>setView("home")} style={{background:"none",border:"none",
+                color:"#aaa",cursor:"pointer",fontSize:13,fontFamily:"inherit",padding:0}}>
+                ← 홈
+              </button>
+              <div style={{fontWeight:800,fontSize:18,color:"#1c1c1e"}}>👥 회원 관리</div>
+              {pendingCount>0&&(
+                <span style={{background:"#ef5350",color:"#fff",borderRadius:"50%",
+                  width:22,height:22,display:"flex",alignItems:"center",
+                  justifyContent:"center",fontSize:12,fontWeight:900}}>
+                  {pendingCount}
+                </span>
+              )}
+            </div>
+            <MemberManageSection
+              showToast={showToast}
+              onPendingChange={(count)=>setPendingCount(count)}
+            />
+          </div>
+        )}
+
         {/* ADMIN YOUTUBE - 유튜브 채널 관리 */}
         {view==="admin_youtube"&&(
           <AdminYoutubeView
@@ -8123,7 +8148,7 @@ export default function RollmateApp() {
     </div>
   );
 }// ══ 회원 관리 섹션 ══════════════════════════════════
-function MemberManageSection({ onDone, showToast }) {
+function MemberManageSection({ showToast, onPendingChange }) {
   const [tab, setTab] = useState("pending"); // pending | members
   const [pending, setPending] = useState([]);
   const [members, setMembers] = useState([]);
@@ -8159,8 +8184,10 @@ function MemberManageSection({ onDone, showToast }) {
         body:JSON.stringify({status:"approved"}),
         prefer:"return=representation"
       });
-      setPending(prev=>prev.filter(r=>r.id!==req.id));
+      const newPending = pending.filter(r=>r.id!==req.id);
+      setPending(newPending);
       setMembers(prev=>[...prev,{nickname:req.nickname,is_admin:false}]);
+      onPendingChange?.(newPending.length);
       showToast(`${req.nickname} 가입 승인 완료! ✅`);
     } catch(e){ showToast("이미 존재하는 닉네임이에요","#fb8c00"); }
   };
@@ -8173,7 +8200,9 @@ function MemberManageSection({ onDone, showToast }) {
       body:JSON.stringify({status:"rejected"}),
       prefer:"return=representation"
     });
-    setPending(prev=>prev.filter(r=>r.id!==req.id));
+    const newPending = pending.filter(r=>r.id!==req.id);
+    setPending(newPending);
+    onPendingChange?.(newPending.length);
     showToast("거절 완료");
   };
 
@@ -8213,11 +8242,8 @@ function MemberManageSection({ onDone, showToast }) {
 
   return (
     <div style={{marginTop:12}}>
-      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-        <button onClick={onDone} style={{background:"none",border:"none",
-          color:"rgba(255,255,255,0.4)",cursor:"pointer",fontSize:13,
-          fontFamily:"inherit",padding:0}}>← 뒤로</button>
-        <div style={{fontSize:14,fontWeight:800,color:"#fff"}}>👥 회원 관리</div>
+      <div style={{marginBottom:12}}>
+        <div style={{fontSize:14,fontWeight:800,color:"#1c1c1e",display:"none"}}>👥 회원 관리</div>
       </div>
 
       {/* 탭 */}
