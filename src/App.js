@@ -5795,20 +5795,19 @@ function BoardView({ nickname, onLoginRequest }) {
 
       {/* 목록 */}
       {loading?(
-        <div style={{textAlign:"center",padding:"30px",color:"rgba(255,255,255,0.3)",fontSize:13}}>불러오는 중...</div>
+        <div style={{textAlign:"center",padding:"30px",color:"#aaa",fontSize:13}}>불러오는 중...</div>
       ):(
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
           {posts.length===0?(
-            <div style={{textAlign:"center",padding:"40px",color:"rgba(255,255,255,0.2)"}}>
+            <div style={{textAlign:"center",padding:"40px",color:"#bbb"}}>
               <div style={{fontSize:32,marginBottom:8}}>💬</div>
               <div style={{fontSize:13}}>첫 글을 남겨보세요!</div>
             </div>
           ):posts.map(p=>(
             <div key={p.id}
-              style={{background:"rgba(255,255,255,0.05)",borderRadius:14,padding:"12px 14px",
-                border:"1px solid rgba(255,255,255,0.07)",position:"relative"}}>
-              {/* 관리자 삭제 버튼 */}
-              {nickname && localStorage.getItem("rm_admin")==="1" && (
+              style={{background:"#fff",borderRadius:14,padding:"12px 14px",
+                border:"1px solid #f0f0f0",position:"relative",
+                boxShadow:"0 1px 6px rgba(0,0,0,0.06)"}}>
                 <button onClick={async(e)=>{
                   e.stopPropagation();
                   if(!window.confirm("게시물을 삭제할까요?")) return;
@@ -5823,19 +5822,19 @@ function BoardView({ nickname, onLoginRequest }) {
                 <img src={p.image_url} style={{width:"100%",borderRadius:10,maxHeight:140,
                   objectFit:"cover",marginBottom:8}}/>
               )}
-              <div style={{fontSize:14,fontWeight:700,color:"#fff",marginBottom:4}}>{p.title}</div>
-              {p.content&&<div style={{fontSize:12,color:"rgba(255,255,255,0.5)",marginBottom:6,
+              <div style={{fontSize:14,fontWeight:700,color:"#1c1c1e",marginBottom:4}}>{p.title}</div>
+              {p.content&&<div style={{fontSize:12,color:"#666",marginBottom:6,
                 lineHeight:1.5,overflow:"hidden",textOverflow:"ellipsis",display:"-webkit-box",
                 WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{p.content}</div>}
               <div style={{display:"flex",alignItems:"center",gap:8}}>
-                <span style={{fontSize:11,color:"rgba(255,255,255,0.35)"}}>{p.nickname}</span>
-                <span style={{fontSize:11,color:"rgba(255,255,255,0.2)"}}>·</span>
-                <span style={{fontSize:11,color:"rgba(255,255,255,0.35)"}}>
+                <span style={{fontSize:11,color:"#aaa"}}>{p.nickname}</span>
+                <span style={{fontSize:11,color:"#ddd"}}>·</span>
+                <span style={{fontSize:11,color:"#aaa"}}>
                   {new Date(p.created_at).toLocaleDateString("ko-KR",{month:"short",day:"numeric"})}
                 </span>
                 <button onClick={e=>{e.stopPropagation();likePost(p);}} style={{
                   marginLeft:"auto",background:"none",border:"none",cursor:"pointer",
-                  fontSize:12,color:p.likes>0?"#ff8c00":"rgba(255,255,255,0.3)",fontFamily:"inherit"}}>
+                  fontSize:12,color:p.likes>0?"#ff8c00":"#ccc",fontFamily:"inherit"}}>
                   ❤️ {p.likes||0}
                 </button>
               </div>
@@ -5869,33 +5868,33 @@ function PostDetail({ post, nickname, onBack, onLoginRequest }) {
 
   return (
     <div style={{animation:"fadeUp .3s ease both"}}>
-      <button onClick={onBack} style={{background:"none",border:"none",color:"rgba(255,255,255,0.5)",
+      <button onClick={onBack} style={{background:"none",border:"none",color:"#aaa",
         cursor:"pointer",fontFamily:"inherit",fontSize:13,marginBottom:14,padding:0,display:"flex",
         alignItems:"center",gap:4}}>← 목록으로</button>
-      <div style={{background:"rgba(255,255,255,0.05)",borderRadius:16,padding:"16px",marginBottom:14}}>
-        <div style={{fontSize:16,fontWeight:800,color:"#fff",marginBottom:6}}>{post.title}</div>
-        <div style={{fontSize:11,color:"rgba(255,255,255,0.35)",marginBottom:12}}>
-          {post.nickname} · {new Date(post.created_at).toLocaleDateString("ko-KR")}
+      <div style={{background:"#fff",borderRadius:16,padding:"16px",marginBottom:14,
+        boxShadow:"0 1px 8px rgba(0,0,0,0.06)",border:"1px solid #f0f0f0"}}>
+        <div style={{fontSize:16,fontWeight:800,color:"#1c1c1e",marginBottom:6}}>{post.title}</div>
+        <div style={{fontSize:11,color:"#aaa",marginBottom:12}}>
         </div>
         {post.image_url&&<img src={post.image_url} style={{width:"100%",borderRadius:10,marginBottom:10}}/>}
-        {post.content&&<div style={{fontSize:13,color:"rgba(255,255,255,0.75)",lineHeight:1.7}}>{post.content}</div>}
+        {post.content&&<div style={{fontSize:13,color:"#444",lineHeight:1.7}}>{post.content}</div>}
       </div>
-      <div style={{fontWeight:700,fontSize:13,color:"rgba(255,255,255,0.6)",marginBottom:8}}>
+      <div style={{fontWeight:700,fontSize:13,color:"#888",marginBottom:8}}>
         댓글 {comments.length}
       </div>
       <div style={{display:"flex",gap:8,marginBottom:12}}>
         <input value={cmtText} onChange={e=>setCmtText(e.target.value)}
           onKeyDown={e=>e.key==="Enter"&&submitComment()}
           placeholder="댓글을 입력하세요..."
-          style={{flex:1,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.12)",
-            borderRadius:12,color:"#fff",padding:"9px 12px",fontSize:13,outline:"none",fontFamily:"inherit"}}/>
+          style={{flex:1,background:"#f7f7f7",border:"1px solid #e8e8e8",
+            borderRadius:12,color:"#1c1c1e",padding:"9px 12px",fontSize:13,outline:"none",fontFamily:"inherit"}}/>
         <button onClick={submitComment} style={{padding:"9px 14px",background:"#ff8c00",border:"none",
           borderRadius:12,color:"#fff",fontFamily:"inherit",fontSize:12,fontWeight:700,cursor:"pointer"}}>등록</button>
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:6}}>
-        {comments.map(c=>(
-          <div key={c.id} style={{background:"rgba(255,255,255,0.04)",borderRadius:10,padding:"10px 12px"}}>
+          <div key={c.id} style={{background:"#f7f7f7",borderRadius:10,padding:"10px 12px"}}>
             <div style={{fontSize:11,color:"#ff8c00",fontWeight:700,marginBottom:3}}>{c.nickname}</div>
+            <div style={{fontSize:13,color:"#333"}}>{c.content}</div>
             <div style={{fontSize:13,color:"rgba(255,255,255,0.8)"}}>{c.content}</div>
           </div>
         ))}
