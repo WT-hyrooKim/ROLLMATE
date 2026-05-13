@@ -3256,6 +3256,7 @@ function LoginPopup({ onLogin, onClose }) {
   const [name, setName] = useState("");
   const [pw, setPw] = useState("");
   const [pw2, setPw2] = useState("");
+  const [memo, setMemo] = useState("");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   // 아이디/비번 찾기
@@ -3308,13 +3309,22 @@ function LoginPopup({ onLogin, onClose }) {
     if(pw!==pw2){setErr("비밀번호가 일치하지 않아요");return;}
     setLoading(true);setErr("");
     try{
-      const existing=await sbGet("users",`nickname=eq.${encodeURIComponent(name.trim())}&select=id`);
+      // 닉네임 중복 체크 (users + join_requests)
+      const [existing, existingReq] = await Promise.all([
+        sbGet("users",`nickname=eq.${encodeURIComponent(name.trim())}&select=id`),
+        sbGet("join_requests",`nickname=eq.${encodeURIComponent(name.trim())}&status=eq.pending&select=id`),
+      ]);
       if(existing.length){setErr("이미 사용 중인 닉네임이에요");setLoading(false);return;}
-      await sbInsert("users",{nickname:name.trim(),password:pw,is_admin:false});
-      localStorage.setItem("rm_nickname",name.trim());
-      localStorage.setItem("rm_pw",pw);
-      localStorage.setItem("rm_admin","0");
-      onLogin(name.trim(),[],false,[]);
+      if(existingReq.length){setErr("이미 가입 신청 중인 닉네임이에요");setLoading(false);return;}
+      // 가입 신청 등록
+      await sbInsert("join_requests",{
+        nickname:name.trim(),
+        password:pw,
+        message:memo||"",
+        status:"pending"
+      });
+      setErr("");
+      setStep(99); // 신청완료 화면
     }catch(e){setErr("연결 오류. 잠시 후 다시 시도해주세요.");}
     setLoading(false);
   };
@@ -4241,6 +4251,25 @@ function NicknameLogin({ onLogin }) {
           border:"1px solid rgba(255,255,255,0.1)",textAlign:"left"}}>
 
           {/* 로그인 */}
+          {mode==="register" && step===99 && (
+            <div style={{textAlign:"center",padding:"20px 0"}}>
+              <div style={{fontSize:40,marginBottom:12}}>✅</div>
+              <div style={{fontSize:18,fontWeight:800,color:"#fff",marginBottom:8}}>
+                가입 신청 완료!
+              </div>
+              <div style={{fontSize:13,color:"rgba(255,255,255,0.5)",lineHeight:1.7,marginBottom:20}}>
+                관리자 승인 후 로그인하실 수 있어요.<br/>
+                잠시 기다려 주세요 🙏
+              </div>
+              <button onClick={()=>{setMode("login");setStep(1);setName("");setPw("");setPw2("");}}
+                style={{padding:"12px 30px",background:"#ff8c00",border:"none",
+                  borderRadius:12,color:"#fff",fontFamily:"inherit",
+                  fontSize:14,fontWeight:700,cursor:"pointer"}}>
+                로그인 화면으로
+              </button>
+            </div>
+          )}
+
           {mode==="login" && (<>
             <label style={labelStyle}>닉네임</label>
             <input value={name} onChange={e=>{setName(e.target.value);setErr("");}}
@@ -6465,7 +6494,7 @@ function ArsenalTab({ arsenal, dbLoading, setModal, setEditEnt, setView, nicknam
 }
 
 // ══ 마이페이지 슬라이드 패널 ════════════════════════════
-function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameChange, onDeleteAll, onLogout, showToast }) {
+function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameChange, onDeleteAll, onLogout, isAdmin, pendingCount, showToast }) {
   const [section, setSection] = useState(null);
   const [posts, setPosts] = useState([]);
   const [scores, setScores] = useState([]);
@@ -6557,6 +6586,27 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
           <div style={{marginTop:12,marginBottom:6}}>
             <div style={{fontSize:10,color:"rgba(255,255,255,0.3)",fontWeight:700,
               letterSpacing:1.5,marginBottom:8}}>기타</div>
+            {/* 관리자 전용 회원관리 버튼 */}
+            {isAdmin&&(
+              <button onClick={()=>setSection("members")} style={{
+                width:"100%",padding:"13px 16px",borderRadius:14,border:"none",
+                background:"rgba(255,140,0,0.1)",color:"#ff8c00",
+                fontFamily:"inherit",fontSize:14,fontWeight:700,cursor:"pointer",
+                display:"flex",alignItems:"center",gap:10,marginBottom:6,textAlign:"left",
+                borderLeft:"3px solid rgba(255,140,0,0.6)"}}>
+                <span>👥</span>
+                회원 관리
+                {pendingCount>0&&(
+                  <span style={{marginLeft:4,background:"#ef5350",color:"#fff",
+                    borderRadius:"50%",width:20,height:20,display:"flex",
+                    alignItems:"center",justifyContent:"center",
+                    fontSize:11,fontWeight:900,flexShrink:0}}>
+                    {pendingCount}
+                  </span>
+                )}
+                <span style={{marginLeft:"auto",color:"rgba(255,255,255,0.2)"}}>›</span>
+              </button>
+            )}
             <button onClick={()=>{onLogout();onClose();}} style={{
               width:"100%",padding:"13px 16px",borderRadius:14,border:"none",
               background:"rgba(255,255,255,0.05)",color:"rgba(255,255,255,0.7)",
@@ -6576,6 +6626,7 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
           {/* 섹션별 입력 */}
           {section==="pw"&&<PwChangeSection onDone={()=>setSection(null)} nickname={nickname} showToast={showToast}/>}
           {section==="nick"&&<NickChangeSection onDone={()=>setSection(null)} nickname={nickname} showToast={showToast}/>}
+          {section==="members"&&<MemberManageSection onDone={()=>setSection(null)} showToast={showToast}/>}
           {section==="delete"&&(
             <div style={{marginTop:12,background:"rgba(239,83,80,0.1)",borderRadius:14,padding:"14px",
               border:"1px solid rgba(239,83,80,0.3)"}}>
@@ -7054,7 +7105,8 @@ export default function RollmateApp() {
   const [scores,setScores]               = useState([]);
   const [ballLikes,setBallLikes]         = useState([]);
   const [myBowlingTab,setMyBowlingTab]   = useState("arsenal"); // arsenal | scores
-  const [dbPopularity,setDbPopularity]   = useState({}); // Supabase 인기순위 // null | 'Heavy' | 'Medium' | 'Light'
+  const [dbPopularity,setDbPopularity]   = useState({});
+  const [pendingCount,setPendingCount]   = useState(0); // 가입신청 대기 수 // Supabase 인기순위 // null | 'Heavy' | 'Medium' | 'Light'
   const [notices,setNotices]   = useState([]);
   const scrollPos            = useRef(0);
 
@@ -7368,6 +7420,8 @@ export default function RollmateApp() {
         <MyPagePanel
           nickname={nickname}
           arsenal={arsenal}
+          isAdmin={isAdmin}
+          pendingCount={pendingCount||0}
           onClose={()=>setShowMyPage(false)}
           onPasswordChange={async(oldPw,newPw)=>{
             try {
@@ -8068,4 +8122,205 @@ export default function RollmateApp() {
       </div>
     </div>
   );
+}// ══ 회원 관리 섹션 ══════════════════════════════════
+function MemberManageSection({ onDone, showToast }) {
+  const [tab, setTab] = useState("pending"); // pending | members
+  const [pending, setPending] = useState([]);
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const [p, m] = await Promise.all([
+        sbGet("join_requests","order=created_at.desc"),
+        sbGet("users","order=created_at.desc"),
+      ]);
+      setPending((p||[]).filter(r=>r.status==="pending"));
+      setMembers(m||[]);
+    } catch(e){ showToast("로드 오류","#ef5350"); }
+    setLoading(false);
+  };
+
+  useEffect(()=>{ load(); },[]);
+
+  // 가입 승인
+  const approve = async (req) => {
+    try {
+      // users 테이블에 추가
+      await sbInsert("users",{
+        nickname: req.nickname,
+        password: req.password,
+        is_admin: false,
+      });
+      // 신청 상태 승인으로 변경
+      await sbFetch(`/join_requests?id=eq.${req.id}`,{
+        method:"PATCH",
+        body:JSON.stringify({status:"approved"}),
+        prefer:"return=representation"
+      });
+      setPending(prev=>prev.filter(r=>r.id!==req.id));
+      setMembers(prev=>[...prev,{nickname:req.nickname,is_admin:false}]);
+      showToast(`${req.nickname} 가입 승인 완료! ✅`);
+    } catch(e){ showToast("이미 존재하는 닉네임이에요","#fb8c00"); }
+  };
+
+  // 가입 거절
+  const reject = async (req) => {
+    if(!window.confirm(`"${req.nickname}" 신청을 거절할까요?`)) return;
+    await sbFetch(`/join_requests?id=eq.${req.id}`,{
+      method:"PATCH",
+      body:JSON.stringify({status:"rejected"}),
+      prefer:"return=representation"
+    });
+    setPending(prev=>prev.filter(r=>r.id!==req.id));
+    showToast("거절 완료");
+  };
+
+  // 회원 삭제
+  const deleteMember = async (m) => {
+    if(m.is_admin){ showToast("관리자는 삭제할 수 없어요","#fb8c00"); return; }
+    if(!window.confirm(`"${m.nickname}" 회원을 삭제할까요?`)) return;
+    await sbFetch(`/users?nickname=eq.${encodeURIComponent(m.nickname)}`,{method:"DELETE"});
+    setMembers(prev=>prev.filter(u=>u.nickname!==m.nickname));
+    showToast(`${m.nickname} 삭제 완료`);
+  };
+
+  // 관리자 권한 토글
+  const toggleAdmin = async (m) => {
+    if(!window.confirm(`"${m.nickname}" ${m.is_admin?"관리자 해제":"관리자 지정"}할까요?`)) return;
+    await sbFetch(`/users?nickname=eq.${encodeURIComponent(m.nickname)}`,{
+      method:"PATCH",
+      body:JSON.stringify({is_admin:!m.is_admin}),
+      prefer:"return=representation"
+    });
+    setMembers(prev=>prev.map(u=>u.nickname===m.nickname?{...u,is_admin:!u.is_admin}:u));
+    showToast(m.is_admin?"관리자 해제":"관리자 지정 완료");
+  };
+
+  const btnStyle = (active) => ({
+    flex:1,padding:"8px",borderRadius:10,border:"none",cursor:"pointer",
+    fontFamily:"inherit",fontSize:12,fontWeight:700,
+    background:active?"#ff8c00":"rgba(255,255,255,0.08)",
+    color:active?"#fff":"rgba(255,255,255,0.5)",
+  });
+
+  const cardStyle = {
+    background:"rgba(255,255,255,0.06)",borderRadius:12,
+    padding:"10px 12px",marginBottom:6,
+    border:"1px solid rgba(255,255,255,0.08)",
+  };
+
+  return (
+    <div style={{marginTop:12}}>
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
+        <button onClick={onDone} style={{background:"none",border:"none",
+          color:"rgba(255,255,255,0.4)",cursor:"pointer",fontSize:13,
+          fontFamily:"inherit",padding:0}}>← 뒤로</button>
+        <div style={{fontSize:14,fontWeight:800,color:"#fff"}}>👥 회원 관리</div>
+      </div>
+
+      {/* 탭 */}
+      <div style={{display:"flex",gap:6,marginBottom:12}}>
+        <button onClick={()=>setTab("pending")} style={btnStyle(tab==="pending")}>
+          가입 신청 {pending.length>0&&`(${pending.length})`}
+        </button>
+        <button onClick={()=>setTab("members")} style={btnStyle(tab==="members")}>
+          전체 회원 ({members.length})
+        </button>
+      </div>
+
+      {loading?(
+        <div style={{textAlign:"center",padding:"20px",color:"rgba(255,255,255,0.3)"}}>
+          로딩 중...
+        </div>
+      ):tab==="pending"?(
+        // 가입 신청 목록
+        <div>
+          {pending.length===0?(
+            <div style={{textAlign:"center",padding:"30px",
+              color:"rgba(255,255,255,0.3)",fontSize:13}}>
+              대기 중인 가입 신청이 없어요
+            </div>
+          ):pending.map(req=>(
+            <div key={req.id} style={cardStyle}>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+                <div style={{fontSize:14,fontWeight:700,color:"#fff",flex:1}}>
+                  {req.nickname}
+                </div>
+                <div style={{fontSize:10,color:"rgba(255,255,255,0.3)"}}>
+                  {req.created_at?.slice(0,10)}
+                </div>
+              </div>
+              {req.message&&(
+                <div style={{fontSize:12,color:"rgba(255,255,255,0.5)",
+                  marginBottom:8,fontStyle:"italic"}}>
+                  "{req.message}"
+                </div>
+              )}
+              <div style={{display:"flex",gap:6}}>
+                <button onClick={()=>approve(req)} style={{
+                  flex:2,padding:"7px",background:"rgba(67,160,71,0.2)",
+                  border:"1px solid rgba(67,160,71,0.4)",borderRadius:8,
+                  color:"#66bb6a",fontFamily:"inherit",fontSize:12,
+                  fontWeight:700,cursor:"pointer"}}>
+                  ✅ 승인
+                </button>
+                <button onClick={()=>reject(req)} style={{
+                  flex:1,padding:"7px",background:"rgba(239,83,80,0.1)",
+                  border:"1px solid rgba(239,83,80,0.3)",borderRadius:8,
+                  color:"#ef5350",fontFamily:"inherit",fontSize:12,
+                  fontWeight:700,cursor:"pointer"}}>
+                  거절
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ):(
+        // 전체 회원 목록
+        <div>
+          {members.map(m=>(
+            <div key={m.nickname} style={cardStyle}>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <div style={{width:32,height:32,borderRadius:"50%",flexShrink:0,
+                  background:m.is_admin?"rgba(255,140,0,0.2)":"rgba(255,255,255,0.1)",
+                  display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>
+                  {m.is_admin?"👑":"👤"}
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:13,fontWeight:700,color:"#fff"}}>
+                    {m.nickname}
+                    {m.is_admin&&<span style={{fontSize:10,color:"#ff8c00",
+                      marginLeft:6,fontWeight:800}}>ADMIN</span>}
+                  </div>
+                  <div style={{fontSize:10,color:"rgba(255,255,255,0.3)"}}>
+                    {m.created_at?.slice(0,10)||""}
+                  </div>
+                </div>
+                <div style={{display:"flex",gap:4,flexShrink:0}}>
+                  <button onClick={()=>toggleAdmin(m)} style={{
+                    padding:"4px 8px",borderRadius:6,border:"none",cursor:"pointer",
+                    fontFamily:"inherit",fontSize:10,fontWeight:700,
+                    background:"rgba(255,140,0,0.15)",color:"#ff8c00"}}>
+                    {m.is_admin?"해제":"관리자"}
+                  </button>
+                  {!m.is_admin&&(
+                    <button onClick={()=>deleteMember(m)} style={{
+                      padding:"4px 8px",borderRadius:6,border:"none",cursor:"pointer",
+                      fontFamily:"inherit",fontSize:10,fontWeight:700,
+                      background:"rgba(239,83,80,0.1)",color:"#ef5350"}}>
+                      삭제
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
+
+
