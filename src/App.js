@@ -3316,23 +3316,31 @@ function LoginPopup({ onLogin, onClose }) {
     if(pw!==pw2){setErr("비밀번호가 일치하지 않아요");return;}
     setLoading(true);setErr("");
     try{
-      // 닉네임 중복 체크 (users + join_requests)
-      const [existing, existingReq] = await Promise.all([
-        sbGet("users",`nickname=eq.${encodeURIComponent(name.trim())}&select=id`),
-        sbGet("join_requests",`nickname=eq.${encodeURIComponent(name.trim())}&status=eq.pending&select=id`),
-      ]);
-      if(existing.length){setErr("이미 사용 중인 닉네임이에요");setLoading(false);return;}
-      if(existingReq.length){setErr("이미 가입 신청 중인 닉네임이에요");setLoading(false);return;}
+      // 닉네임 중복 체크
+      const existing = await sbGet("users",`nickname=eq.${encodeURIComponent(name.trim())}&select=id`);
+      if(existing&&existing.length>0){setErr("이미 사용 중인 닉네임이에요");setLoading(false);return;}
+      const existingReq = await sbGet("join_requests",`nickname=eq.${encodeURIComponent(name.trim())}&select=id`);
+      if(existingReq&&existingReq.length>0){setErr("이미 가입 신청된 닉네임이에요");setLoading(false);return;}
       // 가입 신청 등록
-      await sbInsert("join_requests",{
-        nickname:name.trim(),
-        password:pw,
-        message:"",
-        status:"pending"
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/join_requests`,{
+        method:"POST",
+        headers:{
+          "apikey":SUPABASE_KEY,
+          "Authorization":`Bearer ${SUPABASE_KEY}`,
+          "Content-Type":"application/json",
+          "Prefer":"return=minimal",
+        },
+        body:JSON.stringify({nickname:name.trim(),password:pw,message:"",status:"pending"})
       });
-      setErr("");
-      setStep(99); // 신청완료 화면
-    }catch(e){setErr("연결 오류. 잠시 후 다시 시도해주세요.");}
+      if(!res.ok){
+        const errText = await res.text();
+        throw new Error(errText);
+      }
+      setStep(99);
+    }catch(e){
+      console.error("가입신청 오류:",e);
+      setErr("오류: "+(e.message||"알 수 없는 오류"));
+    }
     setLoading(false);
   };
 
