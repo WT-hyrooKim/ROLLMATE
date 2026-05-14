@@ -8244,14 +8244,14 @@ function MemberManageSection({ showToast, onPendingChange }) {
   const btnStyle = (active) => ({
     flex:1,padding:"8px",borderRadius:10,border:"none",cursor:"pointer",
     fontFamily:"inherit",fontSize:12,fontWeight:700,
-    background:active?"#ff8c00":"rgba(255,255,255,0.08)",
-    color:active?"#fff":"rgba(255,255,255,0.5)",
+    background:active?"#ff8c00":"#f0f0f0",
+    color:active?"#fff":"#666",
   });
 
   const cardStyle = {
-    background:"rgba(255,255,255,0.06)",borderRadius:12,
+    background:"#f7f7f7",borderRadius:12,
     padding:"10px 12px",marginBottom:6,
-    border:"1px solid rgba(255,255,255,0.08)",
+    border:"1px solid #e8e8e8",
   };
 
   return (
@@ -8271,7 +8271,7 @@ function MemberManageSection({ showToast, onPendingChange }) {
       </div>
 
       {loading?(
-        <div style={{textAlign:"center",padding:"20px",color:"rgba(255,255,255,0.3)"}}>
+        <div style={{textAlign:"center",padding:"20px",color:"#aaa"}}>
           로딩 중...
         </div>
       ):tab==="pending"?(
@@ -8279,21 +8279,21 @@ function MemberManageSection({ showToast, onPendingChange }) {
         <div>
           {pending.length===0?(
             <div style={{textAlign:"center",padding:"30px",
-              color:"rgba(255,255,255,0.3)",fontSize:13}}>
+              color:"#aaa",fontSize:13}}>
               대기 중인 가입 신청이 없어요
             </div>
           ):pending.map(req=>(
             <div key={req.id} style={cardStyle}>
               <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
-                <div style={{fontSize:14,fontWeight:700,color:"#fff",flex:1}}>
+                <div style={{fontSize:14,fontWeight:700,color:"#1c1c1e",flex:1}}>
                   {req.nickname}
                 </div>
-                <div style={{fontSize:10,color:"rgba(255,255,255,0.3)"}}>
+                <div style={{fontSize:10,color:"#aaa"}}>
                   {req.created_at?.slice(0,10)}
                 </div>
               </div>
               {req.message&&(
-                <div style={{fontSize:12,color:"rgba(255,255,255,0.5)",
+                <div style={{fontSize:12,color:"#666",
                   marginBottom:8,fontStyle:"italic"}}>
                   "{req.message}"
                 </div>
@@ -8324,17 +8324,17 @@ function MemberManageSection({ showToast, onPendingChange }) {
             <div key={m.nickname} style={cardStyle}>
               <div style={{display:"flex",alignItems:"center",gap:8}}>
                 <div style={{width:32,height:32,borderRadius:"50%",flexShrink:0,
-                  background:m.is_admin?"rgba(255,140,0,0.2)":"rgba(255,255,255,0.1)",
+                  background:m.is_admin?"rgba(255,140,0,0.15)":"#e8e8e8",
                   display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>
                   {m.is_admin?"👑":"👤"}
                 </div>
                 <div style={{flex:1,minWidth:0}}>
-                  <div style={{fontSize:13,fontWeight:700,color:"#fff"}}>
+                  <div style={{fontSize:13,fontWeight:700,color:"#1c1c1e"}}>
                     {m.nickname}
                     {m.is_admin&&<span style={{fontSize:10,color:"#ff8c00",
                       marginLeft:6,fontWeight:800}}>ADMIN</span>}
                   </div>
-                  <div style={{fontSize:10,color:"rgba(255,255,255,0.3)"}}>
+                  <div style={{fontSize:10,color:"#aaa"}}>
                     {m.created_at?.slice(0,10)||""}
                   </div>
                 </div>
