@@ -3257,6 +3257,7 @@ function LoginPopup({ onLogin, onClose }) {
   const [pw, setPw] = useState("");
   const [pw2, setPw2] = useState("");
   const [memo, setMemo] = useState("");
+  const [registered, setRegistered] = useState(false);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   // 아이디/비번 찾기
@@ -3336,7 +3337,7 @@ function LoginPopup({ onLogin, onClose }) {
         const errText = await res.text();
         throw new Error(errText);
       }
-      setStep(99);
+      setRegistered(true);
     }catch(e){
       console.error("가입신청 오류:",e);
       setErr("오류: "+(e.message||"알 수 없는 오류"));
@@ -3368,6 +3369,23 @@ function LoginPopup({ onLogin, onClose }) {
     {k:"register", l:"회원가입"},
     {k:"find", l:"계정 찾기"},
   ];
+
+  if(registered) return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.75)",
+      zIndex:4000,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px"}}>
+      <div style={{background:"#1c1c1e",borderRadius:24,padding:"32px 24px",
+        width:"100%",maxWidth:360,textAlign:"center"}}>
+        <div style={{fontSize:48,marginBottom:12}}>{"✅"}</div>
+        <div style={{fontSize:20,fontWeight:800,color:"#fff",marginBottom:8}}>{"가입 신청 완료!"}</div>
+        <div style={{fontSize:13,color:"rgba(255,255,255,0.5)",lineHeight:1.7,marginBottom:24}}>
+          {"관리자 승인 후 로그인하실 수 있어요."}<br/>{"잠시 기다려 주세요 🙏"}
+        </div>
+        <button onClick={onClose} style={{width:"100%",padding:"13px",background:"#ff8c00",
+          border:"none",borderRadius:12,color:"#fff",fontFamily:"inherit",
+          fontSize:14,fontWeight:700,cursor:"pointer"}}>{"확인"}</button>
+      </div>
+    </div>
+  );
 
   return (
     <div onClick={onClose}
