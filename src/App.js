@@ -5804,40 +5804,54 @@ function BoardView({ nickname, onLoginRequest }) {
               <div style={{fontSize:13}}>첫 글을 남겨보세요!</div>
             </div>
           ):posts.map(p=>(
-            <div key={p.id}
-              style={{background:"#fff",borderRadius:14,padding:"12px 14px",
-                border:"1px solid #f0f0f0",position:"relative",
-                boxShadow:"0 1px 6px rgba(0,0,0,0.06)"}}>
-                <button onClick={async(e)=>{
-                  e.stopPropagation();
-                  if(!window.confirm("게시물을 삭제할까요?")) return;
-                  await sbFetch(`/posts?id=eq.${p.id}`,{method:"DELETE"});
-                  load();
-                }} style={{position:"absolute",top:8,right:8,background:"rgba(239,83,80,0.15)",
-                  border:"none",borderRadius:6,padding:"2px 8px",color:"#ef5350",
-                  fontSize:10,cursor:"pointer",fontFamily:"inherit",fontWeight:700}}>삭제</button>
-              )}
-              <div onClick={()=>setSelPost(p)} style={{cursor:"pointer"}}>
+            <div key={p.id} style={{background:"#fff",borderRadius:16,
+              overflow:"hidden",boxShadow:"0 2px 12px rgba(0,0,0,0.07)",
+              border:"1px solid #f0f0f0",cursor:"pointer"}}
+              onClick={()=>setSelPost(p)}>
+              {/* 사진 */}
               {p.image_url&&(
-                <img src={p.image_url} style={{width:"100%",borderRadius:10,maxHeight:140,
-                  objectFit:"cover",marginBottom:8}}/>
+                <img src={p.image_url} style={{width:"100%",maxHeight:200,
+                  objectFit:"cover",display:"block"}}/>
               )}
-              <div style={{fontSize:14,fontWeight:700,color:"#1c1c1e",marginBottom:4}}>{p.title}</div>
-              {p.content&&<div style={{fontSize:12,color:"#666",marginBottom:6,
-                lineHeight:1.5,overflow:"hidden",textOverflow:"ellipsis",display:"-webkit-box",
-                WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{p.content}</div>}
-              <div style={{display:"flex",alignItems:"center",gap:8}}>
-                <span style={{fontSize:11,color:"#aaa"}}>{p.nickname}</span>
-                <span style={{fontSize:11,color:"#ddd"}}>·</span>
-                <span style={{fontSize:11,color:"#aaa"}}>
-                  {new Date(p.created_at).toLocaleDateString("ko-KR",{month:"short",day:"numeric"})}
-                </span>
-                <button onClick={e=>{e.stopPropagation();likePost(p);}} style={{
-                  marginLeft:"auto",background:"none",border:"none",cursor:"pointer",
-                  fontSize:12,color:p.likes>0?"#ff8c00":"#ccc",fontFamily:"inherit"}}>
-                  ❤️ {p.likes||0}
-                </button>
-              </div>
+              <div style={{padding:"12px 14px"}}>
+                {/* 제목 */}
+                <div style={{fontSize:15,fontWeight:800,color:"#1c1c1e",marginBottom:4}}>{p.title}</div>
+                {/* 글 내용 */}
+                {p.content&&(
+                  <div style={{fontSize:13,color:"#666",marginBottom:8,lineHeight:1.6,
+                    overflow:"hidden",textOverflow:"ellipsis",display:"-webkit-box",
+                    WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{p.content}</div>
+                )}
+                {/* 하단 정보 */}
+                <div style={{display:"flex",alignItems:"center",gap:8}}>
+                  <span style={{fontSize:12,color:"#aaa"}}>{p.nickname}</span>
+                  <span style={{fontSize:12,color:"#ddd"}}>·</span>
+                  <span style={{fontSize:12,color:"#aaa"}}>
+                    {new Date(p.created_at).toLocaleDateString("ko-KR",{month:"short",day:"numeric"})}
+                  </span>
+                  {/* 삭제 버튼 (관리자) */}
+                  {nickname&&localStorage.getItem("rm_admin")==="1"&&(
+                    <button onClick={async(e)=>{
+                      e.stopPropagation();
+                      if(!window.confirm("게시물을 삭제할까요?")) return;
+                      await sbFetch(`/posts?id=eq.${p.id}`,{method:"DELETE"});
+                      load();
+                    }} style={{marginLeft:4,background:"rgba(239,83,80,0.12)",
+                      border:"1px solid rgba(239,83,80,0.3)",borderRadius:8,
+                      padding:"4px 12px",color:"#ef5350",
+                      fontSize:13,cursor:"pointer",fontFamily:"inherit",fontWeight:700}}>
+                      삭제
+                    </button>
+                  )}
+                  {/* 하트 */}
+                  <button onClick={e=>{e.stopPropagation();likePost(p);}} style={{
+                    marginLeft:"auto",background:"none",border:"none",cursor:"pointer",
+                    fontSize:16,color:p.likes>0?"#e91e63":"#ddd",
+                    fontFamily:"inherit",display:"flex",alignItems:"center",gap:4,
+                    padding:"4px 8px"}}>
+                    ❤️ <span style={{fontSize:14,fontWeight:700}}>{p.likes||0}</span>
+                  </button>
+                </div>
               </div>
             </div>
           ))}
