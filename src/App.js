@@ -3327,7 +3327,7 @@ function LoginPopup({ onLogin, onClose }) {
       await sbInsert("join_requests",{
         nickname:name.trim(),
         password:pw,
-        message:memo||"",
+        message:"",
         status:"pending"
       });
       setErr("");
@@ -4193,30 +4193,7 @@ function NicknameLogin({ onLogin }) {
     setErr(""); setStep(2);
   };
 
-  const handleRegister = async () => {
-    if (!realName.trim()) { setErr("성명을 입력해주세요"); return; }
-    if (!birthYear || !birthMonth || !birthDay) { setErr("생년월일을 모두 선택해주세요"); return; }
-    const birthDate = `${birthYear}-${birthMonth.padStart(2,"0")}-${birthDay.padStart(2,"0")}`;
-    if (!gender) { setErr("성별을 선택해주세요"); return; }
-    setLoading(true); setErr("");
-    try {
-      const existing = await sbGet("users", `nickname=eq.${encodeURIComponent(name.trim())}&select=id`);
-      if (existing.length > 0) { setErr("이미 사용 중인 닉네임이에요."); setStep(1); setLoading(false); return; }
-      await sbInsert("users", {
-        nickname: name.trim(),
-        password: pw,
-        real_name: realName.trim(),
-        birth_date: birthDate,
-        gender: gender,
-        is_admin: false,
-      });
-      localStorage.setItem("rm_nickname", name.trim());
-      localStorage.setItem("rm_pw", pw);
-      localStorage.setItem("rm_admin", "0");
-      onLogin(name.trim(), [], false);
-    } catch(e) { setErr("연결 오류. 잠시 후 다시 시도해주세요."); }
-    setLoading(false);
-  };
+  
 
   const inputStyle = {
     width:"100%", background:"rgba(255,255,255,0.1)", border:"1.5px solid rgba(255,255,255,0.2)",
