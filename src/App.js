@@ -3299,7 +3299,14 @@ function LoginPopup({ onLogin, onClose }) {
         sbGet("notices","is_active=eq.true&order=created_at.desc"),
       ]);
       onLogin(name.trim(),data,isAdmin,noticeData);
-    }catch(e){setErr("연결 오류. 잠시 후 다시 시도해주세요.");}
+    }catch(e){
+      console.error("가입신청 오류:", e.message);
+      if(e.message?.includes("duplicate")||e.message?.includes("unique")) {
+        setErr("이미 신청된 닉네임이에요.");
+      } else {
+        setErr("오류: " + (e.message||"알 수 없는 오류"));
+      }
+    }
     setLoading(false);
   };
 
@@ -3388,7 +3395,7 @@ function LoginPopup({ onLogin, onClose }) {
           <input value={name} onChange={e=>{setName(e.target.value);setErr("");}}
             onKeyDown={e=>e.key==="Enter"&&handleLogin()}
             placeholder="닉네임" maxLength={20} style={inputStyle} autoFocus/>
-          <input type="password" value={pw} onChange={e=>{setPw(e.target.value);setErr("");}}
+          <input type="password" value={pw} onChange={e=>{setPw(e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*]/g,""));setErr("");}}
             onKeyDown={e=>e.key==="Enter"&&handleLogin()}
             placeholder="비밀번호" maxLength={30} style={inputStyle}/>
           {err&&<div style={{fontSize:12,color:"#ef5350",fontWeight:600,marginBottom:8}}>{err}</div>}
@@ -3410,9 +3417,9 @@ function LoginPopup({ onLogin, onClose }) {
         {mode==="register"&&(<>
           <input value={name} onChange={e=>{setName(e.target.value);setErr("");}}
             placeholder="닉네임 (2글자 이상)" maxLength={20} style={inputStyle} autoFocus/>
-          <input type="password" value={pw} onChange={e=>{setPw(e.target.value);setErr("");}}
+          <input type="password" value={pw} onChange={e=>{setPw(e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*]/g,""));setErr("");}}
             placeholder="비밀번호 (4자리 이상)" maxLength={30} style={inputStyle}/>
-          <input type="password" value={pw2} onChange={e=>{setPw2(e.target.value);setErr("");}}
+          <input type="password" value={pw2} onChange={e=>{setPw2(e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*]/g,""));setErr("");}}
             onKeyDown={e=>e.key==="Enter"&&handleRegister()}
             placeholder="비밀번호 확인" maxLength={30} style={inputStyle}/>
           {err&&<div style={{fontSize:12,color:"#ef5350",fontWeight:600,marginBottom:8}}>{err}</div>}
@@ -3922,7 +3929,7 @@ function DeleteModal({ onClose, onDelete }) {
           type="password"
           placeholder="현재 비밀번호"
           value={pw}
-          onChange={e=>{ setPw(e.target.value); setErr(""); }}
+          onChange={e=>{ setPw(e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*]/g,"")); setErr(""); }}
           style={inputStyle}
           autoComplete="current-password"
         />
@@ -3985,11 +3992,11 @@ function PwChangeModal({ onClose, onSave }) {
           <button onClick={()=>onClose(false)} style={{background:"none",border:"none",color:"#ccc",fontSize:22,cursor:"pointer"}}>✕</button>
         </div>
         <input type="password" placeholder="현재 비밀번호" value={oldPw}
-          onChange={e=>{setOldPw(e.target.value);setErr("");}} style={inputStyle}/>
+          onChange={e=>{setOldPw(e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*]/g,""));setErr("");}} style={inputStyle}/>
         <input type="password" placeholder="새 비밀번호 (4자 이상)" value={newPw1}
-          onChange={e=>{setNewPw1(e.target.value);setErr("");}} style={inputStyle}/>
+          onChange={e=>{setNewPw1(e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*]/g,""));setErr("");}} style={inputStyle}/>
         <input type="password" placeholder="새 비밀번호 확인" value={newPw2}
-          onChange={e=>{setNewPw2(e.target.value);setErr("");}} style={inputStyle}/>
+          onChange={e=>{setNewPw2(e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*]/g,""));setErr("");}} style={inputStyle}/>
         {err && <div style={{fontSize:12,color:"#ef5350",fontWeight:600,marginBottom:8}}>{err}</div>}
         <button onClick={handle} disabled={loading} style={{width:"100%",padding:"12px",
           background:loading?"#aaa":"#1c1c1e",border:"none",borderRadius:11,color:"#fff",
@@ -4040,7 +4047,7 @@ function NickChangeModal({ nickname, onClose, onSave }) {
         <input placeholder="새 닉네임 (2글자 이상)" value={newNick}
           onChange={e=>{setNewNick(e.target.value);setErr("");}} style={inputStyle}/>
         <input type="password" placeholder="비밀번호 확인" value={pw}
-          onChange={e=>{setPw(e.target.value);setErr("");}} style={inputStyle}/>
+          onChange={e=>{setPw(e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*]/g,""));setErr("");}} style={inputStyle}/>
         {err && <div style={{fontSize:12,color:"#ef5350",fontWeight:600,marginBottom:8}}>{err}</div>}
         <button onClick={handle} disabled={loading} style={{width:"100%",padding:"12px",
           background:loading?"#aaa":"#1c1c1e",border:"none",borderRadius:11,color:"#fff",
@@ -4276,7 +4283,7 @@ function NicknameLogin({ onLogin }) {
               onKeyDown={e=>e.key==="Enter"&&handleLogin()}
               placeholder="닉네임 입력" maxLength={20} autoFocus style={inputStyle}/>
             <label style={labelStyle}>비밀번호</label>
-            <input type="password" value={pw} onChange={e=>{setPw(e.target.value);setErr("");}}
+            <input type="password" value={pw} onChange={e=>{setPw(e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*]/g,""));setErr("");}}
               onKeyDown={e=>e.key==="Enter"&&handleLogin()}
               placeholder="비밀번호 입력" maxLength={30} style={inputStyle}/>
             {err&&<div style={{fontSize:12,color:"#ff6b6b",marginBottom:8,fontWeight:600}}>{err}</div>}
@@ -4301,10 +4308,10 @@ function NicknameLogin({ onLogin }) {
             <input value={name} onChange={e=>{setName(e.target.value);setErr("");}}
               placeholder="2글자 이상" maxLength={20} autoFocus style={inputStyle}/>
             <label style={labelStyle}>비밀번호</label>
-            <input type="password" value={pw} onChange={e=>{setPw(e.target.value);setErr("");}}
+            <input type="password" value={pw} onChange={e=>{setPw(e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*]/g,""));setErr("");}}
               placeholder="4자리 이상" maxLength={30} style={inputStyle}/>
             <label style={labelStyle}>비밀번호 확인</label>
-            <input type="password" value={pw2} onChange={e=>{setPw2(e.target.value);setErr("");}}
+            <input type="password" value={pw2} onChange={e=>{setPw2(e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*]/g,""));setErr("");}}
               onKeyDown={e=>e.key==="Enter"&&handleNextStep()}
               placeholder="비밀번호 재입력" maxLength={30} style={inputStyle}/>
             {err&&<div style={{fontSize:12,color:"#ff6b6b",marginBottom:8,fontWeight:600}}>{err}</div>}
