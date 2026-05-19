@@ -2869,7 +2869,7 @@ function BrandLogo({ brand, size=28, active=false }) {
   if (logo.img) {
     return (
       <div style={{
-        width:size*2.2, height:size*0.75,
+        width:size*2.8, height:size*1.0,
         display:"flex", alignItems:"center", justifyContent:"center",
         flexShrink:0,
       }}>
@@ -7734,7 +7734,7 @@ export default function RollmateApp() {
                   padding:"8px 14px",
                   boxShadow:act?"0 4px 14px rgba(55,65,81,.28)":"0 1px 4px rgba(0,0,0,0.07)",
                   border:`1px solid ${act?"#1c1c1e":"#e8e8e8"}`}}>
-                  <BrandLogo brand={b} size={28} active={act}/>
+                  <BrandLogo brand={b} size={36} active={act}/>
 
                 </button>;
               })}
@@ -7784,9 +7784,9 @@ export default function RollmateApp() {
                     <div style={{display:"flex",justifyContent:"center",alignItems:"center",marginBottom:4,height:16}}>
                       {BRAND_LOGO[ball.brand]?.img ? (
                         <img src={BRAND_LOGO[ball.brand].img} alt={ball.brand}
-                          style={{height:13,maxWidth:56,objectFit:"contain",opacity:0.75}}/>
+                          style={{height:20,maxWidth:72,objectFit:"contain",opacity:0.88}}/>
                       ):(
-                        <span style={{fontSize:9,color:ball.accent,fontWeight:800,
+                        <span style={{fontSize:10,color:ball.accent,fontWeight:800,
                           letterSpacing:1}}>{ball.brand.toUpperCase()}</span>
                       )}
                     </div>
