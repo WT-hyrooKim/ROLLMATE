@@ -2867,9 +2867,15 @@ function BrandLogo({ brand, size=28, active=false }) {
   if (!logo) return <span style={{fontSize:14}}>{BRAND_ICON[brand]||"🎳"}</span>;
 
   if (logo.img) {
+    // 브랜드별 크기 조정
+    const scaleMap = {
+      "Brunswick": 0.65,
+      "Ebonite": 0.65,
+    };
+    const scale = scaleMap[brand] || 1.0;
     return (
       <div style={{
-        width:size*2.8, height:size*1.0,
+        width:size*2.8*scale, height:size*1.0*scale,
         display:"flex", alignItems:"center", justifyContent:"center",
         flexShrink:0,
       }}>
@@ -7731,10 +7737,10 @@ export default function RollmateApp() {
                 return <button key={b} className="chip" onClick={()=>setBrand(act?"전체":b)} style={{
                   background:act?"#1c1c1e":"#fff",
                   color:act?"#fff":"#1a1a2e",flexShrink:0,
-                  padding:"8px 14px",
+                  padding:"5px 10px",
                   boxShadow:act?"0 4px 14px rgba(55,65,81,.28)":"0 1px 4px rgba(0,0,0,0.07)",
                   border:`1px solid ${act?"#1c1c1e":"#e8e8e8"}`}}>
-                  <BrandLogo brand={b} size={36} active={act}/>
+                  <BrandLogo brand={b} size={30} active={act}/>
 
                 </button>;
               })}
