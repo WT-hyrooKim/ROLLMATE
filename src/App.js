@@ -6522,6 +6522,7 @@ function ArsenalTab({ arsenal, dbLoading, setModal, setEditEnt, setView, nicknam
 // ══ 마이페이지 슬라이드 패널 ════════════════════════════
 function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameChange, onDeleteAll, onLogout, isAdmin, pendingCount, onMemberManage, showToast }) {
   const [section, setSection] = useState(null);
+  const [csOpen, setCsOpen] = useState(false); // 고객센터 토글
   const [posts, setPosts] = useState([]);
   const [scores, setScores] = useState([]);
 
@@ -6547,7 +6548,7 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
         background:"#1a1a1f",
         boxShadow:"-8px 0 40px rgba(0,0,0,0.5)",
         animation:"slideRight .3s cubic-bezier(.34,1.1,.64,1)"}}>
-        <style>{`@keyframes slideRight{from{transform:translateX(100%)}to{transform:translateY(0)}}`}</style>
+        <style>{`@keyframes slideRight{from{transform:translateX(100%)}to{transform:translateX(0)}}`}</style>
 
         {/* 헤더 */}
         <div style={{background:"linear-gradient(135deg,rgba(255,140,0,0.15),rgba(255,100,0,0.05))",
@@ -6562,117 +6563,144 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
             </div>
             <div>
               <div style={{fontSize:18,fontWeight:900,color:"#fff"}}>{nickname}</div>
-              <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",marginTop:2}}>볼링공 {arsenal.length}개 등록</div>
+              <div style={{fontSize:12,color:"rgba(255,255,255,0.5)",marginTop:2}}>
+                볼링공 {arsenal.length}개 등록
+              </div>
             </div>
             <button onClick={onClose} style={{marginLeft:"auto",background:"none",border:"none",
-              color:"rgba(255,255,255,0.4)",fontSize:20,cursor:"pointer"}}>✕</button>
+              color:"rgba(255,255,255,0.5)",fontSize:20,cursor:"pointer"}}>{"✕"}</button>
           </div>
         </div>
 
         <div style={{padding:"16px"}}>
-          {/* 활동 내역 */}
+
+          {/* ── 활동 내역 ── */}
           <div style={{marginBottom:16}}>
-            <div style={{fontSize:10,color:"rgba(255,255,255,0.3)",fontWeight:700,
-              letterSpacing:1.5,marginBottom:8}}>활동 내역</div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8}}>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.6)",fontWeight:800,
+              letterSpacing:1.5,marginBottom:10}}>활동 내역</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
               {[
                 {l:"게시물",v:posts.length,icon:"📝"},
-                {l:"점수기록",v:scores.length,icon:"🎳"},
+                {l:"점수",v:scores.length,icon:"🎳"},
                 {l:"댓글",v:"-",icon:"💬"},
                 {l:"관심볼",v:"-",icon:"❤️"},
               ].map(item=>(
-                <div key={item.l} style={{background:"rgba(255,255,255,0.05)",borderRadius:12,
-                  padding:"12px",textAlign:"center",border:"1px solid rgba(255,255,255,0.06)"}}>
-                  <div style={{fontSize:18,marginBottom:4}}>{item.icon}</div>
-                  <div style={{fontSize:20,fontWeight:900,color:"#ff8c00"}}>{item.v}</div>
-                  <div style={{fontSize:10,color:"rgba(255,255,255,0.4)",marginTop:2}}>{item.l}</div>
+                <div key={item.l} style={{
+                  background:"rgba(255,255,255,0.07)",
+                  borderRadius:12,padding:"10px 6px",textAlign:"center",
+                  border:"1px solid rgba(255,255,255,0.1)"}}>
+                  <div style={{fontSize:16,marginBottom:3}}>{item.icon}</div>
+                  <div style={{fontSize:18,fontWeight:900,color:"#ff8c00",lineHeight:1}}>{item.v}</div>
+                  <div style={{fontSize:9,color:"rgba(255,255,255,0.6)",marginTop:3,fontWeight:600}}>{item.l}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* 설정 메뉴 */}
-          <div style={{fontSize:10,color:"rgba(255,255,255,0.3)",fontWeight:700,
-            letterSpacing:1.5,marginBottom:8}}>계정 설정</div>
-          {[
-            {icon:"🔑",label:"비밀번호 변경",action:()=>setSection("pw")},
-            {icon:"✏️",label:"닉네임 변경",action:()=>setSection("nick")},
-          ].map(item=>(
-            <button key={item.label} onClick={item.action} style={{
-              width:"100%",padding:"13px 16px",borderRadius:14,border:"none",
-              background:"rgba(255,255,255,0.05)",color:"#fff",
-              fontFamily:"inherit",fontSize:14,fontWeight:600,cursor:"pointer",
-              display:"flex",alignItems:"center",gap:10,marginBottom:6,textAlign:"left",
-              borderLeft:"3px solid rgba(255,140,0,0.4)"}}>
-              <span>{item.icon}</span>{item.label}
-              <span style={{marginLeft:"auto",color:"rgba(255,255,255,0.2)"}}>›</span>
-            </button>
-          ))}
+          {/* 구분선 */}
+          <div style={{height:1,background:"rgba(255,255,255,0.08)",marginBottom:16}}/>
 
-          <div style={{marginTop:12,marginBottom:6}}>
-            <div style={{fontSize:10,color:"rgba(255,255,255,0.3)",fontWeight:700,
-              letterSpacing:1.5,marginBottom:8}}>기타</div>
-            {/* 관리자 전용 회원관리 버튼 */}
-            {isAdmin&&(
-              <button onClick={()=>{onClose();onMemberManage();}} style={{
-                width:"100%",padding:"13px 16px",borderRadius:14,border:"none",
-                background:"rgba(255,140,0,0.1)",color:"#ff8c00",
-                fontFamily:"inherit",fontSize:14,fontWeight:700,cursor:"pointer",
-                display:"flex",alignItems:"center",gap:10,marginBottom:6,textAlign:"left",
-                borderLeft:"3px solid rgba(255,140,0,0.6)"}}>
-                <span>👥</span>
-                회원 관리
-                {pendingCount>0&&(
-                  <span style={{marginLeft:4,background:"#ef5350",color:"#fff",
-                    borderRadius:"50%",width:20,height:20,display:"flex",
-                    alignItems:"center",justifyContent:"center",
-                    fontSize:11,fontWeight:900,flexShrink:0}}>
-                    {pendingCount}
-                  </span>
-                )}
-                <span style={{marginLeft:"auto",color:"rgba(255,255,255,0.2)"}}>›</span>
+          {/* ── 고객센터 탭 ── */}
+          <button onClick={()=>setCsOpen(o=>!o)} style={{
+            width:"100%",padding:"14px 16px",borderRadius:14,border:"none",
+            background:"rgba(255,255,255,0.06)",
+            display:"flex",alignItems:"center",gap:10,marginBottom:8,
+            cursor:"pointer",fontFamily:"inherit",textAlign:"left"}}>
+            <span style={{fontSize:18}}>{"⚙️"}</span>
+            <span style={{fontSize:14,fontWeight:700,color:"#fff",flex:1}}>고객센터</span>
+            <span style={{fontSize:12,color:"rgba(255,255,255,0.4)",
+              transform:csOpen?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
+          </button>
+
+          {/* 고객센터 메뉴 (드롭다운) */}
+          {csOpen&&(
+            <div style={{background:"rgba(255,255,255,0.04)",borderRadius:14,
+              padding:"8px",marginBottom:8,
+              border:"1px solid rgba(255,255,255,0.08)"}}>
+              {/* 계정 설정 */}
+              <div style={{fontSize:10,color:"rgba(255,255,255,0.4)",fontWeight:700,
+                letterSpacing:1.2,padding:"6px 8px 4px"}}>계정 설정</div>
+              {[
+                {icon:"🔑",label:"비밀번호 변경",action:()=>setSection("pw")},
+                {icon:"✏️",label:"닉네임 변경",action:()=>setSection("nick")},
+              ].map(item=>(
+                <button key={item.label} onClick={item.action} style={{
+                  width:"100%",padding:"11px 12px",borderRadius:10,border:"none",
+                  background:"transparent",color:"#fff",
+                  fontFamily:"inherit",fontSize:13,fontWeight:600,cursor:"pointer",
+                  display:"flex",alignItems:"center",gap:10,textAlign:"left",
+                  marginBottom:2}}>
+                  <span style={{fontSize:16}}>{item.icon}</span>
+                  <span style={{flex:1,color:"#e0e0e0"}}>{item.label}</span>
+                  <span style={{color:"rgba(255,255,255,0.2)",fontSize:12}}>{"›"}</span>
+                </button>
+              ))}
+
+              {/* 구분선 */}
+              <div style={{height:1,background:"rgba(255,255,255,0.06)",margin:"6px 0"}}/>
+
+              {/* 기타 */}
+              <div style={{fontSize:10,color:"rgba(255,255,255,0.4)",fontWeight:700,
+                letterSpacing:1.2,padding:"6px 8px 4px"}}>기타</div>
+
+              {/* 관리자 회원관리 */}
+              {isAdmin&&(
+                <button onClick={()=>{onClose();onMemberManage();}} style={{
+                  width:"100%",padding:"11px 12px",borderRadius:10,border:"none",
+                  background:"rgba(255,140,0,0.08)",
+                  fontFamily:"inherit",fontSize:13,fontWeight:700,cursor:"pointer",
+                  display:"flex",alignItems:"center",gap:10,textAlign:"left",marginBottom:2}}>
+                  <span style={{fontSize:16}}>{"👥"}</span>
+                  <span style={{flex:1,color:"#ff8c00"}}>회원 관리</span>
+                  {pendingCount>0&&(
+                    <span style={{background:"#ef5350",color:"#fff",
+                      borderRadius:"50%",width:18,height:18,display:"flex",
+                      alignItems:"center",justifyContent:"center",
+                      fontSize:10,fontWeight:900}}>
+                      {pendingCount}
+                    </span>
+                  )}
+                  <span style={{color:"rgba(255,255,255,0.2)",fontSize:12}}>{"›"}</span>
+                </button>
+              )}
+
+              <button onClick={()=>{
+                if(window.confirm("모든 데이터를 삭제할까요?")) onDeleteAll();
+              }} style={{
+                width:"100%",padding:"11px 12px",borderRadius:10,border:"none",
+                background:"transparent",
+                fontFamily:"inherit",fontSize:13,fontWeight:600,cursor:"pointer",
+                display:"flex",alignItems:"center",gap:10,textAlign:"left",marginBottom:2}}>
+                <span style={{fontSize:16}}>{"🗑️"}</span>
+                <span style={{flex:1,color:"#ef9a9a"}}>데이터 삭제</span>
+                <span style={{color:"rgba(255,255,255,0.2)",fontSize:12}}>{"›"}</span>
               </button>
-            )}
-            <button onClick={()=>{onLogout();onClose();}} style={{
-              width:"100%",padding:"13px 16px",borderRadius:14,border:"none",
-              background:"rgba(255,255,255,0.05)",color:"rgba(255,255,255,0.7)",
-              fontFamily:"inherit",fontSize:14,fontWeight:600,cursor:"pointer",
-              display:"flex",alignItems:"center",gap:10,marginBottom:6,textAlign:"left"}}>
-              <span>🚪</span> 로그아웃
-            </button>
-            <button onClick={()=>setSection("delete")} style={{
-              width:"100%",padding:"13px 16px",borderRadius:14,border:"none",
-              background:"rgba(239,83,80,0.08)",color:"#ef5350",
-              fontFamily:"inherit",fontSize:14,fontWeight:600,cursor:"pointer",
-              display:"flex",alignItems:"center",gap:10,textAlign:"left"}}>
-              <span>🗑️</span> 계정 삭제
-            </button>
-          </div>
 
-          {/* 섹션별 입력 */}
-          {section==="pw"&&<PwChangeSection onDone={()=>setSection(null)} nickname={nickname} showToast={showToast}/>}
-          {section==="nick"&&<NickChangeSection onDone={()=>setSection(null)} nickname={nickname} showToast={showToast}/>}
-
-          {section==="delete"&&(
-            <div style={{marginTop:12,background:"rgba(239,83,80,0.1)",borderRadius:14,padding:"14px",
-              border:"1px solid rgba(239,83,80,0.3)"}}>
-              <div style={{fontSize:13,color:"#ef5350",fontWeight:700,marginBottom:10}}>
-                정말 계정을 삭제하시겠어요? 모든 데이터가 삭제돼요.
-              </div>
-              <button onClick={()=>{onDeleteAll();onClose();}} style={{
-                width:"100%",padding:"10px",background:"#ef5350",border:"none",borderRadius:10,
-                color:"#fff",fontFamily:"inherit",fontSize:13,fontWeight:800,cursor:"pointer"}}>
-                삭제 확인
+              <button onClick={()=>{onLogout();onClose();}} style={{
+                width:"100%",padding:"11px 12px",borderRadius:10,border:"none",
+                background:"transparent",
+                fontFamily:"inherit",fontSize:13,fontWeight:600,cursor:"pointer",
+                display:"flex",alignItems:"center",gap:10,textAlign:"left"}}>
+                <span style={{fontSize:16}}>{"🚪"}</span>
+                <span style={{flex:1,color:"#e0e0e0"}}>로그아웃</span>
+                <span style={{color:"rgba(255,255,255,0.2)",fontSize:12}}>{"›"}</span>
               </button>
             </div>
           )}
+
+        </div>
+
+        {/* 섹션 */}
+        <div style={{padding:"0 16px 16px"}}>
+          {section==="pw"&&<PwChangeSection onDone={()=>setSection(null)} nickname={nickname} showToast={showToast}/>}
+          {section==="nick"&&<NickChangeSection onDone={()=>setSection(null)} nickname={nickname} showToast={showToast}/>}
         </div>
       </div>
     </div>
   );
 }
 
-// ══ 볼 스캔 컴포넌트 (Gemini Vision + Vercel Serverless) ══
+
 function BallScanner({ balls, onSelectBall }) {
   const [img, setImg] = useState(null);
   const [imgB64, setImgB64] = useState(null);
