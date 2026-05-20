@@ -2867,12 +2867,8 @@ function BrandLogo({ brand, size=28, active=false }) {
   if (!logo) return <span style={{fontSize:14}}>{BRAND_ICON[brand]||"🎳"}</span>;
 
   if (logo.img) {
-    // 브랜드별 크기 조정
-    const scaleMap = {
-      "Brunswick": 0.65,
-      "Ebonite": 0.65,
-    };
-    const scale = scaleMap[brand] || 1.0;
+    // 전체 브랜드 동일 스케일
+    const scale = 0.65;
     return (
       <div style={{
         width:size*2.8*scale, height:size*1.0*scale,
