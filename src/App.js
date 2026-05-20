@@ -7136,6 +7136,24 @@ export default function RollmateApp() {
   const [notices,setNotices]   = useState([]);
   const scrollPos            = useRef(0);
 
+  useEffect(()=>{
+    // 마이페이지 패널 열릴 때 배경 스크롤 방지
+    if(showMyPage){
+      document.body.style.overflow="hidden";
+      document.body.style.position="fixed";
+      document.body.style.width="100%";
+    } else {
+      document.body.style.overflow="";
+      document.body.style.position="";
+      document.body.style.width="";
+    }
+    return ()=>{
+      document.body.style.overflow="";
+      document.body.style.position="";
+      document.body.style.width="";
+    };
+  },[showMyPage]);
+
   useEffect(()=>{setTimeout(()=>setSplash(false),2000);},[]);
 
   // 앱 시작 시 저장된 닉네임+비번 있으면 자동 로그인
