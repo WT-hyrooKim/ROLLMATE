@@ -6557,7 +6557,7 @@ function ArsenalTab({ arsenal, dbLoading, setModal, setEditEnt, setView, nicknam
 }
 
 // ══ 마이페이지 슬라이드 패널 ════════════════════════════
-function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameChange, onDeleteAll, onLogout, isAdmin, pendingCount, onMemberManage, showToast }) {
+function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameChange, onDeleteAll, onLogout, isAdmin, pendingCount, onMemberManage, showToast, likedBalls, onViewLiked }) {
   const [section, setSection] = useState(null);
   const [csOpen, setCsOpen] = useState(false); // 고객센터 토글
   const [posts, setPosts] = useState([]);
@@ -6620,7 +6620,7 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
                 {l:"게시물",v:posts.length,icon:"📝"},
                 {l:"점수",v:scores.length,icon:"🎳"},
                 {l:"댓글",v:"-",icon:"💬"},
-                {l:"관심볼",v:likedBalls.length,icon:"❤️",action:()=>setView("liked_balls")},
+                {l:"관심볼",v:likedBalls.length,icon:"❤️",action:()=>{onClose();onViewLiked();}},
               ].map(item=>(
                 <div key={item.l}
                   onClick={item.action||undefined}
@@ -7541,6 +7541,8 @@ export default function RollmateApp() {
           arsenal={arsenal}
           isAdmin={isAdmin}
           pendingCount={pendingCount||0}
+          likedBalls={likedBalls}
+          onViewLiked={()=>setView("liked_balls")}
           onMemberManage={()=>setView("admin_members")}
           onClose={()=>setShowMyPage(false)}
           onPasswordChange={async(oldPw,newPw)=>{
