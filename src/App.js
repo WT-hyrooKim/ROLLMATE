@@ -2900,17 +2900,17 @@ function BrandLogo({ brand, size=28, active=false }) {
 
   if (logo.img) {
     // 전체 브랜드 동일 스케일
-    const scale = 0.65;
+    const scale = 0.85;
     return (
       <div style={{
-        width:size*2.8*scale, height:size*1.0*scale,
+        width:size*3.2*scale, height:size*1.1*scale,
         display:"flex", alignItems:"center", justifyContent:"center",
         flexShrink:0,
       }}>
         <img src={logo.img} alt={brand} style={{
           width:"100%", height:"100%", objectFit:"contain",
-          opacity:active?1:0.7,
-          filter:active?"none":"grayscale(15%)",
+          opacity:active?1:0.82,
+          filter:active?"none":"grayscale(10%)",
           transition:"all .2s",
         }}/>
       </div>
@@ -7831,7 +7831,7 @@ export default function RollmateApp() {
                   padding:"5px 10px",
                   boxShadow:act?"0 4px 14px rgba(55,65,81,.28)":"0 1px 4px rgba(0,0,0,0.07)",
                   border:`1px solid ${act?"#1c1c1e":"#e8e8e8"}`}}>
-                  <BrandLogo brand={b} size={30} active={act}/>
+                  <BrandLogo brand={b} size={34} active={act}/>
 
                 </button>;
               })}
@@ -7882,7 +7882,7 @@ export default function RollmateApp() {
                     <div style={{display:"flex",justifyContent:"center",alignItems:"center",marginBottom:4,height:16}}>
                       {BRAND_LOGO[ball.brand]?.img ? (
                         <img src={BRAND_LOGO[ball.brand].img} alt={ball.brand}
-                          style={{height:20,maxWidth:72,objectFit:"contain",opacity:0.88}}/>
+                          style={{height:22,maxWidth:80,objectFit:"contain",opacity:0.90}}/>
                       ):(
                         <span style={{fontSize:10,color:ball.accent,fontWeight:800,
                           letterSpacing:1}}>{ball.brand.toUpperCase()}</span>
