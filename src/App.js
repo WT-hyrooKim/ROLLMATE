@@ -2744,6 +2744,38 @@ const ALL_BALLS = [
     colors:["blue","black","silver"],
     description:"Propulsion HVH Solid on Vanquish Symmetric — 모티브 2026 헤비 오일 파워하우스. .056 디퍼런셜 2.47 RG로 최강 견인력. 투어 레벨 헤비 조건 전용."
   },
+
+  // ── 2026 추가 신규볼 ────────────────────────────────────
+  {
+    id:236, brand:"Radical", name:"Evil Eye",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Vexed",
+    finish:"500/1000/1500 Siaair", condition:"Heavy Oil", accent:"#b71c1c",
+    ballSlug:"radical-evil-eye", coreSlug:"radical-vexed-core",
+    weightData:{15:{rg:2.49,diff:0.036,mb:0.012}},
+    releaseDate:"Mar 2026",
+    colors:["black","red"],
+    description:"HK22C+ Solid on Vexed Asymmetric — 래디컬 Evil Eye. 날카로운 백엔드와 강한 미드레인 견인력."
+  },
+  {
+    id:237, brand:"Ebonite", name:"Game Breaker Hybrid",
+    cover:"Hybrid", coreType:"Asymmetric", coreName:"GA-100",
+    finish:"500/1000/1500 Siaair + Crown Compound", condition:"Medium-Heavy Oil", accent:"#1565c0",
+    ballSlug:"ebonite-game-breaker-hybrid", coreSlug:"ebonite-ga-100-core",
+    weightData:{15:{rg:2.48,diff:0.052,mb:0.016}},
+    releaseDate:"Mar 2026",
+    colors:["blue","silver","black"],
+    description:"Benchmark Hybrid on GA-100 Asymmetric — 에보나이트 Game Breaker Hybrid. 미디엄-헤비 오일에서 신뢰할 수 있는 훅 모션."
+  },
+  {
+    id:238, brand:"Storm", name:"Next Factor",
+    cover:"Pearl", coreType:"Asymmetric", coreName:"RAD-TQ",
+    finish:"Power Edge Polish", condition:"Medium Oil", accent:"#e53935",
+    ballSlug:"storm-next-factor", coreSlug:"storm-rad-tq-core",
+    weightData:{16:{rg:2.56,diff:0.051},15:{rg:2.56,diff:0.051},14:{rg:2.58,diff:0.048}},
+    releaseDate:"Dec 2025",
+    colors:["red","black","silver"],
+    description:"R3S Pearl Reactive on RAD-TQ Asymmetric — 레전드 X-Factor의 현대적 부활. 미디엄 오일 특화 날카로운 백엔드."
+  },
 ];
 
 // ── 한글→영문 볼 검색 매핑 ─────────────────────────────
@@ -2906,7 +2938,12 @@ function BrandLogo({ brand, size=28, active=false }) {
 
 // 인기/판매 순위 데이터 (BowlersMart·Bowling.com·PBA 투어 사용률 종합, 2024~2025)
 const POPULARITY = {
-  // ── 2026 신규 출시 볼 ──────────────────────────────────
+  "Evil Eye":76,
+  "Game Breaker Hybrid":72,
+  "Next Factor":82,
+  "Hammerhead Pearl":70,
+  "Black Widow Mania":99,
+    // ── 2026 신규 출시 볼 ──────────────────────────────────
   "Concept":82,
   "Transformer":85,
   "Vengeance":83,
@@ -3377,14 +3414,14 @@ function LoginPopup({ onLogin, onClose }) {
       zIndex:4000,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px"}}>
       <div style={{background:"#1c1c1e",borderRadius:24,padding:"32px 24px",
         width:"100%",maxWidth:360,textAlign:"center"}}>
-        <div style={{fontSize:48,marginBottom:12}}>{"✅"}</div>
-        <div style={{fontSize:20,fontWeight:800,color:"#fff",marginBottom:8}}>{"가입 신청 완료!"}</div>
+        <div style={{fontSize:48,marginBottom:12}}>✅</div>
+        <div style={{fontSize:20,fontWeight:800,color:"#fff",marginBottom:8}}>가입 신청 완료!</div>
         <div style={{fontSize:13,color:"rgba(255,255,255,0.5)",lineHeight:1.7,marginBottom:24}}>
-          {"관리자 승인 후 로그인하실 수 있어요."}<br/>{"잠시 기다려 주세요 🙏"}
+          {"관리자 승인 후 로그인하실 수 있어요."}<br/>잠시 기다려 주세요 🙏
         </div>
         <button onClick={onClose} style={{width:"100%",padding:"13px",background:"#ff8c00",
           border:"none",borderRadius:12,color:"#fff",fontFamily:"inherit",
-          fontSize:14,fontWeight:700,cursor:"pointer"}}>{"확인"}</button>
+          fontSize:14,fontWeight:700,cursor:"pointer"}}>확인</button>
       </div>
     </div>
   );
@@ -6568,7 +6605,7 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
               </div>
             </div>
             <button onClick={onClose} style={{marginLeft:"auto",background:"none",border:"none",
-              color:"rgba(255,255,255,0.5)",fontSize:20,cursor:"pointer"}}>{"✕"}</button>
+              color:"rgba(255,255,255,0.5)",fontSize:20,cursor:"pointer"}}>✕</button>
           </div>
         </div>
 
@@ -6583,12 +6620,15 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
                 {l:"게시물",v:posts.length,icon:"📝"},
                 {l:"점수",v:scores.length,icon:"🎳"},
                 {l:"댓글",v:"-",icon:"💬"},
-                {l:"관심볼",v:"-",icon:"❤️"},
+                {l:"관심볼",v:likedBalls.length,icon:"❤️",action:()=>setView("liked_balls")},
               ].map(item=>(
-                <div key={item.l} style={{
+                <div key={item.l}
+                  onClick={item.action||undefined}
+                  style={{
                   background:"rgba(255,255,255,0.07)",
                   borderRadius:12,padding:"10px 6px",textAlign:"center",
-                  border:"1px solid rgba(255,255,255,0.1)"}}>
+                  border:"1px solid rgba(255,255,255,0.1)",
+                  cursor:item.action?"pointer":"default"}}>
                   <div style={{fontSize:16,marginBottom:3}}>{item.icon}</div>
                   <div style={{fontSize:18,fontWeight:900,color:"#ff8c00",lineHeight:1}}>{item.v}</div>
                   <div style={{fontSize:9,color:"rgba(255,255,255,0.6)",marginTop:3,fontWeight:600}}>{item.l}</div>
@@ -6606,7 +6646,7 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
             background:"rgba(255,255,255,0.06)",
             display:"flex",alignItems:"center",gap:10,marginBottom:8,
             cursor:"pointer",fontFamily:"inherit",textAlign:"left"}}>
-            <span style={{fontSize:18}}>{"⚙️"}</span>
+            <span style={{fontSize:18}}>⚙️</span>
             <span style={{fontSize:14,fontWeight:700,color:"#fff",flex:1}}>고객센터</span>
             <span style={{fontSize:12,color:"rgba(255,255,255,0.4)",
               transform:csOpen?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
@@ -6623,6 +6663,7 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
               {[
                 {icon:"🔑",label:"비밀번호 변경",action:()=>setSection("pw")},
                 {icon:"✏️",label:"닉네임 변경",action:()=>setSection("nick")},
+                {icon:"🚪",label:"로그아웃",action:()=>{onLogout();onClose();}},
               ].map(item=>(
                 <button key={item.label} onClick={item.action} style={{
                   width:"100%",padding:"11px 12px",borderRadius:10,border:"none",
@@ -6632,7 +6673,7 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
                   marginBottom:2}}>
                   <span style={{fontSize:16}}>{item.icon}</span>
                   <span style={{flex:1,color:"#e0e0e0"}}>{item.label}</span>
-                  <span style={{color:"rgba(255,255,255,0.2)",fontSize:12}}>{"›"}</span>
+                  <span style={{color:"rgba(255,255,255,0.2)",fontSize:12}}>›</span>
                 </button>
               ))}
 
@@ -6650,7 +6691,7 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
                   background:"rgba(255,140,0,0.08)",
                   fontFamily:"inherit",fontSize:13,fontWeight:700,cursor:"pointer",
                   display:"flex",alignItems:"center",gap:10,textAlign:"left",marginBottom:2}}>
-                  <span style={{fontSize:16}}>{"👥"}</span>
+                  <span style={{fontSize:16}}>👥</span>
                   <span style={{flex:1,color:"#ff8c00"}}>회원 관리</span>
                   {pendingCount>0&&(
                     <span style={{background:"#ef5350",color:"#fff",
@@ -6660,30 +6701,20 @@ function MyPagePanel({ nickname, arsenal, onClose, onPasswordChange, onNicknameC
                       {pendingCount}
                     </span>
                   )}
-                  <span style={{color:"rgba(255,255,255,0.2)",fontSize:12}}>{"›"}</span>
+                  <span style={{color:"rgba(255,255,255,0.2)",fontSize:12}}>›</span>
                 </button>
               )}
 
               <button onClick={()=>{
-                if(window.confirm("모든 데이터를 삭제할까요?")) onDeleteAll();
+                if(window.confirm("정말 탈퇴하시겠어요? 모든 데이터가 삭제됩니다.")) onDeleteAll();
               }} style={{
                 width:"100%",padding:"11px 12px",borderRadius:10,border:"none",
                 background:"transparent",
                 fontFamily:"inherit",fontSize:13,fontWeight:600,cursor:"pointer",
-                display:"flex",alignItems:"center",gap:10,textAlign:"left",marginBottom:2}}>
-                <span style={{fontSize:16}}>{"🗑️"}</span>
-                <span style={{flex:1,color:"#ef9a9a"}}>데이터 삭제</span>
-                <span style={{color:"rgba(255,255,255,0.2)",fontSize:12}}>{"›"}</span>
-              </button>
-
-              <button onClick={()=>{onLogout();onClose();}} style={{
-                width:"100%",padding:"11px 12px",borderRadius:10,border:"none",
-                background:"transparent",
-                fontFamily:"inherit",fontSize:13,fontWeight:600,cursor:"pointer",
                 display:"flex",alignItems:"center",gap:10,textAlign:"left"}}>
-                <span style={{fontSize:16}}>{"🚪"}</span>
-                <span style={{flex:1,color:"#e0e0e0"}}>로그아웃</span>
-                <span style={{color:"rgba(255,255,255,0.2)",fontSize:12}}>{"›"}</span>
+                <span style={{fontSize:16}}>🚫</span>
+                <span style={{flex:1,color:"#ef9a9a"}}>회원 탈퇴</span>
+                <span style={{color:"rgba(255,255,255,0.2)",fontSize:12}}>›</span>
               </button>
             </div>
           )}
@@ -7160,7 +7191,11 @@ export default function RollmateApp() {
   const [ballLikes,setBallLikes]         = useState([]);
   const [myBowlingTab,setMyBowlingTab]   = useState("arsenal"); // arsenal | scores
   const [dbPopularity,setDbPopularity]   = useState({});
-  const [pendingCount,setPendingCount]   = useState(0); // 가입신청 대기 수 // Supabase 인기순위 // null | 'Heavy' | 'Medium' | 'Light'
+  const [pendingCount,setPendingCount]   = useState(0);
+  const [likedBalls,setLikedBalls]       = useState(()=>{
+    try{ return JSON.parse(localStorage.getItem("rm_liked_balls")||"[]"); }
+    catch{ return []; }
+  }); // 가입신청 대기 수 // Supabase 인기순위 // null | 'Heavy' | 'Medium' | 'Light'
   const [notices,setNotices]   = useState([]);
   const scrollPos            = useRef(0);
 
@@ -7297,6 +7332,18 @@ export default function RollmateApp() {
   });
 
   const inArsenal = id => arsenal.some(e=>e.ballId===id);
+
+  const toggleLike = (ball) => {
+    if(!nickname){ showToast("로그인 후 이용해주세요","#aaa"); return; }
+    const isLiked = likedBalls.some(b=>b.id===ball.id);
+    const next = isLiked
+      ? likedBalls.filter(b=>b.id!==ball.id)
+      : [...likedBalls, ball];
+    setLikedBalls(next);
+    localStorage.setItem("rm_liked_balls", JSON.stringify(next));
+    showToast(isLiked?"관심볼 해제":"❤️ 관심볼 등록!");
+  };
+  const isLiked = (id) => likedBalls.some(b=>b.id===id);
   const toggleCmp = ball => {
     if(cmpList.find(b=>b.id===ball.id)){
       const next = cmpList.filter(b=>b.id!==ball.id);
@@ -7826,6 +7873,7 @@ export default function RollmateApp() {
                  >
                    <div style={{position:"absolute",top:0,left:0,right:0,height:3,
                      background:`linear-gradient(90deg,${ball.accent},${ball.accent}44)`,borderRadius:"18px 18px 0 0"}}/>
+                    <button onClick={e=>{e.stopPropagation();toggleLike(ball);}} style={{position:"absolute",top:6,right:6,background:"none",border:"none",cursor:"pointer",padding:4,fontSize:16,lineHeight:1,zIndex:2}}>{isLiked(ball.id)?"❤️":"🤍"}</button>
                    <div style={{display:"flex",justifyContent:"center",marginBottom:7,marginTop:6}}>
                      <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={72} radius="50%"/>
                    </div>
@@ -7909,6 +7957,80 @@ export default function RollmateApp() {
                     borderRadius:"50%",color:"rgba(255,255,255,0.4)",fontSize:13,cursor:"pointer",
                     display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✕</button>
                 </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* LIKED BALLS - 관심볼 */}
+        {view==="liked_balls"&&(
+          <div style={{animation:"fadeUp .3s ease both"}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+              <button onClick={()=>setView("balls")} style={{background:"none",border:"none",
+                color:"#aaa",cursor:"pointer",fontSize:13,fontFamily:"inherit",padding:0}}>
+                ← 볼링공
+              </button>
+              <div style={{fontWeight:800,fontSize:18,color:"#1c1c1e"}}>
+                "❤️" 관심볼 ({likedBalls.length})
+              </div>
+            </div>
+            {likedBalls.length===0?(
+              <div style={{textAlign:"center",padding:"60px 20px",background:"#f7f7f7",
+                borderRadius:20,border:"2px dashed #e0e0e0"}}>
+                <div style={{fontSize:40,marginBottom:12}}>"🤍"</div>
+                <div style={{fontSize:15,fontWeight:700,color:"#aaa",marginBottom:6}}>
+                  관심볼이 없어요
+                </div>
+                <div style={{fontSize:13,color:"#ccc"}}>
+                  볼 리스트에서 🤍를 눌러 추가해보세요
+                </div>
+              </div>
+            ):(
+              <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                {likedBalls.map(ball=>{
+                  const d = ball.weightData?.[15]||ball.weightData?.[16];
+                  return (
+                    <div key={ball.id}
+                      onClick={()=>{setSel(ball);setView("detail");}}
+                      style={{background:"#fff",borderRadius:16,
+                        boxShadow:"0 2px 12px rgba(0,0,0,0.07)",
+                        border:`1px solid ${ball.accent}33`,
+                        display:"flex",alignItems:"center",gap:12,
+                        padding:"12px 14px",cursor:"pointer",
+                        position:"relative"}}>
+                      {/* 하트 제거 버튼 */}
+                      <button onClick={e=>{e.stopPropagation();toggleLike(ball);}}
+                        style={{position:"absolute",top:8,right:8,background:"none",
+                          border:"none",cursor:"pointer",fontSize:18,padding:4}}>
+                        "❤️"
+                      </button>
+                      {/* 볼 이미지 */}
+                      <div style={{width:56,height:56,borderRadius:"50%",flexShrink:0,
+                        overflow:"hidden",border:`2px solid ${ball.accent}33`}}>
+                        <BowwwlImg src={BOWWWL_BALL(ball.ballSlug)} alt={ball.name} size={56} radius="50%"/>
+                      </div>
+                      {/* 볼 정보 */}
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontSize:10,color:"#aaa",fontWeight:700,letterSpacing:1,marginBottom:2}}>
+                          {ball.brand.toUpperCase()}
+                        </div>
+                        <div style={{fontSize:14,fontWeight:800,color:"#111",marginBottom:4,
+                          overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
+                          {ball.name}
+                        </div>
+                        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                          <span style={{fontSize:10,background:`${ball.accent}18`,
+                            color:ball.accent,padding:"2px 7px",borderRadius:6,fontWeight:700}}>
+                            {ball.condition}
+                          </span>
+                          {d&&<span style={{fontSize:10,color:"#aaa"}}>
+                            RG {d.rg} · DIFF {d.diff}
+                          </span>}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
