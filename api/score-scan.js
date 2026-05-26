@@ -11,19 +11,17 @@ export default async function handler(req, res) {
   const GEMINI_KEY = process.env.GEMINI_KEY;
   if (!GEMINI_KEY) return res.status(500).json({ error: "Gemini API key not configured" });
 
-  const prompt = `이 볼링 전광판 이미지를 분석해서 각 플레이어의 점수를 JSON으로 반환해줘.
+  const prompt = `이 볼링 전광판 이미지를 분석해줘. 반드시 순수 JSON만 반환해. 마크다운 없이.
 
-볼링 점수판 규칙:
-- 나비넥타이/활모양 기호 = 스트라이크 = "X"
-- / 기호 = 스페어 = "/"
-- - 기호 = 거터/미스 = "-"
-- 숫자 = 해당 핀수
-- 프레임 아래 누적점수가 표시됨
+형식:
+{"lane":"05","players":[{"label":"53A","frames":[{"shots":["9","/"],"cumScore":18},{"shots":["8","/"],"cumScore":38},{"shots":["X"],"cumScore":68},{"shots":["X"],"cumScore":98},{"shots":["X"],"cumScore":126},{"shots":["8","1"],"cumScore":145},{"shots":["X"],"cumScore":154},{"shots":["X"],"cumScore":183},{"shots":["9","/"],"cumScore":203},{"shots":["X","",""],"cumScore":223}],"totalScore":223}]}
 
-반드시 JSON만 반환하고 마크다운 코드블록 없이:
-{"lane":"레인번호","players":[{"label":"53A","frames":[{"shots":["9","/"],"cumScore":18},{"shots":["X"],"cumScore":38}],"totalScore":223}]}
-
-빈 프레임은 {"shots":[],"cumScore":null}`;
+규칙:
+- 나비넥타이 기호 = "X" (스트라이크)
+- / = 스페어
+- - = 거터
+- 빈프레임 = {"shots":[],"cumScore":null}
+- 10프레임은 shots 3개까지`;
 
   try {
     const response = await fetch(
@@ -38,7 +36,11 @@ export default async function handler(req, res) {
               { text: prompt }
             ]
           }],
-          generationConfig: { temperature: 0.1, maxOutputTokens: 2048 }
+          generationConfig: {
+            temperature: 0.1,
+            maxOutputTokens: 2048,
+            responseMimeType: "application/json"
+          }
         })
       }
     );
@@ -47,12 +49,18 @@ export default async function handler(req, res) {
     if (!response.ok) return res.status(200).json({ error: data.error?.message || "Gemini API 오류" });
 
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
     let parsed;
     try {
       const clean = text.replace(/```json\n?/g,"").replace(/```\n?/g,"").trim();
       parsed = JSON.parse(clean);
     } catch(e) {
-      return res.status(200).json({ error: "JSON 파싱 실패", rawText: text.slice(0,500) });
+      // 디버그: raw 텍스트 전체 반환
+      return res.status(200).json({
+        error: "JSON 파싱 실패",
+        rawText: text,
+        parseError: e.message
+      });
     }
 
     const players = (parsed.players||[]).map(p => {
