@@ -11,17 +11,17 @@ export default async function handler(req, res) {
   const GEMINI_KEY = process.env.GEMINI_KEY;
   if (!GEMINI_KEY) return res.status(500).json({ error: "Gemini API key not configured" });
 
-  const prompt = `이 볼링 전광판 이미지를 분석해줘. 반드시 순수 JSON만 반환해. 마크다운 없이.
+  const prompt = `볼링 전광판 이미지에서 점수를 읽어줘.
 
-형식:
-{"lane":"05","players":[{"label":"53A","frames":[{"shots":["9","/"],"cumScore":18},{"shots":["8","/"],"cumScore":38},{"shots":["X"],"cumScore":68},{"shots":["X"],"cumScore":98},{"shots":["X"],"cumScore":126},{"shots":["8","1"],"cumScore":145},{"shots":["X"],"cumScore":154},{"shots":["X"],"cumScore":183},{"shots":["9","/"],"cumScore":203},{"shots":["X","",""],"cumScore":223}],"totalScore":223}]}
+나비넥타이/활 모양 기호는 스트라이크("X")야.
+/ 는 스페어, - 는 거터, 숫자는 핀수야.
 
-규칙:
-- 나비넥타이 기호 = "X" (스트라이크)
-- / = 스페어
-- - = 거터
-- 빈프레임 = {"shots":[],"cumScore":null}
-- 10프레임은 shots 3개까지`;
+아래 JSON 형식으로만 답해줘. 다른 말 하지 말고 JSON만:
+
+{"lane":"레인번호","players":[{"label":"53A","frames":[{"shots":["9","/"],"cumScore":18},{"shots":["X"],"cumScore":38}],"totalScore":223}]}
+
+빈 프레임: {"shots":[],"cumScore":null}
+10프레임은 shots 최대 3개.`;
 
   try {
     const response = await fetch(
@@ -38,8 +38,7 @@ export default async function handler(req, res) {
           }],
           generationConfig: {
             temperature: 0.1,
-            maxOutputTokens: 2048,
-            responseMimeType: "application/json"
+            maxOutputTokens: 2048
           }
         })
       }
@@ -50,17 +49,29 @@ export default async function handler(req, res) {
 
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
+    // JSON 추출 - 여러 방법 시도
     let parsed;
     try {
-      const clean = text.replace(/```json\n?/g,"").replace(/```\n?/g,"").trim();
-      parsed = JSON.parse(clean);
-    } catch(e) {
-      // 디버그: raw 텍스트 전체 반환
-      return res.status(200).json({
-        error: "JSON 파싱 실패",
-        rawText: text,
-        parseError: e.message
-      });
+      // 방법1: 그대로 파싱
+      parsed = JSON.parse(text.trim());
+    } catch(e1) {
+      try {
+        // 방법2: ```json 제거
+        const clean = text.replace(/```json\n?/g,"").replace(/```\n?/g,"").trim();
+        parsed = JSON.parse(clean);
+      } catch(e2) {
+        try {
+          // 방법3: { } 사이만 추출
+          const match = text.match(/\{[\s\S]*\}/);
+          if (match) parsed = JSON.parse(match[0]);
+          else throw new Error("JSON not found");
+        } catch(e3) {
+          return res.status(200).json({
+            error: "JSON 파싱 실패",
+            rawText: text
+          });
+        }
+      }
     }
 
     const players = (parsed.players||[]).map(p => {
