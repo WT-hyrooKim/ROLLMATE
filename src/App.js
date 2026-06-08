@@ -2776,6 +2776,135 @@ const ALL_BALLS = [
     colors:["red","black","silver"],
     description:"R3S Pearl Reactive on RAD-TQ Asymmetric — 레전드 X-Factor의 현대적 부활. 미디엄 오일 특화 날카로운 백엔드."
   },
+  // 2026 신규
+  {
+    id:239, brand:"Storm", name:"Monsoon",
+    cover:"Solid", coreType:"Symmetric", coreName:"Atmos A.I.",
+    finish:"2000 Abralon", condition:"Medium Oil", accent:"#1565c0",
+    ballSlug:"storm-monsoon", coreSlug:"storm-atmos-ai-core",
+    weightData:{16:{rg:2.530,diff:0.042},15:{rg:2.530,diff:0.042},14:{rg:2.550,diff:0.040}},
+    releaseDate:"May 2026",
+    colors:["blue","navy","silver"],
+    description:"Atmos A.I. Core + Reactor Solid — 미디엄~헤비 오일에서 안정적인 제어력을 제공하는 시메트릭 솔리드."
+  },
+  {
+    id:240, brand:"Storm", name:"Rocket A.I.",
+    cover:"Pearl", coreType:"Symmetric", coreName:"Booster A.I.",
+    finish:"Power Edge Polish", condition:"Medium-Dry Oil", accent:"#f57c00",
+    ballSlug:"storm-rocket-ai", coreSlug:"storm-booster-ai-core",
+    weightData:{16:{rg:2.530,diff:0.048},15:{rg:2.530,diff:0.048},14:{rg:2.550,diff:0.045}},
+    releaseDate:"May 2026",
+    colors:["orange","silver","white"],
+    description:"Booster A.I. Core + A1S Pearl — 미디엄~건조 레인 전용. 전면 안정성과 정밀한 백엔드 반응을 겸비한 퍼얼 볼."
+  },
+  {
+    id:241, brand:"Storm", name:"Alpha Crux",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Catalyst A.I.",
+    finish:"2000 Abralon", condition:"Heavy Oil", accent:"#000000",
+    ballSlug:"storm-alpha-crux", coreSlug:"storm-catalyst-ai-core",
+    weightData:{
+      16:{rg:2.480,diff:0.053,intDiff:0.018}, 15:{rg:2.480,diff:0.053,intDiff:0.018},
+      14:{rg:2.500,diff:0.050,intDiff:0.016}, 13:{rg:2.590,diff:0.045}, 12:{rg:2.650,diff:0.038}
+    },
+    releaseDate:"May 2026",
+    colors:["black","turquoise","violet"],
+    description:"Catalyst A.I. Core + GI-26 Solid — 12년 만에 부활한 레전드. 헤비 오일 전용 강력한 훅과 예측 가능한 Crux 모션."
+  },
+  {
+    id:242, brand:"Brunswick", name:"Strategy",
+    cover:"Pearl", coreType:"Asymmetric", coreName:"Dual Centric",
+    finish:"500/1000/1500 SiaAir / Crown Factory Compound", condition:"Medium Oil", accent:"#8e24aa",
+    ballSlug:"brunswick-strategy", coreSlug:"brunswick-dual-centric-core",
+    weightData:{
+      16:{rg:2.509,diff:0.047,intDiff:0.016}, 15:{rg:2.509,diff:0.047,intDiff:0.016},
+      14:{rg:2.530,diff:0.044,intDiff:0.014}
+    },
+    releaseDate:"Apr 2026",
+    colors:["purple","blue","silver"],
+    description:"Dual Centric Asymmetric + HK22C² EVO Pearl — 강력한 펄 반응성과 백엔드 날카로움을 갖춘 미디엄 오일 어시메트릭."
+  },
+  {
+    id:243, brand:"Brunswick", name:"Infinity Quest Pearl",
+    cover:"Pearl", coreType:"Asymmetric", coreName:"Infinity",
+    finish:"500/1000/1500 SiaAir / Crown Factory Compound", condition:"Medium-Heavy Oil", accent:"#1e88e5",
+    ballSlug:"brunswick-infinity-quest-pearl", coreSlug:"brunswick-infinity-core",
+    weightData:{
+      16:{rg:2.531,diff:0.044,intDiff:0.009}, 15:{rg:2.521,diff:0.051,intDiff:0.010},
+      14:{rg:2.543,diff:0.051,intDiff:0.010}, 13:{rg:2.580,diff:0.041,intDiff:0.014}
+    },
+    releaseDate:"Jun 2026",
+    colors:["blue","pink","white"],
+    description:"Infinity Asymmetric Core + HK22C EVO Pearl — 강한 전체 모션과 뚜렷한 백엔드 방향 전환. HK22 플랫폼의 최신 어시메트릭 퍼얼."
+  },
+  {
+    id:244, brand:"Track", name:"Kinetic Sapphire Ice",
+    cover:"Pearl", coreType:"Asymmetric", coreName:"Shuttle MC2",
+    finish:"Crown Factory Compound (1500 Polish)", condition:"Medium Oil", accent:"#0288d1",
+    ballSlug:"track-kinetic-sapphire-ice", coreSlug:"track-shuttle-mc2-core",
+    weightData:{
+      16:{rg:2.480,diff:0.040,intDiff:0.006}, 15:{rg:2.480,diff:0.040,intDiff:0.006},
+      14:{rg:2.500,diff:0.038,intDiff:0.005}
+    },
+    releaseDate:"Apr 2026",
+    colors:["blue","silver","white"],
+    description:"Shuttle MC2 Asymmetric + Prime Response Pearl (HK22) — 길게 나가는 퍼얼 반응성. 미디엄 오일에서 가성비 높은 어시메트릭."
+  },
+  {
+    id:245, brand:"Hammer", name:"Spawn",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Gauntlet",
+    finish:"500/1000 SiaAir Micro Pad", condition:"Medium-Heavy Oil", accent:"#212121",
+    ballSlug:"hammer-spawn", coreSlug:"hammer-gauntlet-core",
+    weightData:{
+      16:{rg:2.501,diff:0.050,intDiff:0.012}, 15:{rg:2.501,diff:0.050,intDiff:0.012},
+      14:{rg:2.520,diff:0.047,intDiff:0.010}
+    },
+    releaseDate:"May 2026",
+    colors:["black","silver"],
+    description:"Gauntlet Asymmetric + HK22C² Solid — Zero Mercy Solid과 동일 커버. 레인 트랜지션에서 과도한 훅 없이 안정적인 코어 다이나믹스."
+  },
+  {
+    id:246, brand:"Roto Grip", name:"Hustle SOS",
+    cover:"Hybrid", coreType:"Symmetric", coreName:"Hustle",
+    finish:"3000 Abralon", condition:"Medium Oil", accent:"#e53935",
+    ballSlug:"roto-grip-hustle-sos", coreSlug:"roto-grip-hustle-core",
+    weightData:{16:{rg:2.530,diff:0.030},15:{rg:2.530,diff:0.030},14:{rg:2.560,diff:0.028}},
+    releaseDate:"Jun 2026",
+    colors:["red","black","silver"],
+    description:"Hustle Symmetric + VTC Hybrid — 직관적인 길이와 부드러운 제어. 모든 레벨에 맞는 미디엄 오일 하이브리드."
+  },
+  {
+    id:247, brand:"Roto Grip", name:"Hustle VP",
+    cover:"Pearl", coreType:"Symmetric", coreName:"Hustle",
+    finish:"Crown Factory Compound Polish", condition:"Medium-Dry Oil", accent:"#7b1fa2",
+    ballSlug:"roto-grip-hustle-vp", coreSlug:"roto-grip-hustle-core",
+    weightData:{16:{rg:2.530,diff:0.030},15:{rg:2.530,diff:0.030},14:{rg:2.560,diff:0.028}},
+    releaseDate:"Jun 2026",
+    colors:["purple","violet","white"],
+    description:"Hustle Symmetric + VTC Pearl — 부드럽게 길게 나가는 퍼얼 반응. 미디엄~건조 레인에서 쉽게 다룰 수 있는 컨트롤 볼."
+  },
+  {
+    id:248, brand:"900 Global", name:"Vengeance Returns",
+    cover:"Hybrid", coreType:"Symmetric", coreName:"Blast A.I.",
+    finish:"3000 Abralon", condition:"Medium Oil", accent:"#1565c0",
+    ballSlug:"900global-vengeance-returns", coreSlug:"900global-blast-ai-core",
+    weightData:{16:{rg:2.470,diff:0.055},15:{rg:2.470,diff:0.055},14:{rg:2.490,diff:0.052}},
+    releaseDate:"Jun 2026",
+    colors:["navy","ash","smoke"],
+    description:"Blast A.I. Symmetric + RB91 Hybrid — Vengeance 시리즈의 귀환. 미디엄 오일에서 강한 훅 포텐셜의 시메트릭 하이브리드."
+  },
+  {
+    id:249, brand:"900 Global", name:"Viking Conquest",
+    cover:"Solid", coreType:"Asymmetric", coreName:"Strobe A.I.",
+    finish:"500/1000 SiaAir", condition:"Heavy Oil", accent:"#c62828",
+    ballSlug:"900global-viking-conquest", coreSlug:"900global-strobe-ai-core",
+    weightData:{
+      16:{rg:2.500,diff:0.050,intDiff:0.016}, 15:{rg:2.510,diff:0.052,intDiff:0.016},
+      14:{rg:2.530,diff:0.049,intDiff:0.014}
+    },
+    releaseDate:"Jun 2026",
+    colors:["red","black","silver"],
+    description:"Strobe A.I. Asymmetric + RB94 Solid — 헤비 오일을 정복하는 강력한 어시메트릭 솔리드. Viking 라인의 최상위 퍼포먼스."
+  },
 ];
 
 // ── 한글→영문 볼 검색 매핑 ─────────────────────────────
