@@ -23,76 +23,94 @@ export default async function handler(req, res) {
 빈 프레임: {"shots":[],"cumScore":null}
 10프레임은 shots 최대 3개.`;
 
-  try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{
-            parts: [
-              { inline_data: { mime_type: mimeType, data: imageBase64 } },
-              { text: prompt }
-            ]
-          }],
-          generationConfig: {
-            temperature: 0.1,
-            maxOutputTokens: 2048
-          }
-        })
-      }
-    );
+  const imagePart = { inline_data: { mime_type: mimeType, data: imageBase64 } };
+  const contents = [{ parts: [imagePart, { text: prompt }] }];
 
-    const data = await response.json();
-    if (!response.ok) return res.status(200).json({ error: data.error?.message || "Gemini API 오류" });
+  // text 추출: thinking 모델은 parts가 여러 개일 수 있으므로 text 타입 파트를 모두 합침
+  function extractText(data) {
+    const parts = data.candidates?.[0]?.content?.parts || [];
+    return parts
+      .filter(p => p.text !== undefined)
+      .map(p => p.text)
+      .join("");
+  }
 
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-
-    // JSON 추출 - 여러 방법 시도
-    let parsed;
+  function parseJSON(text) {
+    // 방법1: 그대로
+    try { return JSON.parse(text.trim()); } catch {}
+    // 방법2: 마크다운 코드블록 제거
     try {
-      // 방법1: 그대로 파싱
-      parsed = JSON.parse(text.trim());
-    } catch(e1) {
-      try {
-        // 방법2: ```json 제거
-        const clean = text.replace(/```json\n?/g,"").replace(/```\n?/g,"").trim();
-        parsed = JSON.parse(clean);
-      } catch(e2) {
-        try {
-          // 방법3: { } 사이만 추출
-          const match = text.match(/\{[\s\S]*\}/);
-          if (match) parsed = JSON.parse(match[0]);
-          else throw new Error("JSON not found");
-        } catch(e3) {
-          return res.status(200).json({
-            error: "JSON 파싱 실패",
-            rawText: text
-          });
-        }
-      }
-    }
+      const clean = text.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
+      return JSON.parse(clean);
+    } catch {}
+    // 방법3: 첫 { 부터 마지막 } 까지
+    try {
+      const start = text.indexOf("{");
+      const end = text.lastIndexOf("}");
+      if (start !== -1 && end !== -1) return JSON.parse(text.slice(start, end + 1));
+    } catch {}
+    return null;
+  }
 
-    const players = (parsed.players||[]).map(p => {
-      const frames = (p.frames||[]).map(f => ({
-        shots: f.shots||[],
-        cumScore: f.cumScore??null,
-        isStrike: f.shots?.[0]==="X",
+  function buildResult(parsed) {
+    const players = (parsed.players || []).map(p => {
+      const frames = (p.frames || []).map(f => ({
+        shots: f.shots || [],
+        cumScore: f.cumScore ?? null,
+        isStrike: f.shots?.[0] === "X",
         isSpare: f.shots?.includes("/"),
       }));
-      while(frames.length<10) frames.push({shots:[],cumScore:null,isStrike:false,isSpare:false});
+      while (frames.length < 10) frames.push({ shots: [], cumScore: null, isStrike: false, isSpare: false });
       return {
         label: p.label,
-        frameShots: frames.map(f=>f.shots.length>0?{shots:f.shots,isStrike:f.isStrike,isSpare:f.isSpare}:null),
-        frameCumulative: frames.map(f=>f.cumScore),
-        totalScore: p.totalScore??null,
+        frameShots: frames.map(f => f.shots.length > 0 ? { shots: f.shots, isStrike: f.isStrike, isSpare: f.isSpare } : null),
+        frameCumulative: frames.map(f => f.cumScore),
+        totalScore: p.totalScore ?? null,
       };
     });
+    return { success: true, players, lane: parsed.lane || null };
+  }
 
-    return res.status(200).json({ success:true, players, lane:parsed.lane||null });
+  async function callGemini(model, useThinkingOff) {
+    const body = {
+      contents,
+      generationConfig: { temperature: 0.1, maxOutputTokens: 2048 },
+    };
+    if (useThinkingOff) {
+      body.generationConfig.thinkingConfig = { thinkingBudget: 0 };
+    }
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`,
+      { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }
+    );
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error?.message || `${model} API 오류`);
+    return data;
+  }
 
-  } catch(e) {
+  try {
+    // 시도 1: gemini-2.5-flash, thinkingBudget:0
+    let text = "";
+    let modelUsed = "";
+    try {
+      const data = await callGemini("gemini-2.5-flash", true);
+      text = extractText(data);
+      modelUsed = "gemini-2.5-flash (thinking off)";
+    } catch (e1) {
+      // 시도 2: gemini-2.0-flash-001 (non-thinking)
+      const data = await callGemini("gemini-2.0-flash-001", false);
+      text = extractText(data);
+      modelUsed = "gemini-2.0-flash-001";
+    }
+
+    const parsed = parseJSON(text);
+    if (!parsed) {
+      return res.status(200).json({ error: "JSON 파싱 실패", rawText: text, modelUsed });
+    }
+
+    return res.status(200).json({ ...buildResult(parsed), modelUsed });
+
+  } catch (e) {
     return res.status(500).json({ error: e.message });
   }
 }
