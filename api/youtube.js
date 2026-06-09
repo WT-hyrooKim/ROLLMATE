@@ -15,20 +15,11 @@ export default async function handler(req, res) {
     const { handle } = req.body;
     if (!handle) return res.status(400).json({ error: "handle required" });
 
-    // URL에서 @핸들 추출
-    // 지원 형식:
-    // https://www.youtube.com/@BOWLINGMANIA
-    // https://youtube.com/@bowlingmania?si=xxx
-    // @BOWLINGMANIA
-    // BOWLINGMANIA
     let cleanHandle = handle.trim();
-
-    // URL인 경우 @핸들 추출
     const handleMatch = cleanHandle.match(/@([\w-]+)/);
     if (handleMatch) {
       cleanHandle = handleMatch[1];
     } else {
-      // URL이지만 @없는 경우 (youtube.com/c/channelname 등)
       const pathMatch = cleanHandle.match(/youtube\.com\/(?:c\/|channel\/|user\/)?([^/?&]+)/i);
       if (pathMatch) cleanHandle = pathMatch[1];
       else cleanHandle = cleanHandle.replace(/^@/, "").split("?")[0].trim();
@@ -66,6 +57,8 @@ export default async function handler(req, res) {
   }
 
   // ── GET: 영상 목록 조회 ──────────────────────────────────
+  // playlistItems API 사용 (quota: 1 unit vs search의 100 unit)
+  // uploads 플레이리스트 ID = channel_id의 "UC" → "UU" 치환
   try {
     const sbRes = await fetch(
       `${SUPABASE_URL}/rest/v1/youtube_channels?is_active=eq.true&select=*`,
@@ -78,34 +71,46 @@ export default async function handler(req, res) {
     }
 
     const allVideos = [];
+
     for (const ch of channels) {
       try {
+        // uploads 플레이리스트 ID 계산 (UC → UU)
+        const uploadsPlaylistId = ch.channel_id.replace(/^UC/, "UU");
+
         const ytRes = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?` +
-          `part=snippet&channelId=${ch.channel_id}&type=video&` +
-          `videoEmbeddable=true&videoDuration=medium&maxResults=5&order=date&` +
+          `https://www.googleapis.com/youtube/v3/playlistItems?` +
+          `part=snippet&playlistId=${uploadsPlaylistId}&maxResults=8&` +
           `key=${GOOGLE_API_KEY}`
         );
         const ytData = await ytRes.json();
+
         if (ytData.items?.length) {
           ytData.items.forEach(item => {
-            const title = item.snippet.title || "";
-            // Shorts 필터링: 제목에 shorts 포함 제외
-            const isShorts = /shorts/i.test(title);
-            if (!isShorts) {
+            const snippet = item.snippet;
+            const videoId = snippet?.resourceId?.videoId;
+            if (!videoId) return;
+
+            const title = snippet.title || "";
+            // Shorts 필터링 (제목 또는 설명에 #Shorts 포함)
+            const isShorts = /shorts/i.test(title) || /^#shorts/i.test(snippet.description || "");
+            // 삭제된 영상 필터
+            const isDeleted = title === "Private video" || title === "Deleted video";
+            if (!isShorts && !isDeleted) {
               allVideos.push({
-                id: item.id.videoId,
+                id: videoId,
                 title,
-                channel: item.snippet.channelTitle,
+                channel: snippet.channelTitle,
                 channelName: ch.name,
-                thumb: item.snippet.thumbnails?.medium?.url ||
-                  `https://img.youtube.com/vi/${item.id.videoId}/mqdefault.jpg`,
-                publishedAt: item.snippet.publishedAt,
+                thumb: snippet.thumbnails?.medium?.url ||
+                  `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
+                publishedAt: snippet.publishedAt,
               });
             }
           });
         }
-      } catch(e) {}
+      } catch(e) {
+        // 채널 하나 실패해도 계속 진행
+      }
     }
 
     allVideos.sort((a,b) => new Date(b.publishedAt) - new Date(a.publishedAt));

@@ -9,10 +9,13 @@ export default async function handler(req, res) {
   if (!imageBase64) return res.status(400).json({ error: "No image provided" });
 
   const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+  const GEMINI_KEY = process.env.GEMINI_KEY;
   if (!GOOGLE_API_KEY) return res.status(500).json({ error: "API key not configured" });
 
-  try {
-    const response = await fetch(
+  // ── Cloud Vision + Gemini Vision 병렬 호출 ─────────────
+  const [visionRes, geminiRes] = await Promise.allSettled([
+    // (1) Cloud Vision: 텍스트 OCR + 색상 분석
+    fetch(
       `https://vision.googleapis.com/v1/images:annotate?key=${GOOGLE_API_KEY}`,
       {
         method: "POST",
@@ -28,111 +31,150 @@ export default async function handler(req, res) {
           }]
         })
       }
-    );
+    ).then(r => r.json()),
 
-    const data = await response.json();
-    if (!response.ok) {
-      return res.status(200).json({ error: data.error?.message || "Vision API error" });
-    }
+    // (2) Gemini Vision: 구 형태·색상·브랜드 로고 종합 인식
+    GEMINI_KEY ? fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${GEMINI_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{
+            parts: [
+              { inline_data: { mime_type: mimeType, data: imageBase64 } },
+              { text: `이 이미지에서 볼링공을 분석해줘.
+볼링공의 브랜드(Storm, Hammer, Motiv, Brunswick, Roto Grip, 900 Global, DV8, Columbia 300, Ebonite, Radical, Track, SWAG 중 하나),
+제품명, 주요 색상(2~3개), 커버스톡 패턴(solid/pearl/hybrid/urethane 중)을 파악해줘.
+텍스트가 보이면 그대로 읽고, 로고/색상/형태로도 추론해줘.
 
-    const result = data.responses?.[0];
-    if (!result) return res.status(200).json({ error: "No result" });
+반드시 아래 JSON 형식으로만 답해. 다른 말 없이 JSON만:
+{"brand":"Storm","name":"Phaze II","colors":["blue","silver"],"pattern":"pearl","confidence":"high"}
 
-    // 텍스트 추출
-    const fullText = result.textAnnotations?.[0]?.description || "";
-    const textLines = fullText.split("\n").map(t => t.trim()).filter(t => t.length > 1);
-
-    // 브랜드 감지
-    const brandKeywords = {
-      "Storm": ["storm"], "Hammer": ["hammer"], "Motiv": ["motiv"],
-      "Brunswick": ["brunswick"], "Roto Grip": ["roto grip","roto","grip"],
-      "900 Global": ["900 global","900global"], "DV8": ["dv8"],
-      "Columbia 300": ["columbia"], "Ebonite": ["ebonite"],
-      "Radical": ["radical"], "Track": ["track"], "SWAG": ["swag"],
-    };
-
-    const textLower = fullText.toLowerCase();
-    let detectedBrand = null;
-    for (const [brand, keywords] of Object.entries(brandKeywords)) {
-      if (keywords.some(k => textLower.includes(k))) {
-        detectedBrand = brand;
-        break;
+확인 불가 필드는 null. confidence는 high/medium/low.` }
+            ]
+          }],
+          generationConfig: { temperature: 0, maxOutputTokens: 256, thinkingConfig: { thinkingBudget: 0 } }
+        })
       }
+    ).then(r => r.json()) : Promise.resolve(null),
+  ]);
+
+  try {
+    // ── Cloud Vision 결과 파싱 ───────────────────────────
+    let visionBrand = null, visionName = null, colors = [], fullText = "";
+    if (visionRes.status === "fulfilled" && visionRes.value?.responses?.[0]) {
+      const result = visionRes.value.responses[0];
+      fullText = result.textAnnotations?.[0]?.description || "";
+      const textLines = fullText.split("\n").map(t => t.trim()).filter(t => t.length > 1);
+
+      const brandKeywords = {
+        "Storm": ["storm"], "Hammer": ["hammer"], "Motiv": ["motiv"],
+        "Brunswick": ["brunswick"], "Roto Grip": ["roto grip","roto","grip"],
+        "900 Global": ["900 global","900global","900"], "DV8": ["dv8"],
+        "Columbia 300": ["columbia"], "Ebonite": ["ebonite"],
+        "Radical": ["radical"], "Track": ["track"], "SWAG": ["swag"],
+      };
+
+      const textLower = fullText.toLowerCase();
+      for (const [brand, keywords] of Object.entries(brandKeywords)) {
+        if (keywords.some(k => textLower.includes(k))) {
+          visionBrand = brand;
+          break;
+        }
+      }
+
+      const brandLowers = visionBrand ? brandKeywords[visionBrand] : [];
+      const productCandidates = textLines
+        .filter(t => t.length > 2 && t.length < 50)
+        .filter(t => !/^\d+(\.\d+)?$/.test(t))
+        .filter(t => !/^[A-Z]{1,2}$/.test(t))
+        .filter(t => !brandLowers.some(k => t.toLowerCase() === k))
+        .filter(t => !["usbc","abc","bowling","approved","oz","lbs"].includes(t.toLowerCase()));
+
+      visionName = productCandidates.length > 0
+        ? productCandidates.slice(0, 2).join(" ").trim()
+        : null;
+
+      // 색상 추출
+      const rgbToColor = (r=0, g=0, b=0) => {
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        if (max < 50) return "black";
+        if (min > 200) return "white";
+        if (max - min < 30 && max > 150) return "silver";
+        if (max - min < 25 && max < 100) return "black";
+        if (r > 180 && g >= 60 && g <= 170 && b < 80) return "orange";
+        if (r > 160 && g < 60 && b < 80) return "red";
+        if (r > 160 && b > 100 && g < 100) return "pink";
+        if (b > 130 && r < 100 && g < 130) return "blue";
+        if (g > 130 && b > 130 && r < 100) return "teal";
+        if (g > 120 && r < 100 && b < 100) return "green";
+        if (r > 80 && b > 100 && g < 80) return "purple";
+        if (r > 180 && g > 160 && b < 80) return "gold";
+        if (b > 80 && b < 140 && r < 60 && g < 80) return "blue";
+        return null;
+      };
+
+      const colorCounts = {};
+      (result.imagePropertiesAnnotation?.dominantColors?.colors || [])
+        .slice(0, 8)
+        .forEach(c => {
+          const colorName = rgbToColor(c.color?.red, c.color?.green, c.color?.blue);
+          if (colorName) {
+            const weight = c.pixelFraction || c.score || 0.1;
+            colorCounts[colorName] = (colorCounts[colorName] || 0) + weight;
+          }
+        });
+
+      colors = Object.entries(colorCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([color]) => color);
     }
 
-    // 제품명 추출
-    const brandLowers = detectedBrand ? brandKeywords[detectedBrand] : [];
-    const productCandidates = textLines
-      .filter(t => t.length > 2 && t.length < 50)
-      .filter(t => !/^\d+(\.\d+)?$/.test(t))
-      .filter(t => !/^[A-Z]{1,2}$/.test(t))
-      .filter(t => !brandLowers.some(k => t.toLowerCase() === k))
-      .filter(t => !["usbc","abc","bowling","approved","oz","lbs"].includes(t.toLowerCase()));
-
-    const productName = productCandidates.length > 0
-      ? productCandidates.slice(0, 2).join(" ").trim()
-      : null;
-
-    // ── RGB → 색상명 변환 (개선된 임계값) ──────────────────
-    const rgbToColor = (r=0, g=0, b=0) => {
-      const max = Math.max(r, g, b);
-      const min = Math.min(r, g, b);
-
-      // 무채색 계열 먼저 처리
-      if (max < 50) return "black";
-      if (min > 200) return "white";
-      if (max - min < 30 && max > 150) return "silver";
-      if (max - min < 25 && max < 100) return "black";
-
-      // 채도 있는 색상
-      // orange: R 높음, G 중간(60~170), B 낮음
-      if (r > 180 && g >= 60 && g <= 170 && b < 80) return "orange";
-      // red: R 높음, G 낮음, B 낮음 (더 엄격)
-      if (r > 160 && g < 60 && b < 80) return "red";
-      // pink/magenta: R 높음, B 중간~높음, G 낮음
-      if (r > 160 && b > 100 && g < 100) return "pink";
-      // blue: B 높음, R 낮음
-      if (b > 130 && r < 100 && g < 130) return "blue";
-      // teal/cyan: G+B 높음, R 낮음
-      if (g > 130 && b > 130 && r < 100) return "teal";
-      // green: G 높음, R/B 낮음
-      if (g > 120 && r < 100 && b < 100) return "green";
-      // purple/violet: R+B 높음, G 낮음
-      if (r > 80 && b > 100 && g < 80) return "purple";
-      // gold/yellow: R+G 높음, B 낮음
-      if (r > 180 && g > 160 && b < 80) return "gold";
-      // navy: B 중간, R/G 낮음
-      if (b > 80 && b < 140 && r < 60 && g < 80) return "blue";
-
-      return null;
-    };
-
-    const colorCounts = {};
-    (result.imagePropertiesAnnotation?.dominantColors?.colors || [])
-      .slice(0, 8)
-      .forEach(c => {
-        const colorName = rgbToColor(c.color?.red, c.color?.green, c.color?.blue);
-        if (colorName) {
-          // pixelFraction(면적 비율) 가중치 적용
-          const weight = c.pixelFraction || c.score || 0.1;
-          colorCounts[colorName] = (colorCounts[colorName] || 0) + weight;
+    // ── Gemini Vision 결과 파싱 ──────────────────────────
+    let geminiBrand = null, geminiName = null, geminiColors = [], geminiPattern = null, geminiConfidence = "low";
+    if (geminiRes.status === "fulfilled" && geminiRes.value) {
+      try {
+        const parts = geminiRes.value.candidates?.[0]?.content?.parts || [];
+        const rawText = parts.filter(p => p.text).map(p => p.text).join("");
+        const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const g = JSON.parse(jsonMatch[0]);
+          geminiBrand = g.brand || null;
+          geminiName = g.name || null;
+          geminiColors = g.colors || [];
+          geminiPattern = g.pattern || null;
+          geminiConfidence = g.confidence || "low";
         }
-      });
+      } catch(e) {}
+    }
 
-    // 면적 비율 기준으로 정렬, 상위 3개
-    const colors = Object.entries(colorCounts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 3)
-      .map(([color]) => color);
+    // ── 결과 병합: Gemini 우선, Cloud Vision 보완 ────────
+    // 브랜드: Gemini high/medium이면 우선, 아니면 Cloud Vision
+    const finalBrand = (geminiConfidence !== "low" && geminiBrand) ? geminiBrand : (visionBrand || geminiBrand);
+    // 제품명: Gemini가 읽은 이름 + Cloud Vision OCR 보완
+    const finalName = geminiName || visionName;
+    // 색상: Gemini 색상 + Cloud Vision 색상 합산 (중복 제거)
+    const finalColors = [...new Set([...geminiColors, ...colors])].slice(0, 4);
+    // 패턴
+    const finalPattern = geminiPattern || null;
+
+    const confidence = (finalBrand && finalName) ? "high"
+      : (finalBrand || finalName) ? "medium" : "low";
 
     return res.status(200).json({
       success: true,
-      brand: detectedBrand,
-      name: productName,
-      colors,
+      brand: finalBrand,
+      name: finalName,
+      colors: finalColors,
+      pattern: finalPattern,
       fullText: fullText.slice(0, 300),
-      confidence: detectedBrand && productName ? "high"
-        : detectedBrand || productName ? "medium" : "low"
+      confidence,
+      // 디버그용
+      _vision: visionBrand ? { brand: visionBrand, name: visionName } : null,
+      _gemini: geminiBrand ? { brand: geminiBrand, name: geminiName, confidence: geminiConfidence } : null,
     });
 
   } catch (e) {

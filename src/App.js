@@ -5022,7 +5022,7 @@ function CompareView({ cmpList, setCmpList, toggleCmp, setView }) {
   return (
     <div style={{animation:"fadeUp .3s ease both"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:2}}>
-        <div style={{fontWeight:800,fontSize:22,color:"#111"}}>볼링공 비교</div>
+        <div style={{fontWeight:800,fontSize:22,color:"#111"}}>볼링공 스펙 비교</div>
         {cmpList.length>0&&(
           <button onClick={()=>setCmpList([])} style={{
             padding:"6px 14px",borderRadius:18,border:"1.5px solid #ef5350",
@@ -5868,6 +5868,7 @@ function VideoBoard({ preview=false }) {
 function BoardView({ nickname, onLoginRequest }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
   const [showWrite, setShowWrite] = useState(false);
   const [selPost, setSelPost] = useState(null);
   const [title, setTitle] = useState("");
@@ -5879,9 +5880,10 @@ function BoardView({ nickname, onLoginRequest }) {
 
   const load = ()=>{
     setLoading(true);
+    setLoadError(null);
     sbGet("posts","order=created_at.desc")
-      .then(d=>setPosts(d||[]))
-      .catch(()=>{})
+      .then(d=>{ if(Array.isArray(d)) setPosts(d); else throw new Error("응답 오류"); })
+      .catch(e=>{ setLoadError(e?.message||"불러오기 실패"); })
       .finally(()=>setLoading(false));
   };
   useEffect(()=>{ load(); },[]);
@@ -5974,6 +5976,15 @@ function BoardView({ nickname, onLoginRequest }) {
       {/* 목록 */}
       {loading?(
         <div style={{textAlign:"center",padding:"30px",color:"#aaa",fontSize:13}}>불러오는 중...</div>
+      ):loadError?(
+        <div style={{textAlign:"center",padding:"32px",color:"#ef5350"}}>
+          <div style={{fontSize:28,marginBottom:8}}>⚠️</div>
+          <div style={{fontSize:13,marginBottom:12}}>{loadError}</div>
+          <button onClick={load} style={{padding:"8px 20px",borderRadius:20,border:"1.5px solid #ef5350",
+            background:"none",color:"#ef5350",fontSize:13,cursor:"pointer",fontFamily:"inherit",fontWeight:700}}>
+            다시 시도
+          </button>
+        </div>
       ):(
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
           {posts.length===0?(
@@ -7304,7 +7315,7 @@ export default function RollmateApp() {
   const [editEnt,setEditEnt] = useState(null);
   const [toast,setToast]     = useState(null);
   const [splash,setSplash]   = useState(true);
-  const [sortBy,setSortBy]   = useState("popular");
+  const [sortBy,setSortBy]   = useState("latest");
   const [rgOrder,setRgOrder]   = useState("asc");   // asc=낮은순 desc=높은순
   const [diffOrder,setDiffOrder] = useState("desc"); // asc=낮은순 desc=높은순
   const [nickname,setNickname] = useState(()=>localStorage.getItem("rm_nickname")||"");
