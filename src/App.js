@@ -6964,7 +6964,7 @@ function BallScanner({ balls, onSelectBall }) {
 
     try {
       // 후보 목록을 API에 전달 — Gemini가 목록 안에서 직접 선택
-      const candidates = ALL_BALLS.map(b => ({ brand: b.brand, name: b.name }));
+      const candidates = ALL_BALLS.map(b => ({ brand: b.brand, name: b.name, colors: b.colors||[] }));
 
       const res = await fetch("/api/vision", {
         method: "POST",
