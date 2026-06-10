@@ -5,17 +5,17 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  const { imageBase64, mimeType = "image/jpeg" } = req.body;
+  const { imageBase64, mimeType = "image/jpeg", candidates = [] } = req.body;
   if (!imageBase64) return res.status(400).json({ error: "No image provided" });
 
   const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
   const GEMINI_KEY = process.env.GEMINI_KEY;
   if (!GOOGLE_API_KEY) return res.status(500).json({ error: "API key not configured" });
 
-  // ── Cloud Vision + Gemini Vision 병렬 호출 ─────────────
-  const [visionRes, geminiRes] = await Promise.allSettled([
-    // (1) Cloud Vision: 텍스트 OCR + 색상 분석
-    fetch(
+  // ── 1단계: Cloud Vision — 텍스트 OCR + 색상 분석 ────────
+  let visionBrand = null, visionName = null, colors = [], fullText = "";
+  try {
+    const vRes = await fetch(
       `https://vision.googleapis.com/v1/images:annotate?key=${GOOGLE_API_KEY}`,
       {
         method: "POST",
@@ -25,81 +25,45 @@ export default async function handler(req, res) {
             image: { content: imageBase64 },
             features: [
               { type: "TEXT_DETECTION", maxResults: 20 },
-              { type: "LABEL_DETECTION", maxResults: 10 },
               { type: "IMAGE_PROPERTIES", maxResults: 8 },
             ]
           }]
         })
       }
-    ).then(r => r.json()),
+    );
+    const vData = await vRes.json();
+    const result = vData.responses?.[0];
 
-    // (2) Gemini Vision: 구 형태·색상·브랜드 로고 종합 인식
-    GEMINI_KEY ? fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${GEMINI_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{
-            parts: [
-              { inline_data: { mime_type: mimeType, data: imageBase64 } },
-              { text: `이 이미지에서 볼링공을 분석해줘.
-볼링공의 브랜드(Storm, Hammer, Motiv, Brunswick, Roto Grip, 900 Global, DV8, Columbia 300, Ebonite, Radical, Track, SWAG 중 하나),
-제품명, 주요 색상(2~3개), 커버스톡 패턴(solid/pearl/hybrid/urethane 중)을 파악해줘.
-텍스트가 보이면 그대로 읽고, 로고/색상/형태로도 추론해줘.
-
-반드시 아래 JSON 형식으로만 답해. 다른 말 없이 JSON만:
-{"brand":"Storm","name":"Phaze II","colors":["blue","silver"],"pattern":"pearl","confidence":"high"}
-
-확인 불가 필드는 null. confidence는 high/medium/low.` }
-            ]
-          }],
-          generationConfig: { temperature: 0, maxOutputTokens: 256, thinkingConfig: { thinkingBudget: 0 } }
-        })
-      }
-    ).then(r => r.json()) : Promise.resolve(null),
-  ]);
-
-  try {
-    // ── Cloud Vision 결과 파싱 ───────────────────────────
-    let visionBrand = null, visionName = null, colors = [], fullText = "";
-    if (visionRes.status === "fulfilled" && visionRes.value?.responses?.[0]) {
-      const result = visionRes.value.responses[0];
+    if (result) {
       fullText = result.textAnnotations?.[0]?.description || "";
       const textLines = fullText.split("\n").map(t => t.trim()).filter(t => t.length > 1);
+      const textLower = fullText.toLowerCase();
 
+      // 브랜드 감지
       const brandKeywords = {
         "Storm": ["storm"], "Hammer": ["hammer"], "Motiv": ["motiv"],
-        "Brunswick": ["brunswick"], "Roto Grip": ["roto grip","roto","grip"],
-        "900 Global": ["900 global","900global","900"], "DV8": ["dv8"],
-        "Columbia 300": ["columbia"], "Ebonite": ["ebonite"],
+        "Brunswick": ["brunswick"], "Roto Grip": ["roto grip","rotogrip"],
+        "900 Global": ["900 global","900global"], "DV8": ["dv8"],
+        "Columbia 300": ["columbia 300","columbia"], "Ebonite": ["ebonite"],
         "Radical": ["radical"], "Track": ["track"], "SWAG": ["swag"],
       };
-
-      const textLower = fullText.toLowerCase();
       for (const [brand, keywords] of Object.entries(brandKeywords)) {
-        if (keywords.some(k => textLower.includes(k))) {
-          visionBrand = brand;
-          break;
-        }
+        if (keywords.some(k => textLower.includes(k))) { visionBrand = brand; break; }
       }
 
+      // 제품명 후보 추출
       const brandLowers = visionBrand ? brandKeywords[visionBrand] : [];
       const productCandidates = textLines
         .filter(t => t.length > 2 && t.length < 50)
         .filter(t => !/^\d+(\.\d+)?$/.test(t))
         .filter(t => !/^[A-Z]{1,2}$/.test(t))
         .filter(t => !brandLowers.some(k => t.toLowerCase() === k))
-        .filter(t => !["usbc","abc","bowling","approved","oz","lbs"].includes(t.toLowerCase()));
-
-      visionName = productCandidates.length > 0
-        ? productCandidates.slice(0, 2).join(" ").trim()
-        : null;
+        .filter(t => !["usbc","abc","bowling","approved","oz","lbs","ball"].includes(t.toLowerCase()));
+      visionName = productCandidates.length > 0 ? productCandidates.slice(0, 3).join(" ").trim() : null;
 
       // 색상 추출
       const rgbToColor = (r=0, g=0, b=0) => {
-        const max = Math.max(r, g, b);
-        const min = Math.min(r, g, b);
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
         if (max < 50) return "black";
         if (min > 200) return "white";
         if (max - min < 30 && max > 150) return "silver";
@@ -115,69 +79,82 @@ export default async function handler(req, res) {
         if (b > 80 && b < 140 && r < 60 && g < 80) return "blue";
         return null;
       };
-
       const colorCounts = {};
-      (result.imagePropertiesAnnotation?.dominantColors?.colors || [])
-        .slice(0, 8)
-        .forEach(c => {
-          const colorName = rgbToColor(c.color?.red, c.color?.green, c.color?.blue);
-          if (colorName) {
-            const weight = c.pixelFraction || c.score || 0.1;
-            colorCounts[colorName] = (colorCounts[colorName] || 0) + weight;
-          }
-        });
-
-      colors = Object.entries(colorCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3)
-        .map(([color]) => color);
+      (result.imagePropertiesAnnotation?.dominantColors?.colors || []).slice(0, 8).forEach(c => {
+        const name = rgbToColor(c.color?.red, c.color?.green, c.color?.blue);
+        if (name) colorCounts[name] = (colorCounts[name] || 0) + (c.pixelFraction || c.score || 0.1);
+      });
+      colors = Object.entries(colorCounts).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([c])=>c);
     }
+  } catch(e) {}
 
-    // ── Gemini Vision 결과 파싱 ──────────────────────────
-    let geminiBrand = null, geminiName = null, geminiColors = [], geminiPattern = null, geminiConfidence = "low";
-    if (geminiRes.status === "fulfilled" && geminiRes.value) {
-      try {
-        const parts = geminiRes.value.candidates?.[0]?.content?.parts || [];
-        const rawText = parts.filter(p => p.text).map(p => p.text).join("");
-        const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          const g = JSON.parse(jsonMatch[0]);
-          geminiBrand = g.brand || null;
-          geminiName = g.name || null;
-          geminiColors = g.colors || [];
-          geminiPattern = g.pattern || null;
-          geminiConfidence = g.confidence || "low";
+  // ── 2단계: Gemini — 후보 목록에서 직접 선택 ────────────
+  // 클라이언트에서 후보 볼 목록을 받아 Gemini가 목록 중 가장 일치하는 것을 선택
+  let geminiResult = null;
+  if (GEMINI_KEY && candidates.length > 0) {
+    try {
+      // 브랜드 확인된 경우 해당 브랜드 후보만, 없으면 전체 후보 사용
+      const filteredCandidates = visionBrand
+        ? candidates.filter(c => c.brand === visionBrand)
+        : candidates;
+
+      // 후보가 없으면 전체 사용 (브랜드 감지 실패 대비)
+      const finalCandidates = filteredCandidates.length > 0 ? filteredCandidates : candidates;
+
+      // 목록을 "브랜드 | 제품명" 형태로 직렬화
+      const ballList = finalCandidates
+        .map((c, i) => `${i+1}. ${c.brand} | ${c.name}`)
+        .join("\n");
+
+      const geminiPrompt = `이 볼링공 이미지를 분석해서 아래 목록 중 가장 일치하는 볼을 찾아줘.
+
+볼의 색상, 브랜드 로고, 텍스트, 무늬, 전체적인 디자인을 종합적으로 보고 판단해줘.
+OCR로 읽힌 텍스트 힌트: "${fullText.slice(0,200).replace(/\n/g," ")}"
+
+=== 후보 목록 ===
+${ballList}
+
+반드시 아래 JSON 형식으로만 답해. 다른 말 없이 JSON만:
+{"matches":[{"rank":1,"brand":"Storm","name":"Phaze II","reason":"blue swirl pattern matches"},{"rank":2,"brand":"Storm","name":"Phaze III","reason":"similar color scheme"}]}
+
+최대 3개까지, 확신도 높은 순서로. 후보 목록에 없는 볼은 절대 선택하지 마.`;
+
+      const gRes = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${GEMINI_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [
+              { inline_data: { mime_type: mimeType, data: imageBase64 } },
+              { text: geminiPrompt }
+            ]}],
+            generationConfig: { temperature: 0, maxOutputTokens: 512 }
+          })
         }
-      } catch(e) {}
-    }
-
-    // ── 결과 병합: Gemini 우선, Cloud Vision 보완 ────────
-    // 브랜드: Gemini high/medium이면 우선, 아니면 Cloud Vision
-    const finalBrand = (geminiConfidence !== "low" && geminiBrand) ? geminiBrand : (visionBrand || geminiBrand);
-    // 제품명: Gemini가 읽은 이름 + Cloud Vision OCR 보완
-    const finalName = geminiName || visionName;
-    // 색상: Gemini 색상 + Cloud Vision 색상 합산 (중복 제거)
-    const finalColors = [...new Set([...geminiColors, ...colors])].slice(0, 4);
-    // 패턴
-    const finalPattern = geminiPattern || null;
-
-    const confidence = (finalBrand && finalName) ? "high"
-      : (finalBrand || finalName) ? "medium" : "low";
-
-    return res.status(200).json({
-      success: true,
-      brand: finalBrand,
-      name: finalName,
-      colors: finalColors,
-      pattern: finalPattern,
-      fullText: fullText.slice(0, 300),
-      confidence,
-      // 디버그용
-      _vision: visionBrand ? { brand: visionBrand, name: visionName } : null,
-      _gemini: geminiBrand ? { brand: geminiBrand, name: geminiName, confidence: geminiConfidence } : null,
-    });
-
-  } catch (e) {
-    return res.status(500).json({ error: e.message });
+      );
+      const gData = await gRes.json();
+      const parts = gData.candidates?.[0]?.content?.parts || [];
+      const rawText = parts.filter(p=>p.text).map(p=>p.text).join("");
+      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        geminiResult = parsed.matches || null;
+      }
+    } catch(e) {}
   }
+
+  return res.status(200).json({
+    success: true,
+    // Gemini 직접 매칭 결과 (있으면)
+    geminiMatches: geminiResult,
+    // Cloud Vision 기본 결과 (fallback용)
+    brand: visionBrand,
+    name: visionName,
+    colors,
+    fullText: fullText.slice(0, 300),
+    confidence: (geminiResult?.length > 0) ? "high"
+      : (visionBrand && visionName) ? "medium"
+      : (visionBrand || visionName) ? "low" : "low",
+  });
 }

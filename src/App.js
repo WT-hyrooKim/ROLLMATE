@@ -6914,106 +6914,47 @@ function BallScanner({ balls, onSelectBall }) {
     reader.readAsDataURL(file);
   };
 
-  // ── 유사도 매칭 (텍스트 + 색상 + 패턴) ────────────────
+  // ── 폴백 매칭 (Gemini 실패 시 텍스트+색상 기반) ─────────
   const normalize = (s) => (s||"").toLowerCase()
     .replace(/[^a-z0-9가-힣\s]/g,"").replace(/\s+/g," ").trim();
 
-  // 색상 키워드 맵
-  const COLOR_MAP = {
-    purple:["purple","violet","amethyst","plum"],
-    black:["black","dark","shadow","night","midnight","noir"],
-    red:["red","crimson","scarlet","ruby","blood","cherry"],
-    blue:["blue","sapphire","cobalt","navy","azure","ocean"],
-    green:["green","emerald","lime","jade","forest","mint"],
-    orange:["orange","amber","fire","flame","blaze","copper"],
-    gold:["gold","golden","maxx","bronze","honey"],
-    pearl:["pearl","pearlescent","lustre"],
-    white:["white","ivory","ghost","ice","frost","snow"],
-    gray:["gray","grey","silver","slate","ash"],
-    pink:["pink","rose","magenta","coral"],
-    teal:["teal","cyan","aqua","turquoise"],
-    silver:["silver","chrome","metallic"],
-  };
-
-  // 패턴 키워드 맵
-  const PATTERN_MAP = {
-    marble:["marble","stone"],
-    swirl:["swirl","twist","vortex","spiral"],
-    solid:["solid"],
-    pearl:["pearl"],
-    hybrid:["hybrid"],
-    reactive:["reactive"],
-  };
-
-  const matchBalls = (res) => {
-    const { brand, name, colors=[], pattern="" } = res;
+  const fallbackMatch = (data) => {
+    const { brand, name, colors=[] } = data;
     const nb = normalize(brand||"");
     const nn = normalize(name||"");
 
-    const scored = ALL_BALLS.map(ball => {
+    return ALL_BALLS.map(ball => {
       let score = 0;
       const ballBrand = normalize(ball.brand);
       const ballName  = normalize(ball.name);
       const ballCover = normalize(ball.cover||"");
-      const ballColor = normalize(ball.color||""); // 볼 색상 필드
 
-      // ① 브랜드 매칭 (25%)
       if (nb) {
-        if (ballBrand === nb) score += 0.25;
-        else if (ballBrand.includes(nb) || nb.includes(ballBrand)) score += 0.20;
-        else if (ballBrand.split(" ").some(w=>nb.includes(w)&&w.length>2)) score += 0.10;
+        if (ballBrand === nb) score += 0.35;
+        else if (ballBrand.includes(nb) || nb.includes(ballBrand)) score += 0.25;
       }
-
-      // ② 제품명 매칭 (45%)
       if (nn) {
         const nameWords = ballName.split(" ").filter(w=>w.length>1);
         const queryWords = nn.split(" ").filter(w=>w.length>1);
         if (ballName === nn) score += 0.55;
         else if (ballName.includes(nn) || nn.includes(ballName)) score += 0.40;
         else {
-          const hits = nameWords.filter(w=>
-            queryWords.some(q=> q===w || q.includes(w) || w.includes(q))
-          ).length;
-          if (nameWords.length > 0) score += (hits / nameWords.length) * 0.45;
+          const hits = nameWords.filter(w=>queryWords.some(q=>q===w||q.includes(w)||w.includes(q))).length;
+          if (nameWords.length > 0) score += (hits / nameWords.length) * 0.40;
         }
       }
-
-      // ③ 색상 매칭 강화 (20%)
       if (colors.length > 0) {
-        let colorScore = 0;
-        const ballColors = (ball.colors || []).map(c => c.toLowerCase());
-        colors.forEach(c => {
-          const cl = c.toLowerCase();
-          // ball.colors 필드와 직접 비교 (가장 정확)
-          if (ballColors.includes(cl)) {
-            colorScore += 0.08;
-          } else {
-            // 볼 이름에 색상 키워드 포함 (보조)
-            const keywords = COLOR_MAP[cl] || [cl];
-            if (keywords.some(k => ballName.includes(k))) colorScore += 0.04;
-            else if (keywords.some(k => ballCover.includes(k))) colorScore += 0.02;
-          }
-        });
-        score += Math.min(colorScore, 0.20);
+        const ballColors = (ball.colors||[]).map(c=>c.toLowerCase());
+        let cs = 0;
+        colors.forEach(c => { if (ballColors.includes(c.toLowerCase())) cs += 0.08; });
+        score += Math.min(cs, 0.20);
       }
-
-      // ④ 패턴 매칭 (10%)
-      if (pattern) {
-        const keywords = PATTERN_MAP[pattern.toLowerCase()] || [pattern.toLowerCase()];
-        if (keywords.some(k => ballName.includes(k) || ballCover.includes(k))) score += 0.10;
-        if (pattern==="solid" && ballCover.includes("solid")) score += 0.05;
-        if (pattern==="pearl" && ballCover.includes("pearl")) score += 0.05;
-        if (pattern==="hybrid" && ballCover.includes("hybrid")) score += 0.05;
-      }
-
       return { ball, score };
-    });
-
-    return scored
-      .sort((a,b) => b.score - a.score)
-      .filter(x => x.score > 0.10)
-      .slice(0, 3)
-      .map(x => ({ ...x.ball, matchScore: Math.round(x.score * 100) }));
+    })
+    .sort((a,b)=>b.score-a.score)
+    .filter(x=>x.score>0.10)
+    .slice(0,3)
+    .map(x=>({...x.ball, matchScore: Math.round(x.score*100)}));
   };
 
   // ── 스캔 실행 ─────────────────────────────────────────
@@ -7022,11 +6963,13 @@ function BallScanner({ balls, onSelectBall }) {
     setLoading(true); setStep("analyzing"); setResults([]); setAnalysis(null); setErrorMsg("");
 
     try {
-      // Vercel Serverless Function 호출
+      // 후보 목록을 API에 전달 — Gemini가 목록 안에서 직접 선택
+      const candidates = ALL_BALLS.map(b => ({ brand: b.brand, name: b.name }));
+
       const res = await fetch("/api/vision", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageBase64: imgB64, mimeType }),
+        body: JSON.stringify({ imageBase64: imgB64, mimeType, candidates }),
       });
 
       const data = await res.json();
@@ -7038,7 +6981,29 @@ function BallScanner({ balls, onSelectBall }) {
       setAnalysis(data);
       setStep("matching");
 
-      const matched = matchBalls(data);
+      let matched = [];
+
+      // ① Gemini 직접 매칭 결과 우선 사용
+      if (data.geminiMatches?.length > 0) {
+        matched = data.geminiMatches
+          .map((m, i) => {
+            const ball = ALL_BALLS.find(b =>
+              b.brand === m.brand && b.name === m.name
+            );
+            if (!ball) return null;
+            // rank 1=95%, 2=80%, 3=65% 기본 신뢰도 부여
+            const score = i === 0 ? 95 : i === 1 ? 80 : 65;
+            return { ...ball, matchScore: score, matchReason: m.reason };
+          })
+          .filter(Boolean)
+          .slice(0, 3);
+      }
+
+      // ② Gemini 결과 없으면 Cloud Vision 폴백 매칭
+      if (matched.length === 0) {
+        matched = fallbackMatch(data);
+      }
+
       setResults(matched);
       setStep(matched.length > 0 ? "done" : "nomatch");
 
@@ -7244,7 +7209,7 @@ function BallScanner({ balls, onSelectBall }) {
                             </span>}
                           </div>
                         </div>
-                        <div style={{textAlign:"right",flexShrink:0}}>
+                        <div style={{textAlign:"right",flexShrink:0,minWidth:52}}>
                           <div style={{fontSize:20,fontWeight:900,color:ball.accent,lineHeight:1}}>
                             {ball.matchScore}%
                           </div>
@@ -7252,6 +7217,12 @@ function BallScanner({ balls, onSelectBall }) {
                           <div style={{fontSize:9,color:ball.accent,fontWeight:700,marginTop:2}}>
                             스펙보기 →
                           </div>
+                          {ball.matchReason&&(
+                            <div style={{fontSize:8,color:"#999",marginTop:3,
+                              maxWidth:80,wordBreak:"break-word",lineHeight:1.3}}>
+                              {ball.matchReason}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
