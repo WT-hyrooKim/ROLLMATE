@@ -6918,6 +6918,20 @@ function BallScanner({ balls, onSelectBall }) {
   const normalize = (s) => (s||"").toLowerCase()
     .replace(/[^a-z0-9가-힣\s]/g,"").replace(/\s+/g," ").trim();
 
+  // 색상 일치 점수 계산 (공통 유틸)
+  const calcColorScore = (detectedColors, ballColors) => {
+    if (!detectedColors?.length || !ballColors?.length) return 0;
+    const bc = ballColors.map(c => c.toLowerCase());
+    let cs = 0;
+    detectedColors.forEach((c, i) => {
+      if (bc.includes(c.toLowerCase())) {
+        // 첫 번째 색(주색)이 일치하면 가중치 높게
+        cs += i === 0 ? 0.18 : 0.12;
+      }
+    });
+    return Math.min(cs, 0.40); // 최대 40%
+  };
+
   const fallbackMatch = (data) => {
     const { brand, name, colors=[] } = data;
     const nb = normalize(brand||"");
@@ -6927,34 +6941,32 @@ function BallScanner({ balls, onSelectBall }) {
       let score = 0;
       const ballBrand = normalize(ball.brand);
       const ballName  = normalize(ball.name);
-      const ballCover = normalize(ball.cover||"");
 
+      // 브랜드 (최대 30%)
       if (nb) {
-        if (ballBrand === nb) score += 0.35;
-        else if (ballBrand.includes(nb) || nb.includes(ballBrand)) score += 0.25;
+        if (ballBrand === nb) score += 0.30;
+        else if (ballBrand.includes(nb) || nb.includes(ballBrand)) score += 0.22;
       }
+      // 제품명 (최대 45%)
       if (nn) {
         const nameWords = ballName.split(" ").filter(w=>w.length>1);
         const queryWords = nn.split(" ").filter(w=>w.length>1);
-        if (ballName === nn) score += 0.55;
-        else if (ballName.includes(nn) || nn.includes(ballName)) score += 0.40;
+        if (ballName === nn) score += 0.45;
+        else if (ballName.includes(nn) || nn.includes(ballName)) score += 0.35;
         else {
           const hits = nameWords.filter(w=>queryWords.some(q=>q===w||q.includes(w)||w.includes(q))).length;
-          if (nameWords.length > 0) score += (hits / nameWords.length) * 0.40;
+          if (nameWords.length > 0) score += (hits / nameWords.length) * 0.35;
         }
       }
-      if (colors.length > 0) {
-        const ballColors = (ball.colors||[]).map(c=>c.toLowerCase());
-        let cs = 0;
-        colors.forEach(c => { if (ballColors.includes(c.toLowerCase())) cs += 0.08; });
-        score += Math.min(cs, 0.20);
-      }
+      // 색상 (최대 40% — 우선순위 최상향)
+      score += calcColorScore(colors, ball.colors||[]);
+
       return { ball, score };
     })
     .sort((a,b)=>b.score-a.score)
-    .filter(x=>x.score>0.10)
+    .filter(x=>x.score>0.08)
     .slice(0,3)
-    .map(x=>({...x.ball, matchScore: Math.round(x.score*100)}));
+    .map(x=>({...x.ball, matchScore: Math.round(Math.min(x.score, 1) * 100)}));
   };
 
   // ── 스캔 실행 ─────────────────────────────────────────
@@ -6985,14 +6997,18 @@ function BallScanner({ balls, onSelectBall }) {
 
       // ① Gemini 직접 매칭 결과 우선 사용
       if (data.geminiMatches?.length > 0) {
+        const detectedColors = data.colors || [];
         matched = data.geminiMatches
           .map((m, i) => {
             const ball = ALL_BALLS.find(b =>
               b.brand === m.brand && b.name === m.name
             );
             if (!ball) return null;
-            // rank 1=95%, 2=80%, 3=65% 기본 신뢰도 부여
-            const score = i === 0 ? 95 : i === 1 ? 80 : 65;
+            // 기본 점수: rank 1=88%, 2=76%, 3=65%
+            const base = i === 0 ? 88 : i === 1 ? 76 : 65;
+            // 색상 일치 보너스 (최대 +12%)
+            const colorBonus = Math.round(calcColorScore(detectedColors, ball.colors||[]) * 30);
+            const score = Math.min(base + colorBonus, 99);
             return { ...ball, matchScore: score, matchReason: m.reason };
           })
           .filter(Boolean)
